@@ -14,34 +14,33 @@ class MyTextField extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.white
+    final bool isPhone = MediaQuery.of(context).size.shortestSide < 600;
 
-          ),
-          borderRadius: BorderRadius.all(Radius.circular(20))
-        ),
-        
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.white,
-            
-          ),
-          borderRadius: BorderRadius.all(Radius.circular(20))
-        ),
-        fillColor: Colors.grey.shade200,
-        filled: true,
-        hintText: hintText,
-        hintStyle: TextStyle(
-          color: Colors.grey[500],
-        )
+    return Container(
+      width: isPhone ? null : MediaQuery.of(context).size.width * 0.3,
+      constraints: const BoxConstraints(
+        maxHeight: 50, 
       ),
-      
-
+      child: TextField(
+        controller: controller,
+        obscureText: obscureText,
+        decoration: InputDecoration(
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey),
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey),
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
+          filled: true,
+          fillColor: Colors.grey.shade200,
+          labelText: hintText,
+          labelStyle: TextStyle(
+            color: Colors.grey[500],
+          ),
+        ),
+      ),
     );
   }
 
