@@ -1,4 +1,4 @@
-import 'package:dine_ease/auth/login_or_register.dart';
+import 'package:dine_ease/screens/welcome.dart';
 // import 'package:dine_ease/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
@@ -16,7 +16,7 @@ class SplashScreen extends StatelessWidget{
         alignment: Alignment.center,
         scale: 2,
       ),
-      nextScreen: const LoginOrRegister(),
+      nextScreen: const WelcomeScreen(),
       splashTransition: SplashTransition.fadeTransition,
 
     );

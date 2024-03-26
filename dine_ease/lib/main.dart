@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:dine_ease/screens/login.dart';
+import 'package:dine_ease/screens/sign_up_user.dart';
 import 'package:dine_ease/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +16,9 @@ class MyApp extends StatelessWidget {
   Map<String, WidgetBuilder> _getRoutes() {
       return <String,WidgetBuilder>{
       '/': (context) => const SplashScreen(),
+      //ontap metodus ures lesz
+      '/login': (context) => LoginScreen(onTap: (){}),
+      '/sign-up-user': (context) => const SignUpUserScreen(),
     };
   }
   
