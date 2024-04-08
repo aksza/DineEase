@@ -10,6 +10,5 @@
         public MenuType MenuType { get; set; }
         public string Ingredients { get; set; }
         public ICollection<Order> Orders { get; set; }
-        public ICollection<Restaurant> Restaurants { get; set;}
     }
 }

@@ -11,8 +11,6 @@
         public float Rating { get; set; }
         public int PriceId { get; set; }
         public Price Price { get; set; }
-        public int MenuId { get; set; }
-        public Menu Menu { get; set; }
         public bool ForEvent { get; set; }
         public int OwnerId { get; set; }
         public Owner Owner { get; set; }

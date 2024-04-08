@@ -8,8 +8,8 @@
         public int UserId { get; set; }
         public User User { get; set; }
         public int PartySize { get; set; }
-        public DateOnly Date { get; set; }
-        public TimeOnly Time { get; set; }
+        public DateTime Date { get; set; }
+        //public TimeOnly Time { get; set; }
         public string PhoneNum { get; set; }
         public bool Ordered { get; set; }
         public int? OrderId { get; set; }
