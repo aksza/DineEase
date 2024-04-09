@@ -12,10 +12,11 @@
         //public TimeOnly Time { get; set; }
         public string PhoneNum { get; set; }
         public bool Ordered { get; set; }
-        public int? OrderId { get; set; }
-        public Order? Order { get; set; }
+        //public int? OrderId { get; set; }
+        //public Order? Order { get; set; }
         public string? Comment { get; set; }
         public bool? Accepted { get; set; }
         public string? RestaurantResponse { get; set; }
+        public ICollection<Order>? Orders { get; set; }
     }
 }
