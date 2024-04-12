@@ -9,11 +9,11 @@
         public string PhoneNum { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public ICollection<Favorit> Favorits { get; set; }
-        public ICollection<Meeting> Meetings { get; set; }
-        public ICollection<Rating> Ratings { get; set; }
-        public ICollection<Reservation> Reservations { get; set; }
-        public ICollection<Review> Reviews { get; set; }
+        public ICollection<Favorit>? Favorits { get; set; }
+        public ICollection<Meeting>? Meetings { get; set; }
+        public ICollection<Rating>? Ratings { get; set; }
+        public ICollection<Reservation>? Reservations { get; set; }
+        public ICollection<Review>? Reviews { get; set; }
 
        
     }

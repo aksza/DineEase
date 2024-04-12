@@ -4,6 +4,7 @@ using DineEaseApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DineEaseApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240411225447_SecondUpdate")]
+    partial class SecondUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,6 +191,9 @@ namespace DineEaseApp.Migrations
                     b.Property<int>("EventId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("EventTypeId")
+                        .HasColumnType("int");
+
                     b.Property<int>("GuestSize")
                         .HasColumnType("int");
 
@@ -208,6 +213,8 @@ namespace DineEaseApp.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("EventId");
+
+                    b.HasIndex("EventTypeId");
 
                     b.HasIndex("RestaurantId");
 
@@ -234,9 +241,6 @@ namespace DineEaseApp.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
 
                     b.Property<int>("RestaurantId")
                         .HasColumnType("int");
@@ -723,11 +727,15 @@ namespace DineEaseApp.Migrations
 
             modelBuilder.Entity("DineEaseApp.Models.Meeting", b =>
                 {
-                    b.HasOne("DineEaseApp.Models.EventType", "Event")
-                        .WithMany("Meetings")
+                    b.HasOne("DineEaseApp.Models.Event", "Event")
+                        .WithMany()
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("DineEaseApp.Models.EventType", null)
+                        .WithMany("Meetings")
+                        .HasForeignKey("EventTypeId");
 
                     b.HasOne("DineEaseApp.Models.Restaurant", "Restaurant")
                         .WithMany("Meetings")
