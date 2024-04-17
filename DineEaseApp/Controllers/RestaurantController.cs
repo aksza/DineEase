@@ -16,6 +16,7 @@ namespace DineEaseApp.Controllers
         public RestaurantController(IRestaurantRepository restaurantRepository,IMapper mapper) 
         {
             _restaurantRepository = restaurantRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -23,8 +24,8 @@ namespace DineEaseApp.Controllers
 
         public IActionResult GetRestaurants()
         {
-            //var restaurants = _mapper.Map<List<RestaurantDto>>(_restaurantRepository.GetRestaurants());
-            var restaurants = _restaurantRepository.GetRestaurants();
+            var restaurants = _mapper.Map<List<RestaurantDto>>(_restaurantRepository.GetRestaurants());
+            //var restaurants = _restaurantRepository.GetRestaurants();
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -42,8 +43,8 @@ namespace DineEaseApp.Controllers
                 return NotFound();
 
             }
-            //var restaurant = _mapper.Map<RestaurantDto>(_restaurantRepository.GetRestaurantById(id));
-            var restaurant = _restaurantRepository.GetRestaurantById(id);
+            var restaurant = _mapper.Map<RestaurantDto>(_restaurantRepository.GetRestaurantById(id));
+            //var restaurant = _restaurantRepository.GetRestaurantById(id);
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
