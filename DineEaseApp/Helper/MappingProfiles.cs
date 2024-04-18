@@ -50,6 +50,7 @@ namespace DineEaseApp.Helper
             CreateMap<SeatingDto,Seating>();
             CreateMap<User,UserDto>();
             CreateMap<UserDto,User>();
+            CreateMap<UserCreateDto, User>();
         }
     }
 }
