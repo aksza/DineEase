@@ -9,6 +9,7 @@
         public string PhoneNum { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public bool Admin { get; set; }
         public ICollection<Favorit>? Favorits { get; set; }
         public ICollection<Meeting>? Meetings { get; set; }
         public ICollection<Rating>? Ratings { get; set; }

@@ -10,6 +10,8 @@ namespace DineEaseApp.Models
         public string Address { get; set; }
         public string PhoneNum { get; set; }
         public string Email { get; set; }
+        public byte[] PasswordSalt { get; set; }
+        public byte[] PasswordHash { get; set; }
         public double Rating { get; set; }
         [ForeignKey("Price")]
         public int PriceId { get; set; }
