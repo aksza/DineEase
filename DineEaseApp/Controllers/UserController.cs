@@ -114,8 +114,15 @@ namespace DineEaseApp.Controllers
                 {
                     return BadRequest("Wrong password");
                 }
-
-                string token = CreateToken(user);
+                string token;
+                if (user.Admin == false)
+                {
+                    token = CreateToken(user);
+                }
+                else
+                {
+                    token = CreateTokenAdmin(user);
+                }
 
                 return Ok(token);
             }
@@ -127,12 +134,38 @@ namespace DineEaseApp.Controllers
 
         private string CreateToken(User user)
         {
-            List<Claim> claims = new List<Claim>();
+            List<Claim> claims = new List<Claim>
             {
                 //username is lehetne
-                new Claim(ClaimTypes.Email, user.Email);
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString());
-                new Claim(ClaimTypes.Role, "User");
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Role, "User")
+                //new Claim(ClaimTypes.Uri, user.ProfilePicture)
+            };
+
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
+                _configuration.GetSection("AppSettings:Token").Value)
+                );
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: creds);
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwt;
+        }
+
+        private string CreateTokenAdmin(User user)
+        {
+            List<Claim> claims = new List<Claim>
+            {
+                //username is lehetne
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Role, "Admin")
                 //new Claim(ClaimTypes.Uri, user.ProfilePicture)
             };
 

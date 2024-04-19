@@ -143,11 +143,11 @@ namespace DineEaseApp.Controllers
 
         private string CreateToken(Restaurant restaurant)
         {
-            List<Claim> claims = new List<Claim>();
+            List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Email, restaurant.Email);
-                new Claim(ClaimTypes.NameIdentifier, restaurant.Id.ToString());
-                new Claim(ClaimTypes.Role, "Restaurant");
+                new Claim(ClaimTypes.Email, restaurant.Email),
+                new Claim(ClaimTypes.NameIdentifier, restaurant.Id.ToString()),
+                new Claim(ClaimTypes.Role, "Restaurant")
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
