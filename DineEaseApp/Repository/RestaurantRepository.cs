@@ -1,6 +1,7 @@
 ﻿using DineEaseApp.Data;
 using DineEaseApp.Interfaces;
 using DineEaseApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DineEaseApp.Repository
 {
@@ -12,66 +13,92 @@ namespace DineEaseApp.Repository
             _context = context;
         }
 
-        public string GetRestaurantAddress(int id)
+        public async Task<bool> CreateRestaurant(Restaurant restaurant)
         {
-            throw new NotImplementedException();
-
+            _context.Add(restaurant);
+            return await Save();
         }
 
-        public byte[] GetRestaurantBusinessLicense(int id)
+        public async Task<bool> DeleteRestaurant(Restaurant restaurant)
         {
-            throw new NotImplementedException();
+            _context.Remove(restaurant);
+            return await Save();
         }
 
-        public Restaurant GetRestaurantById(int id)
+        //public string GetRestaurantAddress(int id)
+        //{
+        //    throw new NotImplementedException();
+
+        //}
+
+        //public byte[] GetRestaurantBusinessLicense(int id)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        public async Task<Restaurant> GetRestaurantById(int id)
         {
-            return _context.Restaurants.Where(r => r.Id == id).FirstOrDefault();
+            var restaurant =  await _context.Restaurants
+                .Where(r => r.Id == id)
+                .Select(r => new { Restaurant = r })
+                .FirstOrDefaultAsync();
+            
+            if(restaurant != null) 
+            {
+                return restaurant.Restaurant;
+            }
+            return null;
         }
 
-        public ICollection<Restaurant> GetRestaurantByName(string name)
+        public async Task<ICollection<Restaurant>> GetRestaurantByName(string name)
         {
-            return _context.Restaurants.Where(r => r.Name == name).ToList();
+            return await _context.Restaurants.Where(r => r.Name == name).ToListAsync();
         }
 
-        public string GetRestaurantDescription(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetRestaurantEmail(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ICollection<Restaurant> GetRestaurantForEvent()
-        {
-            throw new NotImplementedException();
-        }
-
-        public int GetRestaurantMaxTableCap(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetRestaurantName(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Owner GetRestaurantOwner(int id)
+        public Task<ICollection<Restaurant>> GetRestaurantForEvent()
         {
             throw new NotImplementedException();
         }
 
-        public string GetRestaurantPhoneNum(int id)
-        {
-            throw new NotImplementedException();
-        }
+        //public string GetRestaurantDescription(int id)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public Price GetRestaurantPrice(int id)
-        {
-            throw new NotImplementedException();
-        }
+        //public string GetRestaurantEmail(int id)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public ICollection<Restaurant> GetRestaurantForEvent()
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public int GetRestaurantMaxTableCap(int id)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public string GetRestaurantName(int id)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Owner GetRestaurantOwner(int id)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public string GetRestaurantPhoneNum(int id)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public Price GetRestaurantPrice(int id)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public double GetRestaurantRating(int id)
         {
@@ -85,19 +112,36 @@ namespace DineEaseApp.Repository
 
         }
 
-        public ICollection<Restaurant> GetRestaurants()
+        public async Task<ICollection<Restaurant>> GetRestaurants()
         {
-            return _context.Restaurants.OrderBy(x => x.Id).ToList();
+            return await _context.Restaurants.ToListAsync();
         }
 
-        public int GetRestaurantTaxNum(int id)
+        public async Task<Restaurant> GetRestaurantByEmail(string email)
         {
-            throw new NotImplementedException();
+            return await _context.Restaurants.Where(r => r.Email == email).FirstOrDefaultAsync();
         }
+
+        //public int GetRestaurantTaxNum(int id)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public bool RestaurantExists(int id)
         {
             return _context.Restaurants.Any(r => r.Id == id);
+        }
+
+        public async Task<bool> Save()
+        {
+            var saved = await _context.SaveChangesAsync();
+            return saved > 0;
+        }
+
+        public async Task<bool> UpdateRestaurant(Restaurant restaurant)
+        {
+            _context.Update(restaurant);
+            return await Save();
         }
     }
 }

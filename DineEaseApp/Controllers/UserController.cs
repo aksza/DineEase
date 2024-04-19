@@ -132,6 +132,7 @@ namespace DineEaseApp.Controllers
                 //username is lehetne
                 new Claim(ClaimTypes.Email, user.Email);
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString());
+                new Claim(ClaimTypes.Role, "User");
                 //new Claim(ClaimTypes.Uri, user.ProfilePicture)
             };
 
