@@ -1,4 +1,5 @@
 
+import 'package:dine_ease/screens/sign_up.dart';
 import 'package:flutter/material.dart';
 import 'package:dine_ease/widgets/custom_button.dart';
 import 'package:dine_ease/widgets/custom_text_field.dart';
@@ -91,17 +92,23 @@ class _LoginScreenState extends State<LoginScreen>{
                     ),
                     const SizedBox(width: 4),
 
-                    GestureDetector(
-
-                      onTap:widget.onTap,
-
-                      child:  Text(
-                        "Register now",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.orange[900]
+                    MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: GestureDetector(
+                        onTap: (){
+                          //go to sign up page
+                          Navigator.of(context).pushNamed(SignUpScreen.routeName);
+                        },
+                    
+                        child: Text(
+                          "Register now",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange[900]
+                          ),
+                          
                         ),
-                      ),
+                      )
                     ),
                 ],
                 )
