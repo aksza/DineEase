@@ -1,8 +1,12 @@
 import 'dart:io';
+import 'package:dine_ease/auth/auth_service.dart';
+import 'package:dine_ease/auth/db_service.dart';
+import 'package:dine_ease/screens/for_you.dart';
 import 'package:dine_ease/screens/login.dart';
 import 'package:dine_ease/screens/sign_up.dart';
 import 'package:dine_ease/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   HttpOverrides.global = MyHttpOverrides();
@@ -16,26 +20,33 @@ class MyApp extends StatelessWidget {
   Map<String, WidgetBuilder> _getRoutes() {
       return <String,WidgetBuilder>{
       '/': (context) => const SplashScreen(),
-      //ontap metodus ures lesz
-      '/login': (context) => LoginScreen(onTap: (){}),
+      '/login': (context) => const LoginScreen(),
       '/sign-up-user': (context) => const SignUpScreen(),
+      '/foryou' : (context) => ForYou(),
     };
   }
   
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'DineEase',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(230, 81, 0, 1)),
-        useMaterial3: true,
-      ),
-      // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      onGenerateRoute: (settings) {
-        final routes = _getRoutes();
-        final builder = routes[settings.name];
-        return MaterialPageRoute(builder: (context) => builder!(context));
-      }
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => AuthService()),
+          ChangeNotifierProvider(create: (_) => DataBaseProvider())
+        ],
+        child: 
+          MaterialApp(
+          title: 'DineEase',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(230, 81, 0, 1)),
+            useMaterial3: true,
+          ),
+          // home: const MyHomePage(title: 'Flutter Demo Home Page'),
+          onGenerateRoute: (settings) {
+            final routes = _getRoutes();
+            final builder = routes[settings.name];
+            return MaterialPageRoute(builder: (context) => builder!(context));
+          }
+        )
     );
   }
 }

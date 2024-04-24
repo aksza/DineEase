@@ -1,14 +1,17 @@
 
+import 'package:dine_ease/auth/auth_service.dart';
+import 'package:dine_ease/screens/for_you.dart';
 import 'package:dine_ease/screens/sign_up.dart';
 import 'package:flutter/material.dart';
 import 'package:dine_ease/widgets/custom_button.dart';
 import 'package:dine_ease/widgets/custom_text_field.dart';
+import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget{
   static const routeName = '/login';
-  final Function()? onTap;
 
-  const LoginScreen({super.key, required this.onTap()});
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -73,9 +76,42 @@ class _LoginScreenState extends State<LoginScreen>{
                 const SizedBox(height: 10),
 
                 //sign in button
-                MyButton(
-                  onTap: (){},
-                  text: 'Log In'
+                Consumer<AuthService>(
+                  builder: (context, authService, child){
+                    return MyButton(
+                      text: 'Log In',
+                      onTap: () async{
+                        if(emailTextController.text.isNotEmpty && passwordTextController.text.isNotEmpty){
+                          bool loginSuccessfull = await authService.login(
+                            emailTextController.text,
+                            passwordTextController.text
+                          );
+                          if(loginSuccessfull){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ForYou()),
+                            );
+                          }
+                          else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Invalid email or password'),
+                                backgroundColor: Colors.red,
+                              )
+                            );
+                          }
+                        }
+                        else{
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('All fields are required'),
+                              backgroundColor: Colors.red,
+                            )
+                          );
+                        }
+                      }
+                    );
+                  }
                 ),
 
                 const SizedBox(height: 25),

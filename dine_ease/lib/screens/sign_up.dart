@@ -1,8 +1,10 @@
 
 import 'package:dine_ease/screens/login.dart';
+import 'package:dine_ease/utils/request_util.dart';
 import 'package:dine_ease/widgets/custom_button.dart';
 import 'package:dine_ease/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class SignUpScreen extends StatefulWidget{
@@ -15,6 +17,7 @@ class SignUpScreen extends StatefulWidget{
 }
 
 class _SignUpScreenState extends State<SignUpScreen>{
+  final RequestUtil requestUtil = RequestUtil();
 
   final ufirstNameTextController = TextEditingController();
   final ulastNameTextController = TextEditingController();
@@ -22,6 +25,22 @@ class _SignUpScreenState extends State<SignUpScreen>{
   final uphoneTextController = TextEditingController();
   final upasswordTextController = TextEditingController();
   final uconfirmPasswordTextController = TextEditingController();
+
+  Future<void> createUser() async {
+    try{
+      Logger().i('${ufirstNameTextController.text}, ${ulastNameTextController.text}, ${uemailTextController.text}, ${uphoneTextController.text}, ${upasswordTextController.text}');
+      await requestUtil.postUserCreate(
+        ufirstNameTextController.text,
+        ulastNameTextController.text,
+        uemailTextController.text,
+        upasswordTextController.text,
+        uphoneTextController.text
+      );
+    }catch(e){
+      Logger().e('Error creating user: $e');
+    }
+
+  }
 
   final rnameTextController = TextEditingController();
   final remailTextController = TextEditingController();
@@ -113,7 +132,35 @@ class _SignUpScreenState extends State<SignUpScreen>{
                       //sign up button
                       MyButton(
                         text: 'Sign Up',
-                        onTap: (){},
+                        onTap: (){
+                          if(uemailTextController.text.isNotEmpty &&
+                          upasswordTextController.text.isNotEmpty &&
+                          uconfirmPasswordTextController.text.isNotEmpty &&
+                          ufirstNameTextController.text.isNotEmpty &&
+                          ulastNameTextController.text.isNotEmpty &&
+                          uphoneTextController.text.isNotEmpty){
+                            if(upasswordTextController.text != uconfirmPasswordTextController.text){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Passwords do not match'),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
+                            else{
+                              createUser();
+                              Navigator.of(context).pushNamed(LoginScreen.routeName);
+                            }
+                          }
+                          else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('All fields are required'),
+                                backgroundColor: Colors.red,
+                              )
+                            );
+                          }
+                        },
                       ),
                     ],
                   ),
@@ -186,7 +233,9 @@ class _SignUpScreenState extends State<SignUpScreen>{
                       //sign up button
                       MyButton(
                         text: 'Sign Up',
-                        onTap: (){},
+                        onTap: (){
+                          
+                        },
                       ),
                     ],
                   ),
