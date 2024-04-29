@@ -14,19 +14,24 @@ class AuthService with ChangeNotifier{
   Future<bool> login(String email, String password) async {
     
     try{
-      final response = await requestUtil.postUserLogin(email, password);
+      Logger().i('Logging in user with email: $email and password: $password');
+      // final response = await requestUtil.postUserLogin(email, password);
+      final response = await requestUtil.postLogin(email, password);
+      Logger().i(response.body);
       if(response.statusCode == 200){
-        await DataBaseProvider().setToken(response.body);
+        final resp = response.body;
+        await DataBaseProvider().setToken(resp);
         Logger().i('User logged in successfully');
 
         _isAuthenticated = true;
         notifyListeners();
         return true;
-    }else{
-      return false;
-    }
+      }else{
+        Logger().e('Failed');
+        return false;
+      }
     }catch(e){
-
+      Logger().e('Error logging in user: $e');
       return false;
     }
   }

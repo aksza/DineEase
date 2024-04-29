@@ -42,9 +42,36 @@ class RequestUtil {
           }
         )        
       );
+      Logger().i(resp.body);
       return resp;
     }catch(e){
       Logger().e('Error logging in user: $e');
+      rethrow;
+    }    
+  }
+
+  Future<http.Response> postLogin(String email, String password) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['LOGIN']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(
+          {
+            'email': email,
+            'password': password
+          }
+        )        
+      );
+      Logger().i(resp.body);
+      return resp;
+    }catch(e){
+      Logger().e('Error logging in: $e');
       rethrow;
     }    
   }

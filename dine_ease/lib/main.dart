@@ -7,25 +7,24 @@ import 'package:dine_ease/screens/sign_up.dart';
 import 'package:dine_ease/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
   HttpOverrides.global = MyHttpOverrides();
-  runApp(const MyApp());
+  runApp(MyApp(token: prefs.getString('token')));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
 
-  @override
-  Map<String, WidgetBuilder> _getRoutes() {
-      return <String,WidgetBuilder>{
-      '/': (context) => const SplashScreen(),
-      '/login': (context) => const LoginScreen(),
-      '/sign-up-user': (context) => const SignUpScreen(),
-      '/foryou' : (context) => ForYou(),
-    };
-  }
-  
+  final token;
+
+  const MyApp({
+    @required this.token,
+    super.key
+  });
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -40,12 +39,13 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(230, 81, 0, 1)),
             useMaterial3: true,
           ),
-          // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-          onGenerateRoute: (settings) {
-            final routes = _getRoutes();
-            final builder = routes[settings.name];
-            return MaterialPageRoute(builder: (context) => builder!(context));
-          }
+          initialRoute: token != null ? '/foryou' : '/',
+          routes: {
+            '/': (context) => const SplashScreen(),
+            '/login': (context) => const LoginScreen(),
+            '/sign-up-user': (context) => const SignUpScreen(),
+            '/foryou' : (context) => ForYou(token: token,),
+          },
         )
     );
   }
