@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dine_ease/models/register_restaurant_form.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -101,6 +102,28 @@ class RequestUtil {
       Logger().i(resp.body);
     }catch(e){
       Logger().e('Error creating user: $e');
+      rethrow;
+    }    
+  }
+
+  Future<void> postRestaurantCreate(RegisterRestaurant registerRestaurant) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['RESTAURANT_CREATE']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode(
+          registerRestaurant.toMap()
+        )        
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error creating restaurant: $e');
       rethrow;
     }    
   }

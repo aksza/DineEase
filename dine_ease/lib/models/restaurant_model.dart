@@ -1,5 +1,7 @@
 import 'dart:html';
 
+// import 'package:dine_ease/models/owner_model.dart';
+
 class Restaurant{
   String name;
   String? description;
@@ -8,10 +10,12 @@ class Restaurant{
   String email;
   double rating;
   // Price price;
+  String price;
   bool forEvent;
   // Owner owner;
   int maxTableCapacity;
   int taxIdNum;
+
   // List<CuisinesRestaurant>? cuisineRestaurants;
   // List<Favorit>? favorits;
   // List<Meeting>? meetings;
@@ -32,7 +36,7 @@ class Restaurant{
     required this.phoneNum,
     required this.email,
     required this.rating,
-    // required this.price,
+    required this.price,
     required this.forEvent,
     // required this.owner,
     required this.maxTableCapacity,
@@ -59,9 +63,10 @@ class Restaurant{
       phoneNum: json['phoneNum'] as String,
       email: json['email'] as String,
       rating: json['rating'] as double,
-      // price: json['price'],
+      // price: json['price'] as Price,
+      price: json['price'] as String,
       forEvent: json['forEvent'] as bool,
-      // owner: json['owner'],
+      // owner: json['owner'] as Owner,
       maxTableCapacity: json['maxTableCapacity'] as int,
       taxIdNum: json['taxIdNum'] as int,
       // cuisineRestaurants: json['cuisineRestaurants'],

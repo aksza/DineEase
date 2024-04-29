@@ -1,4 +1,5 @@
 
+import 'package:dine_ease/models/register_restaurant_form.dart';
 import 'package:dine_ease/screens/login.dart';
 import 'package:dine_ease/utils/request_util.dart';
 import 'package:dine_ease/widgets/custom_button.dart';
@@ -49,8 +50,9 @@ class _SignUpScreenState extends State<SignUpScreen>{
   final rconfirmPasswordTextController = TextEditingController();
   final rdescription = TextEditingController();
   final raddress = TextEditingController();
-  final rprice = TextEditingController(); //TODO:ehelyett lehetne egy dropdown menu is
-  final rowner = TextEditingController();
+  late int rprice = 1; //TODO:ehelyett lehetne egy dropdown menu is
+  final rownerName = TextEditingController();
+  final rownerPhoneNum = TextEditingController();
   final rmaxTableCap = TextEditingController();
   final rtaxIdNum = TextEditingController();
   bool isChecked = false;
@@ -58,6 +60,30 @@ class _SignUpScreenState extends State<SignUpScreen>{
   bool isRestaurant = false;
   int initialLabelIndex = 0;
 
+  Future<void> createRestaurant() async {
+    try{
+      Logger().i('${rnameTextController.text}, ${remailTextController.text}, ${rphoneTextController.text}, ${rpasswordTextController.text}, ${rdescription.text}, ${raddress.text}, $rprice, ${rownerName.text}, ${rownerPhoneNum.text}, ${rmaxTableCap.text}, ${rtaxIdNum.text}, $isChecked');
+      await requestUtil.postRestaurantCreate(
+        RegisterRestaurant(
+          name: rnameTextController.text,
+          description: rdescription.text,
+          address: raddress.text,
+          phoneNum: rphoneTextController.text,
+          email: remailTextController.text,
+          password: rpasswordTextController.text,
+          priceId: rprice,
+          forEvent: isChecked,
+          ownerName: rownerName.text,
+          ownerPhoneNum: rownerPhoneNum.text,
+          maxTableCapacity: int.parse(rmaxTableCap.text),
+          taxIdNum: int.parse(rtaxIdNum.text)
+        )
+        
+      );
+    }catch(e){
+      Logger().e('Error creating restaurant: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -186,14 +212,8 @@ class _SignUpScreenState extends State<SignUpScreen>{
                       const SizedBox(height: 10),
                       //address input
                       MyTextField(controller: raddress, hintText: 'Address', obscureText: false),
-                      //space between
-                      const SizedBox(height: 10),
-                      //price input
-                      MyTextField(controller: rprice, hintText: 'Price', obscureText: false),
-                      //space between
-                      const SizedBox(height: 10),
-                      //owner input
-                      MyTextField(controller: rowner, hintText: 'Owner', obscureText: false),
+                      
+                      
                       //space between
                       const SizedBox(height: 10),
                       //max table capacity input
@@ -210,6 +230,72 @@ class _SignUpScreenState extends State<SignUpScreen>{
                       const SizedBox(height: 10),
                       //confirm password input
                       MyTextField(controller: rconfirmPasswordTextController, hintText: 'Confirm Password', obscureText: true),
+                      //space between
+                      const SizedBox(height: 10),
+                      //price input
+                      // MyTextField(controller: rprice, hintText: 'Price', obscureText: false),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Price category', 
+                            style: 
+                              TextStyle(fontSize: 20, 
+                              fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.left
+                            ),
+                            //space between
+                            const SizedBox(width: 20),
+                            DropdownButton(
+                              value: rprice,
+                              items: const [
+                                DropdownMenuItem(
+                                  value: 1,
+                                  child: Text('Cheap'),
+
+                                ),
+                                DropdownMenuItem(
+                                  value: 2,
+                                  child: Text('Average'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 3,
+                                  child: Text('Expensive'),
+                                ),
+                              ],
+                              onChanged: (int? value){
+                                setState(() {
+                                  rprice = value!;
+                                  value = rprice;
+                                });
+                              },
+                            )
+                        ]
+                      ),
+                      //create dropdown button with enum, where values are cheap average and expensive
+                      
+                      //space between
+                      const SizedBox(height: 10),
+                      //writing text owner information
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Owner information', 
+                            style: 
+                              TextStyle(fontSize: 20, 
+                              fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.left
+                          )
+                        ]
+                      ),                      //space between
+                      const SizedBox(height: 10),
+                      //owner input
+                      MyTextField(controller: rownerName, hintText: 'Owner', obscureText: false),
+                      //space between
+                      const SizedBox(height: 10),
+                      //owner phone number input
+                      MyTextField(controller: rownerPhoneNum, hintText: '07********', obscureText: false),
                        //space between
                       const SizedBox(height: 10),
                       //checkbox 
@@ -234,7 +320,38 @@ class _SignUpScreenState extends State<SignUpScreen>{
                       MyButton(
                         text: 'Sign Up',
                         onTap: (){
-                          
+                          if(rnameTextController.text.isNotEmpty &&
+                          raddress.text.isNotEmpty &&
+                          rphoneTextController.text.isNotEmpty &&
+                          remailTextController.text.isNotEmpty &&
+                          rpasswordTextController.text.isNotEmpty &&
+                          rconfirmPasswordTextController.text.isNotEmpty &&
+                          rprice != 0 &&
+                          rownerName.text.isNotEmpty &&
+                          rownerPhoneNum.text.isNotEmpty &&
+                          rmaxTableCap.text.isNotEmpty &&
+                          rtaxIdNum.text.isNotEmpty){
+                            if(rpasswordTextController.text != rconfirmPasswordTextController.text){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Passwords do not match'),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
+                            else{
+                              createRestaurant();
+                              Navigator.of(context).pushNamed(LoginScreen.routeName);
+                            }
+                          }
+                          else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('All fields are required'),
+                                backgroundColor: Colors.red,
+                              )
+                            );
+                          }
                         },
                       ),
                     ],
