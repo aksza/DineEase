@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Swashbuckle.AspNetCore.Filters;
+using DineEaseApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,9 @@ builder.Services.AddScoped<IRestaurantRepository, RestaurantRepository>();
 builder.Services.AddScoped<IOwnerRepository,OwnerRepository>();
 builder.Services.AddScoped<IPriceRepository, PriceRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPhotosRestaurantRepository, PhotosRestaurantRepository>();
+builder.Services.AddTransient<IFileService,FileService>();
+
 builder.Services.AddSwaggerGen(opt =>
 {
     opt.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
