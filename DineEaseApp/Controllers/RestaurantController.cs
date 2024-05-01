@@ -15,12 +15,16 @@ namespace DineEaseApp.Controllers
     public class RestaurantController : Controller
     {
         private readonly IRestaurantRepository _restaurantRepository;
+        private readonly IOwnerRepository _ownerRepository;
+        private readonly IPriceRepository _priceRepository;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
 
-        public RestaurantController(IRestaurantRepository restaurantRepository,IMapper mapper,IConfiguration configuration) 
+        public RestaurantController(IRestaurantRepository restaurantRepository,IOwnerRepository ownerRepository,IPriceRepository priceRepository, IMapper mapper,IConfiguration configuration) 
         {
             _restaurantRepository = restaurantRepository;
+            _ownerRepository = ownerRepository;
+            _priceRepository = priceRepository;
             _mapper = mapper;
             _configuration = configuration;
         }
@@ -31,12 +35,23 @@ namespace DineEaseApp.Controllers
         public async Task<IActionResult> GetRestaurants()
         {
             var restaurants = _mapper.Map<List<RestaurantDto>>(await _restaurantRepository.GetRestaurants());
+
+
+            var restaurantDtos = restaurants
+                .Select(restaurant =>
+                {
+                    var restaurantDto = restaurant;
+                    restaurantDto.Owner = _mapper.Map<OwnerDto>(_ownerRepository.GetOwner(restaurant.OwnerId));
+                    restaurantDto.Price = _mapper.Map<PriceDto>(_priceRepository.GetPrice(restaurant.PriceId));
+                    return restaurantDto;
+                });
+                
             //var restaurants = _restaurantRepository.GetRestaurants();
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            return Ok(restaurants);
+            return Ok(restaurantDtos);
         }
 
         [HttpGet("{id}")]
@@ -47,6 +62,8 @@ namespace DineEaseApp.Controllers
             try
             {
                 var restaurant = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(id));
+                restaurant.Owner = _mapper.Map<OwnerDto>(_ownerRepository.GetOwner(restaurant.OwnerId));
+                restaurant.Price = _mapper.Map<PriceDto>(_priceRepository.GetPrice(restaurant.PriceId));
                 return Ok(restaurant);
             }
             catch (Exception ex)

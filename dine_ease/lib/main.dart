@@ -1,41 +1,52 @@
 import 'dart:io';
+import 'package:dine_ease/auth/auth_service.dart';
+import 'package:dine_ease/auth/db_service.dart';
+import 'package:dine_ease/screens/for_you.dart';
 import 'package:dine_ease/screens/login.dart';
-import 'package:dine_ease/screens/sign_up_user.dart';
+import 'package:dine_ease/screens/sign_up.dart';
 import 'package:dine_ease/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
   HttpOverrides.global = MyHttpOverrides();
-  runApp(const MyApp());
+  runApp(MyApp(token: prefs.getString('token')));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+
+  final token;
+
+  const MyApp({
+    @required this.token,
+    super.key
+  });
 
   @override
-  Map<String, WidgetBuilder> _getRoutes() {
-      return <String,WidgetBuilder>{
-      '/': (context) => const SplashScreen(),
-      //ontap metodus ures lesz
-      '/login': (context) => LoginScreen(onTap: (){}),
-      '/sign-up-user': (context) => const SignUpUserScreen(),
-    };
-  }
-  
-  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'DineEase',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      onGenerateRoute: (settings) {
-        final routes = _getRoutes();
-        final builder = routes[settings.name];
-        return MaterialPageRoute(builder: (context) => builder!(context));
-      }
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => AuthService()),
+          ChangeNotifierProvider(create: (_) => DataBaseProvider())
+        ],
+        child: 
+          MaterialApp(
+          title: 'DineEase',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(230, 81, 0, 1)),
+            useMaterial3: true,
+          ),
+          initialRoute: token != null ? '/foryou' : '/',
+          routes: {
+            '/': (context) => const SplashScreen(),
+            '/login': (context) => const LoginScreen(),
+            '/sign-up-user': (context) => const SignUpScreen(),
+            '/foryou' : (context) => ForYou(token: token,),
+          },
+        )
     );
   }
 }

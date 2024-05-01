@@ -1,6 +1,6 @@
 
 import 'package:dine_ease/screens/login.dart';
-import 'package:dine_ease/screens/sign_up_user.dart';
+import 'package:dine_ease/screens/sign_up.dart';
 import 'package:dine_ease/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
@@ -59,52 +59,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 MyButton(
                   text: 'Sign Up',
                   onTap: () {
-                    setState(() {
-                      showUserAndRestaurantButtons = true;
-                    });
+                    //eloszor a user sign up-ra iranyit
+                    Navigator.of(context).pushNamed(SignUpScreen.routeName);
                   },
-                  //megjelenit ket kisebb gombot, egyikkel user, masikkal restaurant regisztralhat
-                  //ezt a ket buttont egy rowba rakom 
-                ),
-                const SizedBox(height: 20,),
-
-                if (showUserAndRestaurantButtons)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        
-                        Navigator.of(context).pushNamed(SignUpUserScreen.routeName);
-                      },
-                     
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange[600], // Narancssárga szín
-                        padding: EdgeInsets.fromLTRB(40,0,40,0)
-                      ),
-                      child: const Text('User',
-                        style: TextStyle(
-                          color: Colors.white,
-                        )
-                      ),
-                    ),
-                    const SizedBox(width: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Implement restaurant signup functionality here
-                        
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange[600], // Narancssárga szín
-                        padding: EdgeInsets.fromLTRB(20,0,20,0)
-                      ),
-                      child: const Text('Restaurant',
-                        style: TextStyle(
-                          color: Colors.white,
-                        )
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),

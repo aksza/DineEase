@@ -192,18 +192,18 @@ namespace DineEaseApp
                 dataContext.SaveChanges();
             }
 
-            if (!dataContext.Photos.Any())
-            {
-                var photos = new List<Photo>()
-                {
-                    new Photo()
-                    {
-                        Photograph = new byte[] { 0x1A, 0x2B, 0x3C, 0x4D }
-                    }
-                };
-                dataContext.Photos.AddRange(photos);
-                dataContext.SaveChanges();
-            }
+            //if (!dataContext.Photos.Any())
+            //{
+            //    var photos = new List<Photo>()
+            //    {
+            //        new Photo()
+            //        {
+            //            Photograph = new byte[] { 0x1A, 0x2B, 0x3C, 0x4D }
+            //        }
+            //    };
+            //    dataContext.Photos.AddRange(photos);
+            //    dataContext.SaveChanges();
+            //}
 
             if (!dataContext.Users.Any())
             {
@@ -456,19 +456,19 @@ namespace DineEaseApp
                 dataContext.SaveChanges();
             }
 
-            if (!dataContext.PhotosRestaurants.Any())
-            {
-                var photosrestaurants = new List<PhotosRestaurant>()
-                {
-                    new PhotosRestaurant()
-                    {
-                        Restaurant = dataContext.Restaurants.First(p => p.Id == 1),
-                        Photo = dataContext.Photos.First(p => p.Id == 1),
-                    }
-                };
-                dataContext.PhotosRestaurants.AddRange(photosrestaurants);
-                dataContext.SaveChanges();
-            }
+            //if (!dataContext.PhotosRestaurants.Any())
+            //{
+            //    var photosrestaurants = new List<PhotosRestaurant>()
+            //    {
+            //        new PhotosRestaurant()
+            //        {
+            //            Restaurant = dataContext.Restaurants.First(p => p.Id == 1),
+            //            Photo = dataContext.Photos.First(p => p.Id == 1),
+            //        }
+            //    };
+            //    dataContext.PhotosRestaurants.AddRange(photosrestaurants);
+            //    dataContext.SaveChanges();
+            //}
 
             if(!dataContext.Openings.Any())
             {

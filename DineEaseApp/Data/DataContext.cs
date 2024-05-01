@@ -24,7 +24,6 @@ namespace DineEaseApp.Data
         public DbSet<Opening> Openings { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Owner> Owners { get; set; }
-        public DbSet<Photo> Photos { get; set; }
         public DbSet<PhotosRestaurant> PhotosRestaurants { get; set; }
         public DbSet<Price> Prices { get; set; }
         public DbSet<Rating> Ratings { get; set; }
@@ -83,11 +82,11 @@ namespace DineEaseApp.Data
                 .HasForeignKey(r => r.RestaurantId);
 
             modelBuilder.Entity<PhotosRestaurant>()
-                .HasKey(pr => new { pr.PhotoId, pr.RestaurantId });
-            modelBuilder.Entity<PhotosRestaurant>()
-                .HasOne(p => p.Photo)
-                .WithMany(pr => pr.PhotosRestaurants)
-                .HasForeignKey(p => p.PhotoId);
+                .HasKey(pr => new { pr.Id });
+            //modelBuilder.Entity<PhotosRestaurant>()
+            //    .HasOne(p => p.Photo)
+            //    .WithMany(pr => pr.PhotosRestaurants)
+            //    .HasForeignKey(p => p.PhotoId);
             modelBuilder.Entity<PhotosRestaurant>()
                 .HasOne(r => r.Restaurant)
                 .WithMany(pr => pr.PhotosRestaurants)
