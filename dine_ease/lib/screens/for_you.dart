@@ -1,3 +1,4 @@
+import 'package:dine_ease/widgets/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,7 +24,7 @@ class _ForYou extends State<ForYou> {
 
   void initSharedPrefs() async{
     prefs = await SharedPreferences.getInstance();
-    email = prefs.getString('role')!;
+    email = prefs.getString('email')!;
     setState(() {
       email = email;
     });
@@ -32,8 +33,10 @@ class _ForYou extends State<ForYou> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: CustomAppBar(),
+      body: Center(
         child: Text(email),
       ),
     );
