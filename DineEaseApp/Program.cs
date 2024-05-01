@@ -23,6 +23,11 @@ builder.Services.AddScoped<IPriceRepository, PriceRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPhotosRestaurantRepository, PhotosRestaurantRepository>();
 builder.Services.AddTransient<IFileService,FileService>();
+builder.Services.AddTransient<IFavoritRepository, FavoritRepository>();
+builder.Services.AddTransient<IMeetingRepository, MeetingRepository>();
+builder.Services.AddTransient<IRatingRepository, RatingRepository>();
+builder.Services.AddTransient<IReservationRepository, ReservationRepository>();
+builder.Services.AddTransient<IReviewRepository, ReviewRepository>();
 
 builder.Services.AddSwaggerGen(opt =>
 {

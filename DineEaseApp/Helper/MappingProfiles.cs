@@ -22,8 +22,8 @@ namespace DineEaseApp.Helper
             CreateMap<EventDto,Event>();
             CreateMap<EventType,EventTypeDto>();
             CreateMap<EventTypeDto,EventType>();
-            CreateMap<Favorit,FavoritDto>();
-            CreateMap<FavoritDto,Favorit>();
+            CreateMap<Favorit, FavoritDto>();
+            CreateMap<FavoritDto, Favorit>();
             CreateMap<Meeting,MeetingDto>();
             CreateMap<MeetingDto,Meeting>();
             CreateMap<Menu,MenuDto>();
