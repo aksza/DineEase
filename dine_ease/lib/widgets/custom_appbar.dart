@@ -1,3 +1,4 @@
+import 'package:dine_ease/screens/user_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -69,31 +70,35 @@ class _CustomAppBar extends State<CustomAppBar>{
                         //     color: Colors.black,
                         //   ),
                         // ),
-                        //profile with an icon in background button
-                        ElevatedButton(
-                          onPressed: (){},
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(Colors.white),
-                            shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
+                        //profile with an icon in background gesturedetector
+                        GestureDetector(
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const UserScreen()
+                              )
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            elevation: MaterialStateProperty.all(0),
-                          ),
-                          child: const Icon(
-                            Icons.person_rounded,
-                            color: Colors.black,
+                            child: const Icon(
+                              Icons.person_rounded,
+                              color: Colors.black,
+                              size: 30.0,
+                            ),
                           ),
                         )
+                        
                       ]
                     )
                    ),
                     //space between
                     const SizedBox(height: 10),
                     //scrollable tabs with button: for you, restaurants, events, restaurants for events
-                    
-                      
                     Center(
                       child: DefaultTabController(length: 4, child: 
                       TabBar(

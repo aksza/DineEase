@@ -4,9 +4,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ForYou extends StatefulWidget {
   static const routeName = '/foryou';
-  final String token;
+  // final String token;
 
-  const ForYou({required this.token,super.key});
+  const ForYou({super.key});
 
   @override
   State<ForYou> createState() => _ForYou();

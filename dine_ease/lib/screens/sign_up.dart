@@ -288,14 +288,27 @@ class _SignUpScreenState extends State<SignUpScreen>{
                               textAlign: TextAlign.left
                           )
                         ]
-                      ),                      //space between
+                      ),             
+                      //space between
                       const SizedBox(height: 10),
+                      //text that says Upload a phot
+                      const Text(
+                        'Upload a photo',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold
+                        )
+                      ),
+                      //space between
+                      const SizedBox(height: 10),
+                      //Photo upload button
+                      
                       //owner input
                       MyTextField(controller: rownerName, hintText: 'Owner', obscureText: false),
                       //space between
                       const SizedBox(height: 10),
                       //owner phone number input
-                      MyTextField(controller: rownerPhoneNum, hintText: '07********', obscureText: false),
+                      MyTextField(controller: rownerPhoneNum, hintText: 'Phone number', obscureText: false),
                        //space between
                       const SizedBox(height: 10),
                       //checkbox 

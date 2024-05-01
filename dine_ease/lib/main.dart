@@ -5,6 +5,8 @@ import 'package:dine_ease/screens/for_you.dart';
 import 'package:dine_ease/screens/login.dart';
 import 'package:dine_ease/screens/sign_up.dart';
 import 'package:dine_ease/screens/splash_screen.dart';
+import 'package:dine_ease/screens/user_screen.dart';
+import 'package:dine_ease/screens/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,7 +46,9 @@ class MyApp extends StatelessWidget {
             '/': (context) => const SplashScreen(),
             '/login': (context) => const LoginScreen(),
             '/sign-up-user': (context) => const SignUpScreen(),
-            '/foryou' : (context) => ForYou(token: token,),
+            '/foryou' : (context) => ForYou(),
+            '/user': (context) => const UserScreen(),
+            '/welcome': (context) => const WelcomeScreen()
           },
         )
     );
