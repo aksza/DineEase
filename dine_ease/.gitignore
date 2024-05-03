@@ -44,3 +44,4 @@ app.*.map.json
 
 # ignore the development environments
 assets/env/.env
+assets/test_images/

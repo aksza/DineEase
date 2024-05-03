@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:dine_ease/auth/auth_service.dart';
 import 'package:dine_ease/auth/db_service.dart';
-import 'package:dine_ease/screens/for_you.dart';
+import 'package:dine_ease/models/dine_ease.dart';
+import 'package:dine_ease/screens/favorits_page.dart';
+import 'package:dine_ease/screens/home_page.dart';
 import 'package:dine_ease/screens/login.dart';
 import 'package:dine_ease/screens/sign_up.dart';
 import 'package:dine_ease/screens/splash_screen.dart';
@@ -32,7 +34,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => AuthService()),
-          ChangeNotifierProvider(create: (_) => DataBaseProvider())
+          ChangeNotifierProvider(create: (_) => DataBaseProvider()),
+          ChangeNotifierProvider(create: (context) => DineEase()),
         ],
         child: 
           MaterialApp(
@@ -41,14 +44,16 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(230, 81, 0, 1)),
             useMaterial3: true,
           ),
-          initialRoute: token != null ? '/foryou' : '/',
+          initialRoute: token != null ? '/home' : '/',
           routes: {
             '/': (context) => const SplashScreen(),
             '/login': (context) => const LoginScreen(),
             '/sign-up-user': (context) => const SignUpScreen(),
-            '/foryou' : (context) => ForYou(),
+            // '/foryou' : (context) => HomePage(),
             '/user': (context) => const UserScreen(),
-            '/welcome': (context) => const WelcomeScreen()
+            '/welcome': (context) => const WelcomeScreen(),
+            '/favorits': (context) => FavoritsPage(),
+            '/home': (context) => HomePage(),
           },
         )
     );

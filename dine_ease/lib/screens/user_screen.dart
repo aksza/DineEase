@@ -64,7 +64,8 @@ class _UserScreen extends State<UserScreen> {
               const Divider(),
               //favorits
               GestureDetector(
-                onTap: (){},
+                //navigate to favorits
+                onTap: () => Navigator.of(context).pushNamed('/favorits') ,
                 child: 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -1,10 +1,12 @@
 import 'package:dine_ease/screens/user_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget{
-  const CustomAppBar({Key? key}) : super(key: key);
+  void Function(int)? onTabChange;
 
+  CustomAppBar(this.onTabChange, {Key? key});
   @override
   State<CustomAppBar> createState() => _CustomAppBar();
   
@@ -102,7 +104,8 @@ class _CustomAppBar extends State<CustomAppBar>{
                     Center(
                       child: DefaultTabController(length: 4, child: 
                       TabBar(
-                        onTap: (selectedTabIndex) {},
+                        
+                        onTap: (selectedTabIndex) {widget.onTabChange!(selectedTabIndex);},
                         isScrollable: true,
                         //set tabalignment to center
                         tabAlignment: TabAlignment.center,

@@ -1,6 +1,6 @@
 
 import 'package:dine_ease/auth/auth_service.dart';
-import 'package:dine_ease/screens/for_you.dart';
+import 'package:dine_ease/screens/home_page.dart';
 import 'package:dine_ease/screens/sign_up.dart';
 import 'package:flutter/material.dart';
 import 'package:dine_ease/widgets/custom_button.dart';
@@ -103,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen>{
                             // Logger().i(token);
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => ForYou()),
+                              MaterialPageRoute(builder: (context) => HomePage()),
                             );
                           }
                           else{
