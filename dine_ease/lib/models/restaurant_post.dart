@@ -1,12 +1,14 @@
 class RestaurantPost{
+  final int id;
   final String name;
-  final int rating;
+  final double? rating;
   bool isFavorite;
   final String imagePath;
 
   RestaurantPost({
+    required this.id,
     required this.name,
-    required this.rating,
+    this.rating,
     required this.isFavorite,
     required this.imagePath
   });

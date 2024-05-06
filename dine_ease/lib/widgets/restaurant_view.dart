@@ -28,7 +28,7 @@ class _RestaurantViewState extends State<RestaurantView> {
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 25),
       child: ListTile(
         title: Text(widget.restaurant.name),
-        subtitle: Text(widget.restaurant.rating.toString()),
+        subtitle: Text((widget.restaurant.rating != null ? widget.restaurant.rating.toString() : '0') + ' ⭐'),
         leading: Image.asset(widget.restaurant.imagePath, width: isPhone ? 50 : 100, height: isPhone ? 50 : 100, fit: BoxFit.cover,),
         trailing: IconButton(
           icon: Icon(widget.restaurant.isFavorite ? Icons.favorite : Icons.favorite_border),

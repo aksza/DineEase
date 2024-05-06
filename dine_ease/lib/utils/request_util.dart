@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dine_ease/models/register_restaurant_form.dart';
+import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -126,5 +127,26 @@ class RequestUtil {
       Logger().e('Error creating restaurant: $e');
       rethrow;
     }    
+  }
+
+  Future<List<Restaurant>> getRestaurants() async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['RESTAURANT_GET']!);
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }       
+      );
+      Logger().i(resp.body);
+      List<dynamic> restaurants = jsonDecode(resp.body);
+      return restaurants.map((restaurant) => Restaurant.fromJson(restaurant)).toList();
+    }catch(e){
+      Logger().e('Error getting restaurants: $e');
+      rethrow;
+    }
   }
 }

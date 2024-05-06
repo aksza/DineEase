@@ -24,16 +24,16 @@ class _RestaurantPageState extends State<RestaurantPage> {
   //add to favorites
   void addToFavorits(RestaurantPost restaurant){
     Provider.of<DineEase>(context, listen: false).addToFavorits(restaurant);
-    showDialog(context: context, builder: 
-      (context) => AlertDialog(title: Text('Added to favorites')
-      ));
+    // showDialog(context: context, builder: 
+    //   (context) => AlertDialog(title: Text('Added to favorites')
+    //   ));
   }
   //remove from favorites
   void removeFromFavorits(RestaurantPost restaurant){
     Provider.of<DineEase>(context, listen: false).removeFromFavorits(restaurant);
-    showDialog(context: context, builder: 
-      (context) => AlertDialog(title: Text('Removed from favorites')
-      ));
+    // showDialog(context: context, builder: 
+    //   (context) => AlertDialog(title: Text('Removed from favorites')
+    //   ));
   }
 
   @override

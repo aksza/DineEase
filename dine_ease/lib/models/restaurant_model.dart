@@ -2,18 +2,19 @@
 // import 'package:dine_ease/models/owner_model.dart';
 
 class Restaurant{
+  int id;
   String name;
   String? description;
   String address;
   String phoneNum;
   String email;
-  double rating;
+  double? rating;
   // Price price;
   String price;
   bool forEvent;
   // Owner owner;
   int maxTableCapacity;
-  int taxIdNum;
+  // int taxIdNum;
 
   // List<CuisinesRestaurant>? cuisineRestaurants;
   // List<Favorit>? favorits;
@@ -29,17 +30,18 @@ class Restaurant{
   // List<Eventt>? events;
 
   Restaurant({
+    required this.id,
     required this.name,
     this.description,
     required this.address,
     required this.phoneNum,
     required this.email,
-    required this.rating,
+    this.rating,
     required this.price,
     required this.forEvent,
     // required this.owner,
     required this.maxTableCapacity,
-    required this.taxIdNum,
+    // required this.taxIdNum,
     // this.cuisineRestaurants,
     // this.favorits,
     // this.meetings,
@@ -56,18 +58,19 @@ class Restaurant{
 
   factory Restaurant.fromJson(dynamic json){
     return Restaurant(
+      id: json['id'] as int,
       name: json['name'] as String,
       description: json['description'] as String,
       address: json['address'] as String,
       phoneNum: json['phoneNum'] as String,
       email: json['email'] as String,
-      rating: json['rating'] as double,
+      rating: json['rating'] != null ? json['rating'] as double : null,
       // price: json['price'] as Price,
-      price: json['price'] as String,
+      price: json['price']['priceName'] as String,
       forEvent: json['forEvent'] as bool,
       // owner: json['owner'] as Owner,
-      maxTableCapacity: json['maxTableCapacity'] as int,
-      taxIdNum: json['taxIdNum'] as int,
+      maxTableCapacity: json['maxTableCap'] as int,
+      // taxIdNum: json['taxIdNum'] as int,
       // cuisineRestaurants: json['cuisineRestaurants'],
       // favorits: json['favorits'],
       // meetings: json['meetings'],
@@ -85,6 +88,7 @@ class Restaurant{
 
   Map<String, dynamic> toMap(){
     return {
+      'id': id,
       'name': name,
       'description': description,
       'address': address,
@@ -94,8 +98,8 @@ class Restaurant{
       // 'price': price.toMap(),
       'forEvent': forEvent,
       // 'owner': owner.toMap(),
-      'maxTableCapacity': maxTableCapacity,
-      'taxIdNum': taxIdNum,
+      'maxTableCap': maxTableCapacity,
+      // 'taxIdNum': taxIdNum,
       // 'cuisineRestaurants': cuisineRestaurants?.map((x) => x.toMap()).toList(),
       // 'favorits': favorits?.map((x) => x.toMap()).toList(),
       // 'meetings': meetings?.map((x) => x.toMap()).toList(),
