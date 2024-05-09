@@ -8,6 +8,11 @@ class EventView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      //magassag es szelesseg
+      height: 100,
+      // width: 100,
+      // width: double.infinity,
+
       decoration: BoxDecoration(
         color: Colors.grey[100],
         borderRadius: BorderRadius.circular(10),
