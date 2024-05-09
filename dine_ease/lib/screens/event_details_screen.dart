@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 
 class EventDetails extends StatefulWidget {
   static const routeName = '/event_details_screen';
-  // EventPost? selectedEvent;
   Eventt? selectedEvent;
   EventDetails({super.key, this.selectedEvent});
 
@@ -37,12 +36,6 @@ class _EventDetailsState extends State<EventDetails> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-              //event title
-              // Padding(
-              //   padding: const EdgeInsets.all(25.0),
-              //   child: Text(widget.selectedEvent!.eventName, style: TextStyle(fontSize: 25),),
-              // ),
-              //images corusel
               CustomCarouselSlider(images: 
                 // widget.selectedEvent!.images
                 [
