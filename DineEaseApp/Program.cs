@@ -28,6 +28,7 @@ builder.Services.AddTransient<IMeetingRepository, MeetingRepository>();
 builder.Services.AddTransient<IRatingRepository, RatingRepository>();
 builder.Services.AddTransient<IReservationRepository, ReservationRepository>();
 builder.Services.AddTransient<IReviewRepository, ReviewRepository>();
+builder.Services.AddTransient<IEventRepository,EventRepository>();
 
 builder.Services.AddSwaggerGen(opt =>
 {

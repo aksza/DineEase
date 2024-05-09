@@ -36,7 +36,7 @@ namespace DineEaseApp.Repository
         //    throw new NotImplementedException();
         //}
 
-        public async Task<Restaurant> GetRestaurantById(int id)
+        public async Task<Restaurant?> GetRestaurantById(int id)
         {
             var restaurant =  await _context.Restaurants
                 .Where(r => r.Id == id)

@@ -1,6 +1,9 @@
 import 'dart:convert';
+// import 'dart:html';
 
 import 'package:dine_ease/auth/db_service.dart';
+import 'package:dine_ease/models/event_post_model.dart';
+import 'package:dine_ease/models/eventt_model.dart';
 import 'package:dine_ease/models/register_restaurant_form.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -228,5 +231,28 @@ class RequestUtil {
       Logger().e('Error removing favorit restaurant: $e');
       rethrow;
     }    
+  }
+
+  Future<List<Eventt>> getEvents() async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['EVENT_GET']!);
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        }       
+      );
+      Logger().i(resp.body);
+      List<dynamic> events = jsonDecode(resp.body);
+      return events.map((event) => Eventt.fromJson(event)).toList();
+    }catch(e){
+      Logger().e('Error getting events: $e');
+      rethrow;
+    }
   }
 }

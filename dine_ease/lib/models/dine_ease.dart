@@ -1,4 +1,6 @@
 import 'package:dine_ease/auth/db_service.dart';
+import 'package:dine_ease/models/event_post_model.dart';
+import 'package:dine_ease/models/eventt_model.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:dine_ease/models/restaurant_post.dart';
 import 'package:dine_ease/utils/request_util.dart';
@@ -9,14 +11,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 class DineEase extends ChangeNotifier{
   final RequestUtil _requestUtil = RequestUtil();
   List<RestaurantPost> _restaurantList;
-  //user favorit list
+  List<RestaurantPost> _restaurantForEventList;
   List<RestaurantPost> _userFavorits;
+  List<EventPost> _eventList;
   late int userId;
   late String email;
   late String role;
   late SharedPreferences prefs;
 
-  DineEase() : _restaurantList = [], _userFavorits = [], email = '', role = '',userId = 0{
+  DineEase() : _restaurantList = [], _restaurantForEventList= [], _userFavorits = [], email = '', role = '',userId = 0, _eventList = []{
   initApp();
   Logger().i('initialized, $_userFavorits');
 }
@@ -25,6 +28,7 @@ void initApp() async {
   await getRestaurants();
   await initSharedPrefs();
   await getFavoritRestaurantsByUserId();
+  await getEvents();
 }
 
   Future<void> initSharedPrefs() async {
@@ -43,6 +47,8 @@ void initApp() async {
     List<Restaurant> restaurants = await _requestUtil.getRestaurants();
     // List<RestaurantPost> restaurantList = [];
     for(var restaurant in restaurants){
+      if(restaurant.forEvent == false){
+        Logger().i("false kene: $restaurant.forEvent");
       _restaurantList.add(RestaurantPost(
         id: restaurant.id,
         name: restaurant.name,
@@ -51,6 +57,18 @@ void initApp() async {
         isFavorite: false,
         imagePath: 'assets/test_images/kfc.jpeg'
       ));
+      }
+      else{
+        Logger().i("true kene: $restaurant.forEvent");
+        _restaurantForEventList.add(RestaurantPost(
+        id: restaurant.id,
+        name: restaurant.name,
+        rating: restaurant.rating,
+        // rating: 4.0,
+        isFavorite: false,
+        imagePath: 'assets/test_images/kfc.jpeg'
+      ));
+      }
       notifyListeners();
     }   
   }
@@ -58,7 +76,6 @@ void initApp() async {
   Future<void> getFavoritRestaurantsByUserId() async{
     //a userId-t a providerből kell lekérni
     List<Restaurant> restaurants = await _requestUtil.getFavoritRestaurantsByUserId(userId);
-    Logger().i('userid: $userId');
     // List<RestaurantPost> restaurantList = [];
     for(var restaurant in restaurants){
       _userFavorits.add(RestaurantPost(
@@ -73,6 +90,24 @@ void initApp() async {
     }   
   }
 
+  Future<void> getEvents() async{
+    List<Eventt> events = await _requestUtil.getEvents();
+    // List<RestaurantPost> restaurantList = [];
+    for(var event in events){
+      _eventList.add(EventPost(
+        id: event.id,
+        eventName: event.eventName,
+        restaurantId: event.restaurantId,
+        restaurantName: event.restaurantName,
+        description: event.description,
+        startingDate: event.startingDate,
+        endingDate: event.endingDate
+        // rating: 4.0,
+        // imagePath: 'assets/test_images/kfc.jpeg'
+      ));
+      notifyListeners();
+    }   
+  }
   
 
   //get restaurant list
@@ -81,6 +116,11 @@ void initApp() async {
   //get user favorit list
   List<RestaurantPost> get userFavorits => _userFavorits;
 
+  //get event list
+  List<EventPost> get events => _eventList;
+
+  //get restaurant for event list
+  List<RestaurantPost> get restaurantForEventList => _restaurantForEventList;
   
   //add to favorit
   void addToFavorits(RestaurantPost restaurant) async{

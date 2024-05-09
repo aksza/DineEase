@@ -5,7 +5,7 @@ namespace DineEaseApp.Interfaces
     public interface IRestaurantRepository
     {
         Task<ICollection<Restaurant>> GetRestaurants();
-        Task<Restaurant> GetRestaurantById(int id);
+        Task<Restaurant?> GetRestaurantById(int id);
         Task<Restaurant> GetRestaurantByEmail(string email);
         Task<bool> CreateRestaurant(Restaurant restaurant);
         Task<bool> UpdateRestaurant(Restaurant restaurant);

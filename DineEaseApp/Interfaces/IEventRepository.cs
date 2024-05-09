@@ -1,0 +1,10 @@
+﻿using DineEaseApp.Models;
+
+namespace DineEaseApp.Interfaces
+{
+    public interface IEventRepository
+    {
+        Task<ICollection<Event>> GetEventsAsync();
+        Task<ICollection<Event>> GetEventsByUserFavorits();
+    }
+}
