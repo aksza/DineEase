@@ -46,5 +46,37 @@ namespace DineEaseApp.Controllers
 
             return Ok(eventDtoList);
         }
+
+        [HttpGet("{eventId}")]
+        [ProducesResponseType(200, Type = typeof(Event))]
+        public async Task<IActionResult> GetEventById(int eventId)
+        {
+            try
+            {
+                var eventt = _mapper.Map<EventDto>(await _eventRepository.GetEventById(eventId));
+                try
+                {
+                    RestaurantDto res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(eventt.RestaurantId));
+
+                    eventt.RestaurantName = res.Name;
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ModelState);
+                }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                return Ok(eventt);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
     }
+    }
+
+    
 }

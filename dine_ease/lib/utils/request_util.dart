@@ -255,4 +255,48 @@ class RequestUtil {
       rethrow;
     }
   }
+
+  Future<Eventt> getEventById(int eventId) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['EVENT_GET_BY_ID']! + eventId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        }       
+      );
+      Logger().i(resp.body);
+      return Eventt.fromJson(jsonDecode(resp.body));
+    }catch(e){
+      Logger().e('Error getting event by id: $e');
+      rethrow;
+    }
+  }
+
+  Future<Restaurant> getRestaurantById(int restaurantId) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['RESTAURANT_GET_BY_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        }       
+      );
+      Logger().i(resp.body);
+      return Restaurant.fromJson(jsonDecode(resp.body));
+    }catch(e){
+      Logger().e('Error getting restaurant by id: $e');
+      rethrow;
+    }
+  }
 }

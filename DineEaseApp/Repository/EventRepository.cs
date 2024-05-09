@@ -14,6 +14,20 @@ namespace DineEaseApp.Repository
             _context = context;
         }
 
+        public async Task<Event?> GetEventById(int id)
+        {
+            var eventt = await _context.Events
+                .Where(e => e.Id == id)
+                .FirstOrDefaultAsync();
+
+            if(eventt != null)
+            {
+                return eventt;
+            }
+
+            return null;
+        }
+
         public async Task<ICollection<Event>> GetEventsAsync()
         {
             return await _context.Events.ToListAsync();

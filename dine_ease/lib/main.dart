@@ -2,9 +2,13 @@ import 'dart:io';
 import 'package:dine_ease/auth/auth_service.dart';
 import 'package:dine_ease/auth/db_service.dart';
 import 'package:dine_ease/models/dine_ease.dart';
+import 'package:dine_ease/models/event_post_model.dart';
+import 'package:dine_ease/models/eventt_model.dart';
+import 'package:dine_ease/screens/event_details_screen.dart';
 import 'package:dine_ease/screens/favorits_page.dart';
 import 'package:dine_ease/screens/home_page.dart';
 import 'package:dine_ease/screens/login.dart';
+import 'package:dine_ease/screens/restaurant_details_screen.dart';
 import 'package:dine_ease/screens/sign_up.dart';
 import 'package:dine_ease/screens/splash_screen.dart';
 import 'package:dine_ease/screens/user_screen.dart';
@@ -54,6 +58,29 @@ class MyApp extends StatelessWidget {
             '/welcome': (context) => const WelcomeScreen(),
             '/favorits': (context) => FavoritsPage(),
             '/home': (context) => HomePage(),
+            '/event_details_screen': (context) => EventDetails(selectedEvent: 
+              // EventPost(
+              //   id: 0,
+              //   eventName: '',
+              //   restaurantName: '',
+              //   startingDate: DateTime.now(),
+              //   endingDate: DateTime.now(),
+              //   restaurantId: 0,
+              //   description: '',
+              // )
+              // Eventt(
+              //   id: 0,
+              //   eventName: '',
+              //   restaurantName: '',
+              //   startingDate: DateTime.now(),
+              //   endingDate: DateTime.now(),
+              //   restaurantId: 0,
+              //   description: '',
+              // )
+              null
+            ,),
+            '/restaurant_details_screen': (context) => RestaurantDetails(selectedRestaurant: 
+              null),
           },
         )
     );
