@@ -34,7 +34,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasIndex("EventId");
 
-                    b.ToTable("CategoriesEvents");
+                    b.ToTable("CategoriesEvents", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.CategoriesRestaurant", b =>
@@ -49,7 +49,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("CategoriesRestaurants");
+                    b.ToTable("CategoriesRestaurants", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.Cuisine", b =>
@@ -66,7 +66,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cuisines");
+                    b.ToTable("Cuisines", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.CuisinesRestaurant", b =>
@@ -81,7 +81,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("CuisinesRestaurants");
+                    b.ToTable("CuisinesRestaurants", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.ECategory", b =>
@@ -98,7 +98,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ECategories");
+                    b.ToTable("ECategories", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.Event", b =>
@@ -129,7 +129,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("Events");
+                    b.ToTable("Events", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.EventType", b =>
@@ -146,7 +146,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EventTypes");
+                    b.ToTable("EventTypes", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.Favorit", b =>
@@ -169,7 +169,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Favorits");
+                    b.ToTable("Favorits", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.Meeting", b =>
@@ -213,7 +213,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Meetings");
+                    b.ToTable("Meetings", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.Menu", b =>
@@ -247,7 +247,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("Menus");
+                    b.ToTable("Menus", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.MenuType", b =>
@@ -264,7 +264,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MenuTypes");
+                    b.ToTable("MenuTypes", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.Opening", b =>
@@ -293,7 +293,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("Openings");
+                    b.ToTable("Openings", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.Order", b =>
@@ -319,7 +319,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasIndex("ReservationId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.Owner", b =>
@@ -340,7 +340,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Owners");
+                    b.ToTable("Owners", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.PhotosRestaurant", b =>
@@ -361,7 +361,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("PhotosRestaurants");
+                    b.ToTable("PhotosRestaurants", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.Price", b =>
@@ -378,7 +378,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Prices");
+                    b.ToTable("Prices", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.Rating", b =>
@@ -404,7 +404,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Ratings");
+                    b.ToTable("Ratings", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.RCategory", b =>
@@ -421,7 +421,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RCategories");
+                    b.ToTable("RCategories", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.Reservation", b =>
@@ -466,7 +466,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reservations");
+                    b.ToTable("Reservations", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.Restaurant", b =>
@@ -531,7 +531,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasIndex("PriceId");
 
-                    b.ToTable("Restaurants");
+                    b.ToTable("Restaurants", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.Review", b =>
@@ -558,7 +558,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.Seating", b =>
@@ -575,7 +575,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Seatings");
+                    b.ToTable("Seatings", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.SeatingsRestaurant", b =>
@@ -590,7 +590,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("SeatingsRestaurants");
+                    b.ToTable("SeatingsRestaurants", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.User", b =>
@@ -630,7 +630,7 @@ namespace DineEaseApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("DineEaseApp.Models.CategoriesEvent", b =>

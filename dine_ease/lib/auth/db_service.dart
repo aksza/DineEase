@@ -11,6 +11,9 @@ class DataBaseProvider extends ChangeNotifier{
   String _token = '';
   String get token => _token;
 
+  int _userId = 0;
+  int get userId => _userId;
+
   String _email = '';
   String get email => _email;
 
@@ -28,12 +31,18 @@ class DataBaseProvider extends ChangeNotifier{
     await dotenv.load(fileName: "assets/env/.env");
     const String e =  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
     const String r = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+    const String i = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
     
     _email = decodedToken[e];
     prefs.setString('email', _email);
     _role = decodedToken[r];
     prefs.setString('role', _role);
+    var uid = decodedToken[i];
+    Logger().i('uid: ${uid.runtimeType}');
 
+    _userId = int.parse(uid);
+    prefs.setInt('userId', _userId.toInt());
+    //kilogoljuk a uid tipusat
     notifyListeners();
   }
 
@@ -56,6 +65,13 @@ class DataBaseProvider extends ChangeNotifier{
     _role = prefs.getString('role') ?? '';
     notifyListeners();
     return _role;
+  }
+
+  Future<int> getUserId() async {
+    final SharedPreferences prefs = await _prefs;
+    _userId = prefs.getInt('userId') ?? 0;
+    notifyListeners();
+    return _userId;
   }
 
   Future<void> removeToken() async {

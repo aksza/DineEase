@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dine_ease/auth/db_service.dart';
 import 'package:dine_ease/models/register_restaurant_form.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -131,6 +132,7 @@ class RequestUtil {
 
   Future<List<Restaurant>> getRestaurants() async {
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['RESTAURANT_GET']!);
@@ -138,7 +140,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }       
       );
       Logger().i(resp.body);
@@ -148,5 +151,82 @@ class RequestUtil {
       Logger().e('Error getting restaurants: $e');
       rethrow;
     }
+  }
+
+  Future<List<Restaurant>> getFavoritRestaurantsByUserId(int userId) async{
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['FAVORIT_RESTAURANT_GET']! + userId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        }      
+      );
+      Logger().i(resp.body);
+      List<dynamic> restaurants = jsonDecode(resp.body);
+      return restaurants.map((restaurant) => Restaurant.fromJson(restaurant)).toList();
+    }catch(e){
+      Logger().e('Error getting favorit restaurants: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> postAddFavoritRestaurant(int userId, int restaurantId) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['ADDFAVORIT_RESTAURANT_POST']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(
+          {
+            'userId': userId,
+            'restaurantId': restaurantId
+          }
+        )        
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error adding favorit restaurant: $e');
+      rethrow;
+    }    
+  }
+
+  Future<void> deleteRemoveFavoritRestaurant(int userId, int restaurantId) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['REMOVEFAVORIT_RESTAURANT_DELETE']!);
+      Logger().i(url);
+      resp = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(
+          {
+            'userId': userId,
+            'restaurantId': restaurantId
+          }
+        )        
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error removing favorit restaurant: $e');
+      rethrow;
+    }    
   }
 }

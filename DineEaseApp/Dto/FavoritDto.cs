@@ -5,7 +5,7 @@ namespace DineEaseApp.Dto
 {
     public class FavoritDto
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
         //[ForeignKey("User")]
         public int UserId { get; set; }
         //public UserDto User { get; set; }

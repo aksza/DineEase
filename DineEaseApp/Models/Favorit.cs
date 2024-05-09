@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DineEaseApp.Models
 {
     public class Favorit
     {
+        [Key]
         public int Id { get; set; }
         [ForeignKey("User")]
         public int UserId { get; set; }

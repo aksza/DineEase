@@ -17,14 +17,17 @@ namespace DineEaseApp.Controllers
         private readonly IRestaurantRepository _restaurantRepository;
         private readonly IOwnerRepository _ownerRepository;
         private readonly IPriceRepository _priceRepository;
+        private readonly IFavoritRepository _favoritRepository;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
         private readonly IConfiguration _configuration;
 
-        public RestaurantController(IRestaurantRepository restaurantRepository,IOwnerRepository ownerRepository,IPriceRepository priceRepository, IMapper mapper,IConfiguration configuration) 
+        public RestaurantController(IRestaurantRepository restaurantRepository,IOwnerRepository ownerRepository,IPriceRepository priceRepository,IFavoritRepository favoritRepository, IMapper mapper,IConfiguration configuration) 
         {
             _restaurantRepository = restaurantRepository;
             _ownerRepository = ownerRepository;
             _priceRepository = priceRepository;
+            _favoritRepository = favoritRepository;
             _mapper = mapper;
             _configuration = configuration;
         }
@@ -89,6 +92,45 @@ namespace DineEaseApp.Controllers
                 return BadRequest();
             }
             return Ok(rating);
+        }
+
+
+        [HttpGet("favorits/{userId}")]
+        public async Task<IActionResult> GetFavoritRastaurantsByUserId(int userId)
+        {
+            try
+            {
+                var favorits = await _favoritRepository.GetFavoritsByUserId(userId);
+                if (favorits.Count == 0)
+                {
+                    return Ok(new List<RestaurantDto>()); 
+                }
+
+                var favoritRestaurants = new List<RestaurantDto>();
+
+                foreach (var favorit in favorits)
+                {
+                    var restaurant = await _restaurantRepository.GetRestaurantById(favorit.RestaurantId);
+                    if (restaurant != null)
+                    {
+                        var restaurantDto = _mapper.Map<RestaurantDto>(restaurant);
+                        restaurantDto.Owner = _mapper.Map<OwnerDto>(_ownerRepository.GetOwner(restaurant.OwnerId));
+                        restaurantDto.Price = _mapper.Map<PriceDto>(_priceRepository.GetPrice(restaurant.PriceId));
+
+                        favoritRestaurants.Add(restaurantDto);
+                    }
+                    else
+                    {
+                        _logger.LogWarning($"Restaurant with ID {favorit.RestaurantId} does not exist.");
+                    }
+                }
+
+                return Ok(favoritRestaurants);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("register")]
