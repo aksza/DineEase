@@ -4,7 +4,9 @@ import 'dart:convert';
 import 'package:dine_ease/auth/db_service.dart';
 import 'package:dine_ease/models/event_post_model.dart';
 import 'package:dine_ease/models/eventt_model.dart';
+import 'package:dine_ease/models/meeting_create.dart';
 import 'package:dine_ease/models/register_restaurant_form.dart';
+import 'package:dine_ease/models/reservation_create.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -298,5 +300,53 @@ class RequestUtil {
       Logger().e('Error getting restaurant by id: $e');
       rethrow;
     }
+  }
+
+  Future<void> postReserveATable(ReservationCreate reservationCreate) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['RESERVE_TABLE_POST']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(
+          reservationCreate.toMap()
+        )        
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error reserving a table: $e');
+      rethrow;
+    }    
+  }
+
+  Future<void> postScheduleAMeeting(MeetingCreate meetingCreate) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['SCHEDULE_MEETING_POST']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(
+          meetingCreate.toMap()
+        )        
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error scheduling a meeting: $e');
+      rethrow;
+    }    
   }
 }

@@ -26,6 +26,8 @@ namespace DineEaseApp.Helper
             CreateMap<FavoritDto, Favorit>();
             CreateMap<Meeting,MeetingDto>();
             CreateMap<MeetingDto,Meeting>();
+            CreateMap<MeetingCreateDto,Meeting>();
+            CreateMap<Meeting,MeetingCreateDto>();
             CreateMap<Menu,MenuDto>();
             CreateMap<MenuDto,Menu>();
             CreateMap<Opening,OpeningDto>();
@@ -46,6 +48,8 @@ namespace DineEaseApp.Helper
             CreateMap<RCategoryDto,RCategory>();
             CreateMap<Reservation,ReservationDto>();
             CreateMap<ReservationDto,Reservation>();
+            CreateMap<Reservation,ReservationCreateDto>();
+            CreateMap<ReservationCreateDto,Reservation>();
             CreateMap<Review,ReviewDto>();
             CreateMap<ReviewDto,Review>();
             CreateMap<Seating,SeatingDto>();

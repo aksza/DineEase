@@ -1,4 +1,7 @@
 import 'package:dine_ease/models/eventt_model.dart';
+import 'package:dine_ease/models/restaurant_model.dart';
+import 'package:dine_ease/screens/reservation_screen.dart';
+import 'package:dine_ease/utils/request_util.dart';
 import 'package:dine_ease/widgets/custom_carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -14,6 +17,24 @@ class EventDetails extends StatefulWidget {
 }
 
 class _EventDetailsState extends State<EventDetails> {
+
+  final requestUtil = RequestUtil();
+  late Restaurant restaurant;
+
+  @override
+  void initState() {
+    super.initState();
+    getRestaurant();
+  }
+
+  Future<void> getRestaurant() async {
+    //restaurant lekerese a kivalasztott event alapjan
+    restaurant = await requestUtil.getRestaurantById(widget.selectedEvent!.restaurantId);
+    setState(() {
+      restaurant = restaurant;
+    });
+  }
+  
   
   @override
   Widget build(BuildContext context) {
@@ -103,7 +124,12 @@ class _EventDetailsState extends State<EventDetails> {
           bottomNavigationBar: Padding(
             padding: const EdgeInsets.all(20.0),
             child: ElevatedButton(
-              onPressed: (){}, 
+              onPressed: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ReservationScreen(selectedRestaurant: restaurant,)),
+                );
+              }, 
               child: Text('Reserve a table'),
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.orange[700]),

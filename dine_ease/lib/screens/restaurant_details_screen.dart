@@ -1,4 +1,6 @@
 import 'package:dine_ease/models/restaurant_model.dart';
+import 'package:dine_ease/screens/meeting_screen.dart';
+import 'package:dine_ease/screens/reservation_screen.dart';
 import 'package:dine_ease/widgets/custom_carousel_slider.dart';
 import 'package:flutter/material.dart';
 
@@ -150,7 +152,21 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
     bottomNavigationBar: Padding(
             padding: const EdgeInsets.all(20.0),
             child: ElevatedButton(
-              onPressed: (){}, 
+              onPressed: (){
+                if(!widget.selectedRestaurant!.forEvent)
+                {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ReservationScreen(selectedRestaurant: widget.selectedRestaurant,)),
+                  );
+                }
+                else{
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MeetingScreen(selectedRestaurant: widget.selectedRestaurant,)),
+                  );
+                }
+              }, 
               //if the restaurant is for event then the button text should be 'Reserve a table' otherwise 'Schedule a meeting'
               child: Text(widget.selectedRestaurant!.forEvent ? 'Schedule a meeting' : 'Reserve a table'),
               style: ButtonStyle(

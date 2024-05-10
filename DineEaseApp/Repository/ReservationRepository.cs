@@ -1,4 +1,5 @@
 ﻿using DineEaseApp.Data;
+using DineEaseApp.Dto;
 using DineEaseApp.Interfaces;
 using DineEaseApp.Models;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,18 @@ namespace DineEaseApp.Repository
         public async Task<ICollection<Reservation>> GetReservationsByUserId(int userId)
         {
             return await _context.Reservations.Where(r => r.UserId == userId).ToListAsync();
+        }
+
+        public async Task<bool> PostReservation(Reservation reservation)
+        {
+            _context.Add(reservation);
+            return await Save();
+        }
+
+        public async Task<bool> Save()
+        {
+            var saved = await _context.SaveChangesAsync();
+            return saved > 0;
         }
     }
 }
