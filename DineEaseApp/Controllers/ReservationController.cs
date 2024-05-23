@@ -25,16 +25,43 @@ namespace DineEaseApp.Controllers
             _restaurantRepository = restaurantRepository;
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("accepted/{userId}")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ReservationDto>))]
-        public async Task<IActionResult> GetReservationsByUserId(int userId)
+        public async Task<IActionResult> GetAcceptedReservationsByUserId(int userId)
         {
             var reservations = _mapper.Map<List<ReservationDto>>(await _reservationRepository.GetReservationsByUserId(userId));
+            var acceptedRes = new List<ReservationDto>();
+            foreach(var reservation in reservations)
+            {
+                if (reservation.Accepted == true)
+                {
+                    acceptedRes.Add(reservation);
+                }
+            }
             if(!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            return Ok(reservations);
+            return Ok(acceptedRes);
+        }
+
+        [HttpGet("waiting/{userId}")]
+        public async Task<IActionResult> GetWaitingReservationsByUserId(int userId)
+        {
+            var reservations = _mapper.Map<List<ReservationDto>>(await _reservationRepository.GetReservationsByUserId(userId));
+            var acceptedRes = new List<ReservationDto>();
+            foreach (var reservation in reservations)
+            {
+                if (reservation.Accepted == null)
+                {
+                    acceptedRes.Add(reservation);
+                }
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            return Ok(acceptedRes);
         }
 
         [HttpPost("reserve")]

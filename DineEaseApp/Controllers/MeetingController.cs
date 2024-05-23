@@ -26,17 +26,46 @@ namespace DineEaseApp.Controllers
             _restaurantRepository = restaurantRepository;
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("accepted/{userId}")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Meeting>))]
-        public async Task<IActionResult> GetMeetingsByUserId(int userId)
+        public async Task<IActionResult> GetAcceptedMeetingsByUserId(int userId)
         {
             var meetings = _mapper.Map<List<MeetingDto>>(await _meetingRepository.GetMeetingsByUserId(userId));
+            var acceptedMeetings = new List<MeetingDto>();
+            foreach(var meeting in meetings)
+            {
+                if(meeting.Accepted == true)
+                {
+                    acceptedMeetings.Add(meeting);
+                }
+            }
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(meetings);
             }
-            return Ok(meetings);
+            return Ok(acceptedMeetings);
+        }
+
+        [HttpGet("waiting/{userId}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Meeting>))]
+        public async Task<IActionResult> GetWaitingMeetingsByUserId(int userId)
+        {
+            var meetings = _mapper.Map<List<MeetingDto>>(await _meetingRepository.GetMeetingsByUserId(userId));
+            var res = new List<MeetingDto>();
+            foreach (var meeting in meetings)
+            {
+                if (meeting.Accepted == null)
+                {
+                    res.Add(meeting);
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(meetings);
+            }
+            return Ok(res);
         }
 
         [HttpPost("schedule")]
