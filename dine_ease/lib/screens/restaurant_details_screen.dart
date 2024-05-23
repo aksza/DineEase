@@ -1,8 +1,12 @@
 import 'package:dine_ease/models/restaurant_model.dart';
+import 'package:dine_ease/models/restaurant_post.dart';
+import 'package:dine_ease/models/dine_ease.dart';
 import 'package:dine_ease/screens/meeting_screen.dart';
 import 'package:dine_ease/screens/reservation_screen.dart';
 import 'package:dine_ease/widgets/custom_carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/web.dart';
+import 'package:provider/provider.dart';
 
 class RestaurantDetails extends StatefulWidget {
   static const routeName = '/restaurant_details_screen';
@@ -16,7 +20,47 @@ class RestaurantDetails extends StatefulWidget {
 
 class _RestaurantDetailsState extends State<RestaurantDetails> {
 
+  late RestaurantPost sr;
 
+  @override
+  void initState() {
+    super.initState();
+    //from dineease model get the restaurant by id
+    sr = Provider.of<DineEase>(context, listen: false).getRestaurantById(widget.selectedRestaurant!.id);
+  }
+
+  //a function that checks whether a restaurant is in the favorites list and depending on that it adds or removes it
+  void toggleFavorite(RestaurantPost restaurant){
+    Logger().i( sr.isFavorite);
+    if(restaurant.isFavorite){
+      removeFromFavorits(restaurant);
+      setState(() {
+      sr.isFavorite = false;
+    });
+    }else{
+      addToFavorits(restaurant);
+      setState(() {
+      sr.isFavorite = true;
+    });
+    }
+   
+  }
+  //add to favorites
+  void addToFavorits(RestaurantPost restaurant){
+    Provider.of<DineEase>(context, listen: false).addToFavorits(restaurant);
+    Logger().i('ott ${sr.isFavorite}');
+    // showDialog(context: context, builder: 
+    //   (context) => AlertDialog(title: Text('Added to favorites')
+    //   ));
+  }
+  //remove from favorites
+  void removeFromFavorits(RestaurantPost restaurant){
+    Provider.of<DineEase>(context, listen: false).removeFromFavorits(restaurant);
+    Logger().i('itt ${sr.isFavorite}');
+    // showDialog(context: context, builder: 
+    //   (context) => AlertDialog(title: Text('Removed from favorites')
+    //   ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,13 +105,12 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                   SizedBox(width: 10,),
                   IconButton(
                     icon: 
-                    // Icon(widget.selectedRestaurant.isFavorite ? Icons.favorite : Icons.favorite_border),
-                    Icon(Icons.favorite_border),
+                    Icon(sr.isFavorite ? Icons.favorite : Icons.favorite_border),
+                    // Icon(Icons.favorite_border),
                     onPressed: (){
                       // widget.onPressed!();
-                      // setState(() {
-                      //   widget.selectedRestaurant.isFavorite = !widget.selectedRestaurant.isFavorite;
-                      // });
+                      toggleFavorite(sr);
+                      
                     },
                   )
                 ],

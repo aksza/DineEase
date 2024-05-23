@@ -83,9 +83,15 @@ void initApp() async {
         name: restaurant.name,
         rating: restaurant.rating,
         // rating: 4.0,
-        isFavorite: false,
+        isFavorite: true,
         imagePath: 'assets/test_images/kfc.jpeg'
       ));
+      //az adott id-ju restaurantot megkeresni a restaurantList-ben és az isFavorite értékét true-ra állítani
+      for(var rest in _restaurantList){
+        if(rest.id == restaurant.id){
+          rest.isFavorite = true;
+        }
+      }
       notifyListeners();
     }   
   }
@@ -109,6 +115,10 @@ void initApp() async {
     }   
   }
   
+  //get restaurant by id
+  RestaurantPost getRestaurantById(int id){
+    return _restaurantList.firstWhere((element) => element.id == id);
+  }
 
   //get restaurant list
   List<RestaurantPost> get restaurants => _restaurantList;
@@ -128,6 +138,12 @@ void initApp() async {
     Logger().i("userid"+userId.toString()+email+role);
     await _requestUtil.postAddFavoritRestaurant(userId, restaurant.id);
     _userFavorits.add(restaurant);
+    //az adott id-ju restaurantot megkeresni a restaurantList-ben és az isFavorite értékét true-ra állítani
+    for(var rest in _restaurantList){
+      if(rest.id == restaurant.id){
+        rest.isFavorite = true;
+      }
+    }
     notifyListeners();
   }
 
@@ -135,6 +151,12 @@ void initApp() async {
   void removeFromFavorits(RestaurantPost restaurant) async{
     // remove by using the request util
     _userFavorits.remove(restaurant);
+    //az adott id-ju restaurantot megkeresni a restaurantList-ben és az isFavorite értékét false-ra állítani
+    for(var rest in _restaurantList){
+      if(rest.id == restaurant.id){
+        rest.isFavorite = false;
+      }
+    }
     await _requestUtil.deleteRemoveFavoritRestaurant(userId, restaurant.id);
     notifyListeners();
   }
