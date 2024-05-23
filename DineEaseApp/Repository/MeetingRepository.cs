@@ -18,5 +18,17 @@ namespace DineEaseApp.Repository
         {
             return await _context.Meetings.Where(m => m.UserId == id).ToListAsync();
         }
+
+        public async Task<bool> PostMeeting(Meeting meeting)
+        {
+            _context.Add(meeting);
+            return await Save();
+        }
+
+        public async Task<bool> Save()
+        {
+            var saved = await _context.SaveChangesAsync();
+            return saved > 0;
+        }
     }
 }

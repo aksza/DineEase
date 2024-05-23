@@ -2,6 +2,7 @@
 using DineEaseApp.Dto;
 using DineEaseApp.Interfaces;
 using DineEaseApp.Models;
+using DineEaseApp.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DineEaseApp.Controllers
@@ -13,12 +14,16 @@ namespace DineEaseApp.Controllers
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly IMeetingRepository _meetingRepository;
-        
-        public MeetingController(IMapper mapper, IConfiguration configuration,IMeetingRepository meetingRepository)
+        private readonly IUserRepository _userRepository;
+        private readonly IRestaurantRepository _restaurantRepository;
+
+        public MeetingController(IMapper mapper, IConfiguration configuration,IMeetingRepository meetingRepository, IUserRepository userRepository,IRestaurantRepository restaurantRepository)
         {
             _mapper = mapper;
             _configuration = configuration;
             _meetingRepository = meetingRepository;
+            _userRepository = userRepository;
+            _restaurantRepository = restaurantRepository;
         }
 
         [HttpGet("{userId}")]
@@ -32,6 +37,50 @@ namespace DineEaseApp.Controllers
                 return BadRequest(meetings);
             }
             return Ok(meetings);
+        }
+
+        [HttpPost("schedule")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> ScheduleAMeeting(MeetingCreateDto meetingDto)
+        {
+            try
+            {
+                if(meetingDto == null)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var res = await _restaurantRepository.GetRestaurantById(meetingDto.RestaurantId);
+                if (res == null)
+                {
+                    ModelState.AddModelError("", "Restaurant does not exist");
+                    return BadRequest(ModelState);
+                }
+
+                var user = await _userRepository.GetUserById(meetingDto.UserId);
+                if (user == null)
+                {
+                    ModelState.AddModelError("", "User does not exist");
+                    return BadRequest(ModelState);
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var meetingMap = _mapper.Map<Meeting>(meetingDto);
+                if(!await _meetingRepository.PostMeeting(meetingMap))
+                {
+                    ModelState.AddModelError("", "Something went wrong while saving");
+                    return BadRequest(ModelState);
+                }
+                return Ok("Successfully scheduled");
+
+            }catch(Exception ex)
+            {
+                return StatusCode(500,ex.Message);
+            }
         }
     }
 }

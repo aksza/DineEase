@@ -55,6 +55,7 @@ class _ReservationScreenState extends State<ReservationScreen>{
         //comment if not null else null
         comment: commentController.text.isNotEmpty ? commentController.text : null,
       );
+      Logger().i('Reservation: ${rescreate.toMap()}');
       await requestUtil.postReserveATable(rescreate);
     }
     catch(e){
@@ -124,7 +125,7 @@ Future<void> _selectTime(BuildContext context) async {
                 readOnly: true,
                 controller: dateController,
                 onTap: () => _selectDate(context),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Date',
                   hintText: 'Select date',
                 ),
@@ -137,7 +138,7 @@ Future<void> _selectTime(BuildContext context) async {
                 readOnly: true,
                 controller: timeController,
                 onTap: () => _selectTime(context),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Time',
                   hintText: 'Select time',
                 ),
