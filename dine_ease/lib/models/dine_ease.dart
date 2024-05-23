@@ -92,6 +92,11 @@ void initApp() async {
           rest.isFavorite = true;
         }
       }
+      for(var rest in _restaurantForEventList){
+        if(rest.id == restaurant.id){
+          rest.isFavorite = true;
+        }
+      }
       notifyListeners();
     }   
   }
@@ -117,7 +122,18 @@ void initApp() async {
   
   //get restaurant by id
   RestaurantPost getRestaurantById(int id){
-    return _restaurantList.firstWhere((element) => element.id == id);
+    //ha a restaurantlistben nem talalja meg az adott idju restaurantot akkor a restaurantforeventlistben keresi
+    for(var restaurant in _restaurantList){
+      if(restaurant.id == id){
+        return restaurant;
+      }
+    }
+    for(var restaurant in _restaurantForEventList){
+      if(restaurant.id == id){
+        return restaurant;
+      }
+    }
+    return RestaurantPost(id: 0, name: '', rating: 0.0, isFavorite: false, imagePath: '');
   }
 
   //get restaurant list
@@ -144,6 +160,12 @@ void initApp() async {
         rest.isFavorite = true;
       }
     }
+
+    for(var rest in _restaurantForEventList){
+      if(rest.id == restaurant.id){
+        rest.isFavorite = true;
+      }
+    }
     notifyListeners();
   }
 
@@ -153,6 +175,11 @@ void initApp() async {
     _userFavorits.remove(restaurant);
     //az adott id-ju restaurantot megkeresni a restaurantList-ben és az isFavorite értékét false-ra állítani
     for(var rest in _restaurantList){
+      if(rest.id == restaurant.id){
+        rest.isFavorite = false;
+      }
+    }
+    for(var rest in _restaurantForEventList){
       if(rest.id == restaurant.id){
         rest.isFavorite = false;
       }
