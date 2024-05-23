@@ -31,16 +31,16 @@ namespace DineEaseApp.Repository
             return await _context.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
         }
 
-        public async Task<User> GetUserById(int id)
+        public async Task<User?> GetUserById(int id)
         {
             var user = await _context.Users
                 .Where(u => u.Id == id)
-                .Select(u => new { User = u })
                 .FirstOrDefaultAsync();
 
+            await Save();
             if(user != null)
             {
-                return user.User;
+                return user;
             }
 
             return null;

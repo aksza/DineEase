@@ -25,9 +25,10 @@ namespace DineEaseApp.Controllers
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
 
-        public UserController(IUserRepository userRepository, IFavoritRepository favoritRepository,
-            IMeetingRepository meetingRepository,IRatingRepository ratingRepository,
-            IReservationRepository reservationRepository, IReviewRepository reviewRepository,
+        public UserController(IUserRepository userRepository,
+            //IFavoritRepository favoritRepository,
+            //IMeetingRepository meetingRepository,IRatingRepository ratingRepository,
+            //IReservationRepository reservationRepository, IReviewRepository reviewRepository,
             IMapper mapper, IConfiguration configuration)
         {
             _userRepository = userRepository;
@@ -72,6 +73,46 @@ namespace DineEaseApp.Controllers
             {
                 return StatusCode(500,ex.Message);
             }
+        }
+
+        [HttpPut("update/{userId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> UpdateUser(int userId,[FromBody]UserUpdateDto updatedUser)
+        {
+            if(updatedUser == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (userId != updatedUser.Id)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (await _userRepository.GetUserById(userId) == null)
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var userMap = _mapper.Map<User>(updatedUser);
+            CreatePasswordHash(updatedUser.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            userMap.PasswordSalt = passwordSalt;
+            userMap.PasswordHash = passwordHash;
+            if (!await _userRepository.UpdateUser(userMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
         }
 
         [HttpPost("register")]

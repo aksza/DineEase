@@ -57,6 +57,8 @@ namespace DineEaseApp.Helper
             CreateMap<User,UserDto>();
             CreateMap<UserDto,User>();
             CreateMap<UserCreateDto, User>();
+            CreateMap<UserUpdateDto,User>();
+            CreateMap<User,UserUpdateDto>();
             CreateMap<RestaurantCreateDto, Restaurant>();
             CreateMap<RestaurantLoginDto, Restaurant>();
         }

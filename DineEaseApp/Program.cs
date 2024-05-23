@@ -23,12 +23,12 @@ builder.Services.AddScoped<IPriceRepository, PriceRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPhotosRestaurantRepository, PhotosRestaurantRepository>();
 builder.Services.AddTransient<IFileService,FileService>();
-builder.Services.AddTransient<IFavoritRepository, FavoritRepository>();
-builder.Services.AddTransient<IMeetingRepository, MeetingRepository>();
-builder.Services.AddTransient<IRatingRepository, RatingRepository>();
-builder.Services.AddTransient<IReservationRepository, ReservationRepository>();
-builder.Services.AddTransient<IReviewRepository, ReviewRepository>();
-builder.Services.AddTransient<IEventRepository,EventRepository>();
+builder.Services.AddScoped<IFavoritRepository, FavoritRepository>();
+builder.Services.AddScoped<IMeetingRepository, MeetingRepository>();
+builder.Services.AddScoped<IRatingRepository, RatingRepository>();
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IEventRepository,EventRepository>();
 
 builder.Services.AddSwaggerGen(opt =>
 {
@@ -60,6 +60,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 }
 );
 builder.Services.AddCors(options =>
