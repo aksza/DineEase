@@ -2,13 +2,13 @@
 
 namespace DineEaseApp.Interfaces
 {
-    public interface IMenuRepository
+    public interface IMenuRepository : IRepository<Menu>
     {
-        Task<ICollection<Menu>> GetMenusByRestaurantId(int restaurantId);
-        Task<Menu?> GetMenuById(int id);
-        Task<bool> AddMenu(Menu menu);
-        Task<bool> RemoveMenu(Menu menu);
-        Task<bool> UpdateMenu(Menu menu);
-        Task<bool> Save();
+        Task<ICollection<Menu>?> GetMenusByRestaurantId(int restaurantId);
+        //Task<Menu?> GetMenuById(int id);
+        //Task<bool> AddMenu(Menu menu);
+        //Task<bool> RemoveMenu(Menu menu);
+        //Task<bool> UpdateMenu(Menu menu);
+        //Task<bool> Save();
     }
 }

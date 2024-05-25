@@ -30,6 +30,8 @@ namespace DineEaseApp.Helper
             CreateMap<Meeting,MeetingCreateDto>();
             CreateMap<Menu,MenuDto>();
             CreateMap<MenuDto,Menu>();
+            CreateMap<MenuCreateDto,Menu>();
+            CreateMap<Menu,MenuCreateDto>();
             CreateMap<Opening,OpeningDto>();
             CreateMap<OpeningDto,Opening>();
             CreateMap<MenuType,MenuTypeDto>();
