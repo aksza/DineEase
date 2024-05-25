@@ -27,16 +27,21 @@ namespace DineEaseApp.Controllers
         public async Task<IActionResult> GetMenusByRestaurantId(int restaurantId)
         {
             var menus = _mapper.Map<List<MenuDto>>(await _menuRepository.GetMenusByRestaurantId(restaurantId));
-            menus.ForEach(async menu =>
+
+            if(menus == null)
+            {
+                return NotFound();
+            }
+
+            foreach(var menu in menus)
             {
                 var menutype = await _menuTypeRepository.GetByIdAsync(menu.MenuTypeId);
-                if (!ModelState.IsValid)
+                if(menutype == null)
                 {
-                    BadRequest(ModelState);
+                    return BadRequest($"Menu type with ID {menu.MenuTypeId} not found");
                 }
-
                 menu.MenuTypeName = menutype.Name;
-            });
+            }
 
             if (!ModelState.IsValid)
             {
