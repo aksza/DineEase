@@ -44,6 +44,8 @@ namespace DineEaseApp.Helper
             //CreateMap<PhotoDto,Photo>();
             CreateMap<Rating,RatingDto>();
             CreateMap<RatingDto,Rating>();
+            CreateMap<RatingCreateDto,Rating>();
+            CreateMap<RatingDto,RatingCreateDto>();
             CreateMap<RCategory,RCategoryDto>();
             CreateMap<RCategoryDto,RCategory>();
             CreateMap<Reservation,ReservationDto>();

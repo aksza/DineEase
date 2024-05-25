@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DineEaseApp.Dto;
 using DineEaseApp.Interfaces;
 using DineEaseApp.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -32,5 +33,125 @@ namespace DineEaseApp.Controllers
             }
             return Ok(ratings);
         }
+
+        [HttpPost("addRating")]
+        public async Task<IActionResult> AddRating(RatingCreateDto ratingDto)
+        {
+            try
+            {
+                if(ratingDto == null)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var rating = await _ratingRepository.GetRatingByUserRestId(ratingDto.UserId, ratingDto.RestaurantId);
+
+                if(rating != null)
+                {
+                    if (!await _ratingRepository.UpdateAsync(rating))
+                    {
+                        ModelState.AddModelError("", "Something went wrong while saving");
+                        return StatusCode(500, ModelState);
+                    }
+                    return Ok("Rating already existed, updated");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var ratingMap = _mapper.Map<Rating>(ratingDto);
+
+                if(!await _ratingRepository.AddAsync(ratingMap))
+                {
+                    ModelState.AddModelError("", "Something went wrong while saving");
+                    return StatusCode(500, ModelState);
+                }
+
+                return Ok("Successfully created");
+            }
+            catch (Exception ex)
+            {
+                return (StatusCode(500, ex.Message));
+            }
+        }
+
+        [HttpPut("update/{id}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> UpdateRating(int id, [FromBody]RatingDto updatedRatingDto)
+        {
+            if(updatedRatingDto == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if(id != updatedRatingDto.Id)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var r = await _ratingRepository.GetByIdAsync(id);
+            if (r == null)
+            {
+                return NotFound();
+            }
+
+            if(!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            if(r.UserId != updatedRatingDto.UserId || r.RestaurantId != updatedRatingDto.RestaurantId)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var ratingMap = _mapper.Map<Rating>(updatedRatingDto);
+            
+            if(!await _ratingRepository.UpdateAsync(ratingMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> DeleteRating(int id)
+        {
+            try
+            {
+                var r = await _ratingRepository.GetByIdAsync(id);
+
+                if(r == null)
+                {
+                    ModelState.AddModelError("", "Rating nem letezik");
+                    return BadRequest(ModelState);
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                if(!await _ratingRepository.DeleteAsync(r))
+                {
+                    ModelState.AddModelError("", "Something went wrong");
+                    return BadRequest(ModelState);
+                }
+                return Ok("Successfully removed");
+            }
+            catch (Exception ex)
+            {
+                return (StatusCode(500, ex.Message));
+            }
+        }
+
+
     }
 }

@@ -31,6 +31,7 @@ builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IEventRepository,EventRepository>();
 builder.Services.AddScoped<IMenuRepository, MenuRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
 
 builder.Services.AddSwaggerGen(opt =>
 {
