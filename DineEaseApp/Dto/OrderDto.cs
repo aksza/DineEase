@@ -9,7 +9,7 @@ namespace DineEaseApp.Dto
         //[ForeignKey("Menu")]
         public int MenuId { get; set; }
         //public MenuDto Menu { get; set; }
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
         //[ForeignKey("Reservation")]
         public int ReservationId { get; set; }
         //public ReservationDto Reservation { get; set; }

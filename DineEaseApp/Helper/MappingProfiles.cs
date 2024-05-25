@@ -38,6 +38,8 @@ namespace DineEaseApp.Helper
             CreateMap<MenuTypeDto,MenuType>();
             CreateMap<Order,OrderDto>();
             CreateMap<OrderDto,Order>();
+            CreateMap<OrderCreateDto, Order>();
+            CreateMap<Order, OrderCreateDto>();
             CreateMap<Owner,OwnerDto>();
             CreateMap<OwnerDto,Owner>();
             CreateMap<PhotosRestaurantDto,PhotosRestaurant>();
