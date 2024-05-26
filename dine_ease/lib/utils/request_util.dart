@@ -5,6 +5,8 @@ import 'package:dine_ease/auth/db_service.dart';
 import 'package:dine_ease/models/event_post_model.dart';
 import 'package:dine_ease/models/eventt_model.dart';
 import 'package:dine_ease/models/meeting_create.dart';
+import 'package:dine_ease/models/menu_model.dart';
+import 'package:dine_ease/models/order_model.dart';
 import 'package:dine_ease/models/register_restaurant_form.dart';
 import 'package:dine_ease/models/reservation_create.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
@@ -302,7 +304,7 @@ class RequestUtil {
     }
   }
 
-  Future<void> postReserveATable(ReservationCreate reservationCreate) async {
+  Future<int> postReserveATable(ReservationCreate reservationCreate) async {
     try{
       String token = await DataBaseProvider().getToken();
       http.Response resp;
@@ -320,6 +322,7 @@ class RequestUtil {
         )        
       );
       Logger().i(resp.body);
+      return jsonDecode(resp.body);
     }catch(e){
       Logger().e('Error reserving a table: $e');
       rethrow;
@@ -346,6 +349,53 @@ class RequestUtil {
       Logger().i(resp.body);
     }catch(e){
       Logger().e('Error scheduling a meeting: $e');
+      rethrow;
+    }    
+  }
+
+  Future<List<Menu>> getMenuByRestaurantId(int restaurantId) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['MENU_GET']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        }       
+      );
+      Logger().i(resp.body);
+      List<dynamic> menus = jsonDecode(resp.body);
+      return menus.map((menu) => Menu.fromJson(menu)).toList();
+    }
+    catch(e){
+      Logger().e('Error getting menu by restaurant id: $e');
+      rethrow;
+    }
+  }
+
+  //add order
+  Future<void> postOrder(Order order) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['ORDER_POST']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(order.toMap())        
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error posting order: $e');
       rethrow;
     }    
   }

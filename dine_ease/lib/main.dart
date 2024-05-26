@@ -9,6 +9,7 @@ import 'package:dine_ease/screens/favorits_page.dart';
 import 'package:dine_ease/screens/home_page.dart';
 import 'package:dine_ease/screens/login.dart';
 import 'package:dine_ease/screens/meeting_screen.dart';
+import 'package:dine_ease/screens/menu_screen.dart';
 import 'package:dine_ease/screens/reservation_screen.dart';
 import 'package:dine_ease/screens/restaurant_details_screen.dart';
 import 'package:dine_ease/screens/sign_up.dart';
@@ -85,6 +86,7 @@ class MyApp extends StatelessWidget {
               null),
             '/reservation': (context) => ReservationScreen(selectedRestaurant: null),
             '/meeting': (context) => MeetingScreen(selectedRestaurant: null),
+            '/menu_screen': (context) => MenuScreen(restaurantId: 1),
           },
         )
     );

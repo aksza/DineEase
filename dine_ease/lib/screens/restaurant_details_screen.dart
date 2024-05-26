@@ -2,6 +2,7 @@ import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:dine_ease/models/restaurant_post.dart';
 import 'package:dine_ease/models/dine_ease.dart';
 import 'package:dine_ease/screens/meeting_screen.dart';
+import 'package:dine_ease/screens/menu_screen.dart';
 import 'package:dine_ease/screens/reservation_screen.dart';
 import 'package:dine_ease/widgets/custom_carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -175,18 +176,26 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
               ),
             ), 
             //a button to show menu, in center
-            // Padding(
-            //   padding: const EdgeInsets.all(20.0),
-            //   child: ElevatedButton(
-            //       onPressed: (){}, 
-            //       child: Text('Show menu',),
-            //       style: ButtonStyle(
-            //         backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 211, 211, 211)),
-            //         padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 50, vertical: 15)),
-            //         textStyle: MaterialStateProperty.all(TextStyle(fontSize: 20, color: Colors.black))
-            //       ),
-            //     ),
-            // ),
+            //ha a menu nem ures akkor a gomb megjelenik, ha ures akkor nem, es akkor sem jelenik meg ha az adott restaurant eventre van
+            // if(widget.selectedRestaurant!.menu != null && !widget.selectedRestaurant!.forEvent)
+            if(!widget.selectedRestaurant!.forEvent)
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: ElevatedButton(
+                  onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MenuScreen(restaurantId: widget.selectedRestaurant!.id)),
+                    );
+                  }, 
+                  child: Text('Show menu',),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 211, 211, 211)),
+                    padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 50, vertical: 15)),
+                    textStyle: MaterialStateProperty.all(TextStyle(fontSize: 20, color: Colors.black))
+                  ),
+                ),
+            ),
             
           ],
       ),
@@ -200,7 +209,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                 {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ReservationScreen(selectedRestaurant: widget.selectedRestaurant,)),
+                    MaterialPageRoute(builder: (context) => ReservationScreen(selectedRestaurant: widget.selectedRestaurant!,)),
                   );
                 }
                 else{

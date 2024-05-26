@@ -100,7 +100,7 @@ namespace DineEaseApp.Controllers
                     ModelState.AddModelError("", "Something went wrong while saving");
                     return StatusCode(500, ModelState);
                 }
-                return Ok("Successfully reserved");
+                return Ok(reservationMap.Id);
             }
             catch (Exception ex)
             {
