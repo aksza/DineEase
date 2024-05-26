@@ -36,6 +36,16 @@ namespace DineEaseApp.Repository
         //    throw new NotImplementedException();
         //}
 
+        public async Task<Restaurant?> GetRestaurantWithDetailsAsync(int restaurantId)
+        {
+            return await _context.Restaurants
+                .Include(r => r.CuisinesRestaurants)
+                .Include(r => r.Openings)
+                .Include(r => r.SeatingsRestaurants)
+                .Include(r => r.CategoriesRestaurants)
+                .FirstOrDefaultAsync(r => r.Id == restaurantId);
+        }
+
         public async Task<Restaurant?> GetRestaurantById(int id)
         {
             var restaurant =  await _context.Restaurants

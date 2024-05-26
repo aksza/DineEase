@@ -12,11 +12,15 @@ namespace DineEaseApp.Controllers
     {
         private readonly IEventRepository _eventRepository;
         private readonly IRestaurantRepository _restaurantRepository;
+        private readonly ICategoriesEventRepository _categoriesEventRepository;
+        private readonly IRepository<ECategory> _ecategoryRepository;
         private readonly IMapper _mapper;
         //private readonly IConfiguration _configuration;
 
-        public EventController(IEventRepository eventRepository,IRestaurantRepository restaurantRepository, IMapper mapper, IConfiguration configuration)
+        public EventController(ICategoriesEventRepository categoriesEventRepository, IRepository<ECategory> ecategoryRepository, IEventRepository eventRepository,IRestaurantRepository restaurantRepository, IMapper mapper, IConfiguration configuration)
         {
+            _categoriesEventRepository = categoriesEventRepository;
+            _ecategoryRepository = ecategoryRepository;
             _eventRepository = eventRepository;
             _restaurantRepository = restaurantRepository;
             _mapper = mapper;
@@ -47,6 +51,47 @@ namespace DineEaseApp.Controllers
             return Ok(eventDtoList);
         }
 
+        [HttpGet("eCategories")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetECategories()
+        {
+            var categories = _mapper.Map<List<CategoryEDto>>(await _ecategoryRepository.GetAllAsync());
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            return Ok(categories);
+        }
+
+        [HttpGet("{eventId}/eCategories")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetCategoriesByEventId(int eventId)
+        {
+            var categories = _mapper.Map<List<CategoriesEventDto>>(await _categoriesEventRepository.GetCategoriesEventsByEventId(eventId));
+
+            if (categories == null || categories.Count == 0)
+            {
+                return NotFound();
+            }
+
+            foreach (var category in categories)
+            {
+                var categoryname = await _ecategoryRepository.GetByIdAsync(category.ECategoryId);
+                if (categoryname == null)
+                {
+                    return BadRequest($"ECategory type with id {category.ECategoryId} not found");
+                }
+
+                category.ECategoryName = categoryname.ECategoryName;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            return Ok(categories);
+        }
         [HttpGet("{eventId}")]
         [ProducesResponseType(200, Type = typeof(Event))]
         public async Task<IActionResult> GetEventById(int eventId)

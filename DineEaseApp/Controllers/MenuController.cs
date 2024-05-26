@@ -21,6 +21,20 @@ namespace DineEaseApp.Controllers
             _menuRepository = menuRepository;
             _menuTypeRepository = menuTypeRepository;
         }
+        [HttpGet("menuTypes")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetMenuTypes()
+        {
+            var menutypes = _mapper.Map<List<MenuTypeDto>>(await _menuTypeRepository.GetAllAsync());
+
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(menutypes);
+        }
+      
 
         [HttpGet("{restaurantId}")]
         [ProducesResponseType(200)]

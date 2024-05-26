@@ -16,14 +16,29 @@ namespace DineEaseApp.Controllers
         private readonly IMeetingRepository _meetingRepository;
         private readonly IUserRepository _userRepository;
         private readonly IRestaurantRepository _restaurantRepository;
+        private readonly IRepository<EventType> _eventTypeRepository;
 
-        public MeetingController(IMapper mapper, IConfiguration configuration,IMeetingRepository meetingRepository, IUserRepository userRepository,IRestaurantRepository restaurantRepository)
+        public MeetingController(IMapper mapper,IRepository<EventType> eventTypeRepository, IConfiguration configuration,IMeetingRepository meetingRepository, IUserRepository userRepository,IRestaurantRepository restaurantRepository)
         {
             _mapper = mapper;
+            _eventTypeRepository= eventTypeRepository;
             _configuration = configuration;
             _meetingRepository = meetingRepository;
             _userRepository = userRepository;
             _restaurantRepository = restaurantRepository;
+        }
+
+        [HttpGet("eventTypes")]
+        public async Task<IActionResult> GetEventTypes()
+        {
+            var eventtypes = _mapper.Map<List<EventTypeDto>>(await _eventTypeRepository.GetAllAsync());
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(eventtypes);
         }
 
         [HttpGet("accepted/{userId}")]
@@ -36,6 +51,7 @@ namespace DineEaseApp.Controllers
             {
                 if(meeting.Accepted == true)
                 {
+                    meeting.Event = _mapper.Map<EventTypeDto>(await _eventTypeRepository.GetByIdAsync(meeting.EventId));
                     acceptedMeetings.Add(meeting);
                 }
             }
@@ -57,6 +73,7 @@ namespace DineEaseApp.Controllers
             {
                 if (meeting.Accepted == null)
                 {
+                    meeting.Event = _mapper.Map<EventTypeDto>(await _eventTypeRepository.GetByIdAsync(meeting.EventId));
                     res.Add(meeting);
                 }
             }

@@ -14,22 +14,197 @@ namespace DineEaseApp.Controllers
     [ApiController]
     public class RestaurantController : Controller
     {
+        private readonly ICuisinesRestaurantRepository _cuisinesRestaurantRepository;
+        private readonly IRepository<Cuisine> _cuisine;
+        private readonly ICategoriesRestaurantRepository _categoriesRestaurantRepository;
+        private readonly IRepository<RCategory> _rcategoryRepository;
         private readonly IRestaurantRepository _restaurantRepository;
         private readonly IOwnerRepository _ownerRepository;
         private readonly IPriceRepository _priceRepository;
         private readonly IFavoritRepository _favoritRepository;
+        private readonly IOpeningRepository _openingRepository;
+        private readonly ISeatingsRestaurantRepository _seatingsRestaurantRepository;
+        private readonly IRepository<Seating> _seating;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
         private readonly IConfiguration _configuration;
 
-        public RestaurantController(IRestaurantRepository restaurantRepository,IOwnerRepository ownerRepository,IPriceRepository priceRepository,IFavoritRepository favoritRepository, IMapper mapper,IConfiguration configuration) 
+        public RestaurantController(ICuisinesRestaurantRepository cuisinesRestaurantRepository, IRepository<Cuisine> cuisine, ICategoriesRestaurantRepository categoriesRestaurantRepository, IRepository<RCategory> rcategoryRepository, ISeatingsRestaurantRepository seatingsRestaurantRepository,IRepository<Seating> seating,IRestaurantRepository restaurantRepository, IOpeningRepository openingRepository, IOwnerRepository ownerRepository,IPriceRepository priceRepository,IFavoritRepository favoritRepository, IMapper mapper,IConfiguration configuration) 
         {
+            _cuisinesRestaurantRepository = cuisinesRestaurantRepository;
+            _cuisine = cuisine;
+            _categoriesRestaurantRepository = categoriesRestaurantRepository;
+            _rcategoryRepository = rcategoryRepository;
+            _seatingsRestaurantRepository  = seatingsRestaurantRepository;
+            _seating = seating;
             _restaurantRepository = restaurantRepository;
+            _openingRepository = openingRepository;
             _ownerRepository = ownerRepository;
             _priceRepository = priceRepository;
             _favoritRepository = favoritRepository;
             _mapper = mapper;
             _configuration = configuration;
+
+        }
+
+        [HttpGet("cuisines")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetCuisines()
+        {
+            var cuisines = _mapper.Map<List<CuisineDto>>(await _cuisine.GetAllAsync());
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(cuisines);
+        }
+
+        [HttpGet("categories")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetRCategories()
+        {
+            var categories = _mapper.Map<List<CategoryRDto>>(await _rcategoryRepository.GetAllAsync());
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(categories);
+        }
+
+        [HttpGet("prices")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetPrices()
+        {
+            var prices = _mapper.Map<List<PriceDto>>(_priceRepository.GetPrices());
+
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            return Ok(prices);
+        }
+        [HttpGet("seatings")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetSeatings()
+        {
+            var seatings = _mapper.Map<List<SeatingDto>>(await _seating.GetAllAsync());
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(seatings);
+        }
+        [HttpGet("{restaurantId}/cuisines")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetCuisinesByRestaurantId(int restaurantId)
+        {
+            var cuisines = _mapper.Map<List<CuisineRestaurantDto>>(await _cuisinesRestaurantRepository.GetCuisinesRestaurantsByRestaurantId(restaurantId));
+
+            if (cuisines == null || cuisines.Count == 0)
+            {
+                return NotFound();
+            }
+
+            foreach (var cuisine in cuisines)
+            {
+                var cuisinename = await _cuisine.GetByIdAsync(cuisine.CuisineId);
+                if (cuisinename == null)
+                {
+                    return BadRequest("Cuisine not found");
+                }
+
+                cuisine.CuisineName = cuisinename.CuisineName;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            return Ok(cuisines);
+        }
+
+        [HttpGet("{restaurantId}/categories")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetCategoriesByRestaurantId(int restaurantId)
+        {
+            var categories = _mapper.Map<List<CategoriesRestaurantDto>>(await _categoriesRestaurantRepository.GetCategoriesRestaurantsByRestaurantId(restaurantId));
+
+            if (categories == null || categories.Count == 0)
+            {
+                return NotFound();
+            }
+
+            foreach (var category in categories)
+            {
+                var categoryname = await _rcategoryRepository.GetByIdAsync(category.RCategoryId);
+                if (categoryname == null)
+                {
+                    return BadRequest($"RCategory type with id {category.RCategoryId} not found");
+                }
+
+                category.RCategoryName = categoryname.RCategoryName;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(categories);
+        }
+
+
+        [HttpGet("{restaurantId}/openings")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetOpeningsByRestaurantId(int restaurantId)
+        {
+            var openings = _mapper.Map<List<OpeningDto>>(await _openingRepository.GetOpeningsByRestaurantId(restaurantId));
+            if(openings == null || openings.Count == 0)
+            {
+                return NotFound();
+            }
+
+           if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+           return Ok(openings);
+        }
+
+        [HttpGet("{restaurantId}/seatings")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetSeatingsByRestaurantId(int restaurantId)
+        {
+            var seatings = _mapper.Map<List<SeatingsRestaurantDto>>(await _seatingsRestaurantRepository.GetSeatingsRestaurantsByRestaurantId(restaurantId));
+
+            if(seatings == null || seatings.Count == 0)
+            {
+                return NotFound();
+            }
+
+            foreach(var seating in seatings)
+            {
+                var seatingname = await _seating.GetByIdAsync(seating.SeatingId);
+                if(seatingname == null)
+                {
+                    return BadRequest("Seating not found");
+                }
+
+                seating.SeatingName = seatingname.SeatingName;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            return Ok(seatings);
         }
 
         [HttpGet]
