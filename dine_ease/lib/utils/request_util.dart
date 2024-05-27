@@ -10,6 +10,7 @@ import 'package:dine_ease/models/order_model.dart';
 import 'package:dine_ease/models/register_restaurant_form.dart';
 import 'package:dine_ease/models/reservation_create.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
+import 'package:dine_ease/models/user_model.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -396,6 +397,50 @@ class RequestUtil {
       Logger().i(resp.body);
     }catch(e){
       Logger().e('Error posting order: $e');
+      rethrow;
+    }    
+  }
+
+  Future<User> getUserById(int userId) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['USER_GET_BY_ID']! + userId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        }       
+      );
+      Logger().i(resp.body);
+      return User.fromJson(jsonDecode(resp.body));
+    }catch(e){
+      Logger().e('Error getting user by id: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> postUserUpdate(int userId,User user) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['USER_UPDATE']! + userId.toString());
+      Logger().i(url);
+      resp = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(user.toMap())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error updating user: $e');
       rethrow;
     }    
   }

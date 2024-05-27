@@ -5,6 +5,7 @@ import 'package:dine_ease/helper/order_notifier.dart';
 import 'package:dine_ease/models/dine_ease.dart';
 import 'package:dine_ease/models/event_post_model.dart';
 import 'package:dine_ease/models/eventt_model.dart';
+import 'package:dine_ease/screens/edit_profile_screen.dart';
 import 'package:dine_ease/screens/event_details_screen.dart';
 import 'package:dine_ease/screens/favorits_page.dart';
 import 'package:dine_ease/screens/home_page.dart';
@@ -89,6 +90,7 @@ class MyApp extends StatelessWidget {
             '/reservation': (context) => ReservationScreen(selectedRestaurant: null),
             '/meeting': (context) => MeetingScreen(selectedRestaurant: null),
             '/menu_screen': (context) => MenuScreen(restaurantId: 1),
+            '/edit-profile': (context) => const EditProfileScreen(),
           },
         )
     );

@@ -90,8 +90,8 @@ namespace DineEaseApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            if (await _userRepository.GetUserById(userId) == null)
+            var user = await _userRepository.GetUserById(userId);
+            if (user == null)
             {
                 return NotFound();
             }
@@ -102,10 +102,10 @@ namespace DineEaseApp.Controllers
             }
 
             var userMap = _mapper.Map<User>(updatedUser);
-            CreatePasswordHash(updatedUser.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            //CreatePasswordHash(updatedUser.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            userMap.PasswordSalt = passwordSalt;
-            userMap.PasswordHash = passwordHash;
+            userMap.PasswordSalt = user.PasswordSalt;
+            userMap.PasswordHash = user.PasswordHash;
             if (!await _userRepository.UpdateUser(userMap))
             {
                 ModelState.AddModelError("", "Something went wrong while saving");

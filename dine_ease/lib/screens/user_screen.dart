@@ -1,5 +1,5 @@
 import 'package:dine_ease/auth/auth_service.dart';
-import 'package:dine_ease/widgets/custom_appbar.dart';
+import 'package:dine_ease/screens/edit_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -51,7 +51,10 @@ class _UserScreen extends State<UserScreen> {
 
               //informations about user
               GestureDetector(
-                onTap: (){},
+                onTap: (){
+                  //navigate to edit profile
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => EditProfileScreen()));
+                },
                 child: 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
