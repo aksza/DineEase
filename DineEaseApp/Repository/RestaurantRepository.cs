@@ -65,10 +65,10 @@ namespace DineEaseApp.Repository
             return await _context.Restaurants.Where(r => r.Name == name).ToListAsync();
         }
 
-        public Task<ICollection<Restaurant>> GetRestaurantForEvent()
-        {
-            throw new NotImplementedException();
-        }
+        //public Task<ICollection<Restaurant>> GetRestaurantForEvent()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         //public string GetRestaurantDescription(int id)
         //{
@@ -150,6 +150,17 @@ namespace DineEaseApp.Repository
 
         public async Task<bool> UpdateRestaurant(Restaurant restaurant)
         {
+            _context.Update(restaurant);
+            return await Save();
+        }
+
+        public async Task<bool> UpdateRestaurantRating(Restaurant restaurant)
+        {
+            double ratingAverage = await _context.Ratings
+                .Where(x => x.RestaurantId == restaurant.Id)
+                .AverageAsync(x => x.RatingNumber);
+
+            restaurant.Rating = ratingAverage;
             _context.Update(restaurant);
             return await Save();
         }

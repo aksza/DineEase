@@ -8,6 +8,7 @@ import 'package:dine_ease/models/meeting_create.dart';
 import 'package:dine_ease/models/meeting_model.dart';
 import 'package:dine_ease/models/menu_model.dart';
 import 'package:dine_ease/models/order_model.dart';
+import 'package:dine_ease/models/rating_model.dart';
 import 'package:dine_ease/models/register_restaurant_form.dart';
 import 'package:dine_ease/models/reservation_create.dart';
 import 'package:dine_ease/models/reservation_model.dart';
@@ -603,6 +604,98 @@ class RequestUtil {
       Logger().i(resp.body);
     }catch(e){
       Logger().e('Error updating review: $e');
+      rethrow;
+    }    
+  }
+  //getRatingsByUserId
+  Future<List<Rating>> getRatingsByUserId (int userId) async{
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['RATING_GET_BY_USER_ID']! + userId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> ratings = jsonDecode(resp.body);
+      return ratings.map((rating) => Rating.fromJson(rating)).toList();
+    }catch(e){
+      Logger().e('Error getting ratings by user id: $e');
+      rethrow;
+    }
+  }
+
+  //updateRating
+  Future<void> updateRating(int ratingId,Rating rating) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['RATING_UPDATE']! + ratingId.toString());
+      Logger().i(url);
+      resp = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(rating.toMap())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error updating rating: $e');
+      rethrow;
+    }    
+  }
+
+  //deleteRating
+  Future<void> deleteRemoveRating(int ratingId) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['REMOVE_RATING_DELETE']!+ ratingId.toString());
+      Logger().i(url);
+      resp = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+      );
+
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error removing rating: $e');
+      rethrow;
+    }    
+  }
+
+  //addRating
+  Future<void> postAddRating(Rating rating) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['ADD_RATING_POST']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(rating.toCreateMap())        
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error adding rating: $e');
       rethrow;
     }    
   }

@@ -13,19 +13,32 @@ namespace DineEaseApp.Controllers
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly IRatingRepository _ratingRepository;
+        private readonly IRestaurantRepository _restaurantRepository;
 
-        public RatingController(IMapper mapper, IConfiguration configuration, IRatingRepository ratingRepository)
+        public RatingController(IMapper mapper, IConfiguration configuration, IRatingRepository ratingRepository, IRestaurantRepository restaurantRepository)
         {
             _mapper = mapper;
             _configuration = configuration;
             _ratingRepository = ratingRepository;
+            _restaurantRepository = restaurantRepository;
         }
 
         [HttpGet("{userId}")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Rating>))]
         public async Task<IActionResult> GetRatingsByUserId(int userId)
         {
-            var ratings = _mapper.Map<List<Rating>>(await _ratingRepository.GetRatingsByUserId(userId));
+            var ratings = _mapper.Map<List<RatingDto>>(await _ratingRepository.GetRatingsByUserId(userId));
+            
+            foreach(var rating in ratings)
+            {
+                var res = await _restaurantRepository.GetRestaurantById(rating.RestaurantId);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(res);
+                }
+
+                rating.RestaurantName = res.Name;
+            }
 
             if(!ModelState.IsValid)
             {
@@ -53,6 +66,16 @@ namespace DineEaseApp.Controllers
                         ModelState.AddModelError("", "Something went wrong while saving");
                         return StatusCode(500, ModelState);
                     }
+                    var res2 = await _restaurantRepository.GetRestaurantById(ratingDto.RestaurantId);
+                    if (res2 == null)
+                    {
+                        BadRequest("Restaurant not found");
+                    }
+
+                    if (!await _restaurantRepository.UpdateRestaurantRating(res2))
+                    {
+                        BadRequest(ModelState);
+                    }
                     return Ok("Rating already existed, updated");
                 }
 
@@ -67,6 +90,17 @@ namespace DineEaseApp.Controllers
                 {
                     ModelState.AddModelError("", "Something went wrong while saving");
                     return StatusCode(500, ModelState);
+                }
+
+                var res = await _restaurantRepository.GetRestaurantById(ratingDto.RestaurantId);
+                if (res == null)
+                {
+                    BadRequest("Restaurant not found");
+                }
+
+                if (!await _restaurantRepository.UpdateRestaurantRating(res))
+                {
+                    BadRequest(ModelState);
                 }
 
                 return Ok("Successfully created");
@@ -117,10 +151,21 @@ namespace DineEaseApp.Controllers
                 return StatusCode(500, ModelState);
             }
 
+            var res = await _restaurantRepository.GetRestaurantById(r.RestaurantId);
+            if (res == null)
+            {
+                BadRequest("Restaurant not found");
+            }
+
+            if (!await _restaurantRepository.UpdateRestaurantRating(res))
+            {
+                BadRequest(ModelState);
+            }
+
             return NoContent();
         }
 
-        [HttpDelete]
+        [HttpDelete("delete/{id}")]
         [ProducesResponseType(200)]
         public async Task<IActionResult> DeleteRating(int id)
         {
@@ -143,6 +188,17 @@ namespace DineEaseApp.Controllers
                 {
                     ModelState.AddModelError("", "Something went wrong");
                     return BadRequest(ModelState);
+                }
+
+                var res = await _restaurantRepository.GetRestaurantById(r.RestaurantId);
+                if(res == null)
+                {
+                    BadRequest("Restaurant not found");
+                }
+
+                if(!await _restaurantRepository.UpdateRestaurantRating(res))
+                {
+                    BadRequest(ModelState);
                 }
                 return Ok("Successfully removed");
             }

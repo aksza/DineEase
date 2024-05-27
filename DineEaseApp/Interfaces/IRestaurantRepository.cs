@@ -12,8 +12,8 @@ namespace DineEaseApp.Interfaces
         Task<bool> UpdateRestaurant(Restaurant restaurant);
         Task<bool> DeleteRestaurant(Restaurant restaurant);
         Task<bool> Save();
-        Task<ICollection<Restaurant>> GetRestaurantForEvent();
         Task<ICollection<Restaurant>> GetRestaurantByName(string name);
+        Task<bool> UpdateRestaurantRating(Restaurant restaurant);
         double GetRestaurantRating(int id);
         bool RestaurantExists(int id);
     }

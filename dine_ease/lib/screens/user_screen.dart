@@ -1,6 +1,7 @@
 import 'package:dine_ease/auth/auth_service.dart';
 import 'package:dine_ease/screens/edit_profile_screen.dart';
 import 'package:dine_ease/screens/user_meeting_screen.dart';
+import 'package:dine_ease/screens/user_rating_screen.dart';
 import 'package:dine_ease/screens/user_reservation_screen.dart';
 import 'package:dine_ease/screens/user_review_screen.dart';
 import 'package:flutter/material.dart';
@@ -144,7 +145,9 @@ class _UserScreen extends State<UserScreen> {
               const Divider(),
               //ratings
               GestureDetector(
-                onTap: (){},
+                onTap: (){
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserRatingScreen()));
+                },
                 child: 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
