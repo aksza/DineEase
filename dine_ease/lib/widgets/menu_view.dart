@@ -1,10 +1,8 @@
+import 'package:dine_ease/helper/order_notifier.dart';
+import 'package:flutter/material.dart';
 import 'package:dine_ease/models/menu_model.dart';
 import 'package:dine_ease/models/order_model.dart';
-import 'package:dine_ease/utils/request_util.dart';
-import 'package:flutter/material.dart';
-
-// Globális rendelések lista
-List<Order> orders = [];
+import 'package:provider/provider.dart';
 
 class MenuView extends StatefulWidget {
   final Menu menu;
@@ -17,9 +15,8 @@ class MenuView extends StatefulWidget {
 
 class _MenuViewState extends State<MenuView> {
   bool _isExpanded = false;
-  final RequestUtil _requestUtil = RequestUtil();
 
-  void _showCommentDialog() {
+  void _showCommentDialog(BuildContext context) {
     TextEditingController commentController = TextEditingController();
 
     showDialog(
@@ -44,13 +41,13 @@ class _MenuViewState extends State<MenuView> {
               onPressed: () {
                 Order order = Order(
                   menuId: widget.menu.id,
+                  menuName: widget.menu.name,
                   reservationId: 0,
                   comment: commentController.text.isNotEmpty ? commentController.text : null,
+                  price: widget.menu.price,
                 );
 
-                setState(() {
-                  orders.add(order);
-                });
+                Provider.of<OrderProvider>(context, listen: false).addOrder(order);
                 Navigator.of(context).pop(); // Order hozzáadása után bezárás
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -90,7 +87,7 @@ class _MenuViewState extends State<MenuView> {
               trailing: widget.reservationId != null
                   ? IconButton(
                       icon: const Icon(Icons.shopping_cart),
-                      onPressed: _showCommentDialog,
+                      onPressed: () => _showCommentDialog(context),
                     )
                   : null,
             ),

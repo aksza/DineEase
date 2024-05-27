@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dine_ease/auth/auth_service.dart';
 import 'package:dine_ease/auth/db_service.dart';
+import 'package:dine_ease/helper/order_notifier.dart';
 import 'package:dine_ease/models/dine_ease.dart';
 import 'package:dine_ease/models/event_post_model.dart';
 import 'package:dine_ease/models/eventt_model.dart';
@@ -42,6 +43,7 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (_) => AuthService()),
           ChangeNotifierProvider(create: (_) => DataBaseProvider()),
+          ChangeNotifierProvider(create: (_) => OrderProvider()),
           ChangeNotifierProvider(create: (context) => DineEase()),
         ],
         child: 
