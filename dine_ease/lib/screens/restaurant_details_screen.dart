@@ -16,7 +16,7 @@ class RestaurantDetails extends StatefulWidget {
   RestaurantDetails({Key? key, this.selectedRestaurant});
 
   @override
-  _RestaurantDetailsState createState() => _RestaurantDetailsState();
+  State<RestaurantDetails> createState() => _RestaurantDetailsState();
 }
 
 class _RestaurantDetailsState extends State<RestaurantDetails> {

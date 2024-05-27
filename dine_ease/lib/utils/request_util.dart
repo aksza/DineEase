@@ -9,6 +9,7 @@ import 'package:dine_ease/models/menu_model.dart';
 import 'package:dine_ease/models/order_model.dart';
 import 'package:dine_ease/models/register_restaurant_form.dart';
 import 'package:dine_ease/models/reservation_create.dart';
+import 'package:dine_ease/models/reservation_model.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:dine_ease/models/user_model.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -443,5 +444,28 @@ class RequestUtil {
       Logger().e('Error updating user: $e');
       rethrow;
     }    
+  }
+
+  Future<List<Reservation>> getReservationsByUserId(int userId) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['RESERVATION_GET_BY_USER_ID']! + userId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> reservations = jsonDecode(resp.body);
+      return reservations.map((reservation) => Reservation.fromJson(reservation)).toList();
+    }catch(e){
+      Logger().e('Error getting reservations by user id: $e');
+      rethrow;
+    }
   }
 }

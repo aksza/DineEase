@@ -16,6 +16,7 @@ import 'package:dine_ease/screens/reservation_screen.dart';
 import 'package:dine_ease/screens/restaurant_details_screen.dart';
 import 'package:dine_ease/screens/sign_up.dart';
 import 'package:dine_ease/screens/splash_screen.dart';
+import 'package:dine_ease/screens/user_reservation_screen.dart';
 import 'package:dine_ease/screens/user_screen.dart';
 import 'package:dine_ease/screens/welcome.dart';
 import 'package:flutter/material.dart';
@@ -91,6 +92,7 @@ class MyApp extends StatelessWidget {
             '/meeting': (context) => MeetingScreen(selectedRestaurant: null),
             '/menu_screen': (context) => MenuScreen(restaurantId: 1),
             '/edit-profile': (context) => const EditProfileScreen(),
+            '/user-reservation' : (context) => const UserReservationScreen(),
           },
         )
     );

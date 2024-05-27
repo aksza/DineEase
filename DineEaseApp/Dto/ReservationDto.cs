@@ -10,6 +10,7 @@ namespace DineEaseApp.Dto
         public int RestaurantId { get; set; }
         //public RestaurantDto Restaurant { get; set; }
         //[ForeignKey("User")]
+        public string RestaurantName { get; set; }
         public int UserId { get; set; }
         //public UserDto User { get; set; }
         public int PartySize { get; set; }

@@ -35,6 +35,8 @@ namespace DineEaseApp.Controllers
             {
                 if (reservation.Accepted == true)
                 {
+                    var res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(reservation.RestaurantId));
+                    reservation.RestaurantName = res.Name;
                     acceptedRes.Add(reservation);
                 }
             }
@@ -54,6 +56,8 @@ namespace DineEaseApp.Controllers
             {
                 if (reservation.Accepted == null)
                 {
+                    var res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(reservation.RestaurantId));
+                    reservation.RestaurantName = res.Name;
                     acceptedRes.Add(reservation);
                 }
             }
