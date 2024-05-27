@@ -251,7 +251,7 @@ namespace DineEaseApp.Controllers
         }
 
         [HttpGet("{id}/rating")]
-        [ProducesResponseType(200, Type = typeof(double))]
+        [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         public IActionResult GetRestaurantRating(int id)
         {

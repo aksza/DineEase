@@ -110,13 +110,13 @@ namespace DineEaseApp.Repository
         //    throw new NotImplementedException();
         //}
 
-        public double GetRestaurantRating(int id)
+        public double? GetRestaurantRating(int id)
         {
             var rating = _context.Ratings.Where(r => r.Id == id);
 
             if(rating.Count() <= 0)
             {
-                return 0;
+                return null;
             }
             return ((double)rating.Sum(r => r.RatingNumber) / rating.Count());
 
@@ -160,9 +160,14 @@ namespace DineEaseApp.Repository
                 .Where(x => x.RestaurantId == restaurant.Id)
                 .AverageAsync(x => x.RatingNumber);
 
-            restaurant.Rating = ratingAverage;
+            string formattedRating = (ratingAverage).ToString("0.0");
+
+            double roundedRating = double.Parse(formattedRating);
+
+            restaurant.Rating = roundedRating;
             _context.Update(restaurant);
             return await Save();
         }
+
     }
 }

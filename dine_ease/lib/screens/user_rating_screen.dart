@@ -60,7 +60,7 @@ class _UserRatingScreenState extends State<UserRatingScreen> {
             Navigator.pop(context);
           },
         ),
-        title: const Text('Reviews'),
+        title: const Text('Ratings'),
       ),
       body: isLoading
           ? const Center(

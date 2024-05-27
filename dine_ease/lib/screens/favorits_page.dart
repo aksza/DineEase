@@ -38,17 +38,24 @@ class _FavoritsPageState extends State<FavoritsPage> {
   }
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child:Consumer<DineEase>(builder: (context,value,child) =>
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.orange[700],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: const Text('Your favorits'),
+      ),
+      body: Consumer<DineEase>(builder: (context,value,child) =>
       SafeArea(child: 
         Padding(
           padding: const EdgeInsets.all(25.0),
           child: Column(
             children: [
-              //text
-              Text('Your Favorites'),
-              const SizedBox(height: 20),
-              //list of restaurants
+              
               Expanded(
                 child: ListView.builder(
                   itemCount: value.userFavorits.length,
