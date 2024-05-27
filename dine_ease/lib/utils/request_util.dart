@@ -12,6 +12,7 @@ import 'package:dine_ease/models/register_restaurant_form.dart';
 import 'package:dine_ease/models/reservation_create.dart';
 import 'package:dine_ease/models/reservation_model.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
+import 'package:dine_ease/models/review_models.dart';
 import 'package:dine_ease/models/user_model.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -536,5 +537,73 @@ class RequestUtil {
       Logger().e('Error getting meetings by user id: $e');
       rethrow;
     }
+  }
+
+  Future<List<Review>> getReviewsByUserId (int userId) async{
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['REVIEW_GET_BY_USER_ID']! + userId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> reviews = jsonDecode(resp.body);
+      return reviews.map((review) => Review.fromJson(review)).toList();
+    }catch(e){
+      Logger().e('Error getting reviews by user id: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> deleteRemoveReview(int reviewId) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['REMOVE_REVIEW_DELETE']!+ reviewId.toString());
+      Logger().i(url);
+      resp = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+      );
+      Logger().i('review: $reviewId');
+
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error removing review: $e');
+      rethrow;
+    }    
+  }
+
+  Future<void> updateReview(int reviewId,Review review) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['REVIEW_UPDATE']! + reviewId.toString());
+      Logger().i(url);
+      resp = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(review.toUpdateMap())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error updating review: $e');
+      rethrow;
+    }    
   }
 }

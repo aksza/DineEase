@@ -14,14 +14,17 @@ namespace DineEaseApp.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
         private readonly IReviewRepository _reviewRepository;
+        private readonly IRestaurantRepository _restaurantRepository;
 
-        public ReviewController(IMapper mapper, IConfiguration configuration, IReviewRepository reviewRepository,IUserRepository userRepository)
+        public ReviewController(IMapper mapper, IConfiguration configuration, IReviewRepository reviewRepository,IUserRepository userRepository,IRestaurantRepository restaurantRepository)
         {
             _mapper = mapper;
             _configuration = configuration;
             _reviewRepository = reviewRepository;
             _userRepository = userRepository;
+            _restaurantRepository = restaurantRepository;
         }
+
 
         [HttpGet("user/{userId}")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Review>))]
@@ -29,7 +32,14 @@ namespace DineEaseApp.Controllers
         {
             var reviews = _mapper.Map<List<ReviewDto>>(await _reviewRepository.GetReviewsByUserId(userId));
 
-            if(!ModelState.IsValid)
+            foreach (var review in reviews)
+            {
+                var res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(review.RestaurantId));
+
+                review.RestaurantName = res.Name;
+            }
+
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -41,6 +51,13 @@ namespace DineEaseApp.Controllers
         public async Task<IActionResult> GetReviewsByRestaurantId(int restaurantId)
         {
             var reviews = _mapper.Map<List<ReviewDto>>(await _reviewRepository.GetReviewsByRestaurantId(restaurantId));
+            
+            foreach(var review in reviews)
+            {
+                var res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(review.RestaurantId));
+
+                review.RestaurantName = res.Name;
+            }
 
             if (!ModelState.IsValid)
             {
@@ -80,7 +97,7 @@ namespace DineEaseApp.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> UpdateReview(int reviewId, [FromBody]ReviewDto reviewDto)
+        public async Task<IActionResult> UpdateReview(int reviewId, [FromBody]ReviewCreateDto reviewDto)
         {
             if(reviewDto == null)
             {
@@ -120,7 +137,7 @@ namespace DineEaseApp.Controllers
             return NoContent();
         }
 
-        [HttpDelete("deleteReview")]
+        [HttpDelete("deleteReview/{id}")]
         [ProducesResponseType(200)]
         public async Task<IActionResult> DeleteReview(int id)
         {

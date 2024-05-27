@@ -18,6 +18,7 @@ import 'package:dine_ease/screens/sign_up.dart';
 import 'package:dine_ease/screens/splash_screen.dart';
 import 'package:dine_ease/screens/user_meeting_screen.dart';
 import 'package:dine_ease/screens/user_reservation_screen.dart';
+import 'package:dine_ease/screens/user_review_screen.dart';
 import 'package:dine_ease/screens/user_screen.dart';
 import 'package:dine_ease/screens/welcome.dart';
 import 'package:flutter/material.dart';
@@ -95,6 +96,7 @@ class MyApp extends StatelessWidget {
             '/edit-profile': (context) => const EditProfileScreen(),
             '/user-reservation' : (context) => const UserReservationScreen(isreservation: false,),
             '/user-meeting' : (context) => const UserMeetingScreen(),
+            '/user-review' : (context) => const UserReviewScreen(),
           },
         )
     );
