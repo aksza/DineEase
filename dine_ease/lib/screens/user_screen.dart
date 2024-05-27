@@ -1,5 +1,6 @@
 import 'package:dine_ease/auth/auth_service.dart';
 import 'package:dine_ease/screens/edit_profile_screen.dart';
+import 'package:dine_ease/screens/user_meeting_screen.dart';
 import 'package:dine_ease/screens/user_reservation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -112,7 +113,9 @@ class _UserScreen extends State<UserScreen> {
               const Divider(),
               //meetings
               GestureDetector(
-                onTap: (){},
+                onTap: (){
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserMeetingScreen()));
+                },
                 child: 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

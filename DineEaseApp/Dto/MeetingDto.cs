@@ -8,12 +8,14 @@ namespace DineEaseApp.Dto
         public int Id { get; set; }
         //[ForeignKey("Event")]
         public int EventId { get; set; }
-        public EventTypeDto Event { get; set; }
+        //public EventTypeDto Event { get; set; }
+        public string EventName { get; set; }
         //[ForeignKey("User")]
         public int UserId { get; set; }
         //public UserDto User { get; set; }
         //[ForeignKey("Restaurant")]
         public int RestaurantId { get; set; }
+        public string RestaurantName { get; set; }
         //public RestaurantDto Restaurant { get; set; }
         public DateTime EventDate { get; set; }
         public int GuestSize { get; set; }

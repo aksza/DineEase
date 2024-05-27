@@ -51,7 +51,11 @@ namespace DineEaseApp.Controllers
             {
                 if(meeting.Accepted == true)
                 {
-                    meeting.Event = _mapper.Map<EventTypeDto>(await _eventTypeRepository.GetByIdAsync(meeting.EventId));
+                    //meeting.Event = _mapper.Map<EventTypeDto>(await _eventTypeRepository.GetByIdAsync(meeting.EventId));
+                    var ev = _mapper.Map<EventTypeDto>(await _eventTypeRepository.GetByIdAsync(meeting.EventId));
+                    var restaurant = _mapper.Map<Restaurant>(await _restaurantRepository.GetRestaurantById(meeting.RestaurantId));
+                    meeting.EventName = ev.EventName;
+                    meeting.RestaurantName = restaurant.Name;
                     acceptedMeetings.Add(meeting);
                 }
             }
@@ -73,7 +77,11 @@ namespace DineEaseApp.Controllers
             {
                 if (meeting.Accepted == null)
                 {
-                    meeting.Event = _mapper.Map<EventTypeDto>(await _eventTypeRepository.GetByIdAsync(meeting.EventId));
+                    //meeting.Event = _mapper.Map<EventTypeDto>(await _eventTypeRepository.GetByIdAsync(meeting.EventId));
+                    var ev = _mapper.Map<EventTypeDto>(await _eventTypeRepository.GetByIdAsync(meeting.EventId));
+                    var restaurant = _mapper.Map<Restaurant>(await _restaurantRepository.GetRestaurantById(meeting.RestaurantId));
+                    meeting.EventName = ev.EventName;
+                    meeting.RestaurantName = restaurant.Name;
                     res.Add(meeting);
                 }
             }

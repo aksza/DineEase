@@ -5,6 +5,7 @@ import 'package:dine_ease/auth/db_service.dart';
 import 'package:dine_ease/models/event_post_model.dart';
 import 'package:dine_ease/models/eventt_model.dart';
 import 'package:dine_ease/models/meeting_create.dart';
+import 'package:dine_ease/models/meeting_model.dart';
 import 'package:dine_ease/models/menu_model.dart';
 import 'package:dine_ease/models/order_model.dart';
 import 'package:dine_ease/models/register_restaurant_form.dart';
@@ -491,4 +492,49 @@ class RequestUtil {
     }
   }
 
+  Future<List<Meeting>> getMeetingsByUserId(int userId) async{
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['MEETING_GET_BY_USER_ID']! + userId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> meetings = jsonDecode(resp.body);
+      return meetings.map((meeting) => Meeting.fromJson(meeting)).toList();
+    }catch(e){
+      Logger().e('Error getting meetings by user id: $e');
+      rethrow;
+    }
+  }
+
+  Future<List<Meeting>> getWaitingsMByUserId(int userId) async{
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['WAITINGM_GET_BY_USER_ID']! + userId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> meetings = jsonDecode(resp.body);
+      return meetings.map((meeting) => Meeting.fromJson(meeting)).toList();
+    }catch(e){
+      Logger().e('Error getting meetings by user id: $e');
+      rethrow;
+    }
+  }
 }
