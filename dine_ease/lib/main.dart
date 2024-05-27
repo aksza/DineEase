@@ -92,7 +92,7 @@ class MyApp extends StatelessWidget {
             '/meeting': (context) => MeetingScreen(selectedRestaurant: null),
             '/menu_screen': (context) => MenuScreen(restaurantId: 1),
             '/edit-profile': (context) => const EditProfileScreen(),
-            '/user-reservation' : (context) => const UserReservationScreen(),
+            '/user-reservation' : (context) => const UserReservationScreen(isreservation: false,),
           },
         )
     );

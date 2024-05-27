@@ -468,4 +468,27 @@ class RequestUtil {
       rethrow;
     }
   }
+  Future<List<Reservation>> getWaitingsByUserId(int userId) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['WAITING_GET_BY_USER_ID']! + userId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> reservations = jsonDecode(resp.body);
+      return reservations.map((reservation) => Reservation.fromJson(reservation)).toList();
+    }catch(e){
+      Logger().e('Error getting reservations by user id: $e');
+      rethrow;
+    }
+  }
+
 }

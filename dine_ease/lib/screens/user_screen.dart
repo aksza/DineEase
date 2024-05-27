@@ -83,7 +83,7 @@ class _UserScreen extends State<UserScreen> {
               //reservations
               GestureDetector(
                 onTap: (){
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserReservationScreen()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserReservationScreen(isreservation: true,)));
                 },
                 child: 
                   Row(
@@ -97,7 +97,9 @@ class _UserScreen extends State<UserScreen> {
               const Divider(),
               //waitinglist
               GestureDetector(
-                onTap: (){},
+                onTap: (){
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserReservationScreen(isreservation: false,)));
+                },
                 child: 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

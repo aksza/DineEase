@@ -6,10 +6,10 @@ import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserReservationScreen extends StatefulWidget {
-  
   static const routename = '/user-reservation';
+  final bool isreservation;
 
-  const UserReservationScreen({Key? key}) : super(key: key);
+  const UserReservationScreen({super.key, required this.isreservation});
 
   @override
   State<UserReservationScreen> createState() => _UserReservationScreenState();
@@ -40,11 +40,20 @@ class _UserReservationScreenState extends State<UserReservationScreen> {
   //fetching reservations by user id
   Future<void> fetchReservations() async {
       try {
-        var reservationData = await requestUtil.getReservationsByUserId(userId);
-        setState(() {
-          reservations = reservationData;
-          isLoading = false;
-        });
+        if(widget.isreservation == true){
+          var reservationData = await requestUtil.getReservationsByUserId(userId);
+          setState(() {
+            reservations = reservationData;
+            isLoading = false;
+          });
+        }
+        else{
+          var reservationData = await requestUtil.getWaitingsByUserId(userId);
+          setState(() {
+            reservations = reservationData;
+            isLoading = false;
+          });
+        }
       } catch (e) {
         Logger().e('Error fetching reservations: $e');
         setState(() {
@@ -52,6 +61,8 @@ class _UserReservationScreenState extends State<UserReservationScreen> {
         });
       }
     }
+
+
     
   @override
   Widget build(BuildContext context) {
@@ -64,7 +75,8 @@ class _UserReservationScreenState extends State<UserReservationScreen> {
             Navigator.pop(context);
           },
         ),
-        title: const Text('Your Reservations'),
+        //title is reservation or waiting
+        title: Text(widget.isreservation ? 'Reservations' : 'Waiting List'),
       ),
        body: isLoading
           ? Center(child: CircularProgressIndicator())
