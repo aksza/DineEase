@@ -29,6 +29,10 @@ class _RestaurantViewState extends State<RestaurantView> {
 
   Future<Restaurant> getRestaurantById(int id) async{
     var srestaurant = await _requestUtil.getRestaurantById(id);
+    // var cuisines = await _requestUtil.getCuisinesByRestaurantId(id);
+    // var categories = await _requestUtil.getRCategoriesByRestaurantId(id);
+    // srestaurant.cuisines = cuisines;
+    // srestaurant.categories = categories;
     return srestaurant;
   }
 

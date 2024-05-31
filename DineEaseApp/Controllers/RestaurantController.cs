@@ -108,7 +108,7 @@ namespace DineEaseApp.Controllers
 
             if (cuisines == null || cuisines.Count == 0)
             {
-                return NotFound();
+                return Ok(null);
             }
 
             foreach (var cuisine in cuisines)
@@ -137,7 +137,7 @@ namespace DineEaseApp.Controllers
 
             if (categories == null || categories.Count == 0)
             {
-                return NotFound();
+                return Ok(null);
             }
 
             foreach (var category in categories)
@@ -167,7 +167,7 @@ namespace DineEaseApp.Controllers
             var openings = _mapper.Map<List<OpeningDto>>(await _openingRepository.GetOpeningsByRestaurantId(restaurantId));
             if(openings == null || openings.Count == 0)
             {
-                return NotFound();
+                return Ok(null);
             }
 
            if(!ModelState.IsValid)
@@ -186,7 +186,7 @@ namespace DineEaseApp.Controllers
 
             if(seatings == null || seatings.Count == 0)
             {
-                return NotFound();
+                return Ok(null);
             }
 
             foreach(var seating in seatings)

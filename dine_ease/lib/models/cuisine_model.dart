@@ -16,6 +16,13 @@ class Cuisine{
     );
   }
 
+  factory Cuisine.fromCJson(dynamic json){
+    return Cuisine(
+      id: json['cuisineId'] as int,
+      cuisineName: json['cuisineName'] as String
+    );
+  }
+
   Map<String, dynamic> toMap(){
     return {
       'id': id,

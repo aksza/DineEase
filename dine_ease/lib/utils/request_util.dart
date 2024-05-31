@@ -775,7 +775,7 @@ class RequestUtil {
   }
 
   //getRCategoriesByRestaurantId
-  Future<List<RCategory>> getRCategoriesByRestaurantId(int restaurantId) async{
+  Future<List<RCategory>?> getRCategoriesByRestaurantId(int restaurantId) async{
     try{
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
@@ -788,10 +788,13 @@ class RequestUtil {
         }       
       );
       Logger().i(resp.body);
+      if (resp.body.isEmpty) {
+        return null;
+      }
       List<dynamic> rCategories = jsonDecode(resp.body);
-      return rCategories.map((rCategory) => RCategory.fromJson(rCategory)).toList();
+      return rCategories.map((rCategory) => RCategory.fromRJson(rCategory)).toList();
     }catch(e){
-      Logger().e('Error getting rCategories by restaurant: $e');
+      Logger().e('${restaurantId} Error getting rCategories by restaurant: $e');
       rethrow;
     }
   }
@@ -819,7 +822,7 @@ class RequestUtil {
   }
 
   //getCuisinesByRestaurantId
-  Future<List<Cuisine>> getCuisinesByRestaurantId(int restaurantId) async{
+  Future<List<Cuisine>?> getCuisinesByRestaurantId(int restaurantId) async{
     try{
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
@@ -832,8 +835,11 @@ class RequestUtil {
         }       
       );
       Logger().i(resp.body);
+      if (resp.body.isEmpty) {
+        return null;
+      }
       List<dynamic> cuisines = jsonDecode(resp.body);
-      return cuisines.map((cuisine) => Cuisine.fromJson(cuisine)).toList();
+      return cuisines.map((cuisine) => Cuisine.fromCJson(cuisine)).toList();
     }catch(e){
       Logger().e('Error getting cuisines by restaurant: $e');
       rethrow;
@@ -841,7 +847,7 @@ class RequestUtil {
   }
 
   //getOpeningsByRestaurantId
-  Future<List<Opening>> getOpeningsByRestaurantId(int restaurantId) async{
+  Future<List<Opening>?> getOpeningsByRestaurantId(int restaurantId) async{
     try{
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
@@ -854,6 +860,9 @@ class RequestUtil {
         }       
       );
       Logger().i(resp.body);
+      if (resp.body.isEmpty) {
+        return null;
+      }
       List<dynamic> openings = jsonDecode(resp.body);
       return openings.map((opening) => Opening.fromJson(opening)).toList();
     }catch(e){
@@ -885,7 +894,7 @@ class RequestUtil {
   }
 
   //getPriceByRestaurantId
-  Future<Price> getPriceByRestaurantId(int restaurantId) async{
+  Future<Price?> getPriceByRestaurantId(int restaurantId) async{
     try{
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
@@ -898,6 +907,9 @@ class RequestUtil {
         }       
       );
       Logger().i(resp.body);
+      if (resp.body.isEmpty) {
+        return null;
+      }
       return Price.fromJson(jsonDecode(resp.body));
     }catch(e){
       Logger().e('Error getting price by restaurant: $e');
@@ -928,7 +940,7 @@ class RequestUtil {
   }
 
   //getSeatingsByRestaurantId
-  Future<List<Seating>> getSeatingsByRestaurantId(int restaurantId) async{
+  Future<List<Seating>?> getSeatingsByRestaurantId(int restaurantId) async{
     try{
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
@@ -941,8 +953,11 @@ class RequestUtil {
         }       
       );
       Logger().i(resp.body);
+      if (resp.body.isEmpty) {
+        return null;
+      }
       List<dynamic> seatings = jsonDecode(resp.body);
-      return seatings.map((seating) => Seating.fromJson(seating)).toList();
+      return seatings.map((seating) => Seating.fromSJson(seating)).toList();
     }catch(e){
       Logger().e('Error getting seatings by restaurant: $e');
       rethrow;

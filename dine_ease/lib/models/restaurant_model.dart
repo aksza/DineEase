@@ -1,3 +1,9 @@
+import 'package:dine_ease/models/cuisine_model.dart';
+import 'package:dine_ease/models/opening_model.dart';
+import 'package:dine_ease/models/r_category.dart';
+import 'package:dine_ease/models/seating_model.dart';
+import 'package:flutter/foundation.dart';
+
 class Restaurant {
   int id;
   String name;
@@ -9,6 +15,10 @@ class Restaurant {
   String price;
   bool forEvent;
   int maxTableCapacity;
+  List<Cuisine>? cuisines;
+  List<RCategory>? categories;
+  List<Opening>? openings;
+  List<Seating>? seatings;
 
   Restaurant({
     required this.id,
@@ -17,10 +27,14 @@ class Restaurant {
     required this.address,
     required this.phoneNum,
     required this.email,
-    this.rating, // Módosítás: átállítás int-ről double-re
+    this.rating,
     required this.price,
     required this.forEvent,
     required this.maxTableCapacity,
+    this.cuisines,
+    this.categories,
+    this.openings,
+    this.seatings,
   });
 
   factory Restaurant.fromJson(dynamic json) {

@@ -16,6 +16,13 @@ class Seating{
     );
   }
 
+  factory Seating.fromSJson(dynamic json){
+    return Seating(
+      id: json['seatingId'] as int,
+      seatingName: json['seatingName'] as String
+    );
+  }
+
   Map<String, dynamic> toMap(){
     return {
       'id': id,
