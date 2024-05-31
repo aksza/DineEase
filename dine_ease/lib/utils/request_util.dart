@@ -1056,4 +1056,47 @@ class RequestUtil {
     }
   }
 
+  //search in restaurants
+  Future<List<Restaurant>?> searchRestaurants(String search) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['RESTAURANT_SEARCH']! + search);
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }       
+      );
+      Logger().i(resp.body);
+      List<dynamic> restaurants = jsonDecode(resp.body);
+      return restaurants.map((restaurant) => Restaurant.fromJson(restaurant)).toList();
+    }catch(e){
+      Logger().e('Error searching restaurants: $e');
+      rethrow;
+    }
+  }
+
+  //search in events
+  Future<List<Eventt>?> searchEvents(String search) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['EVENT_SEARCH']! + search);
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }       
+      );
+      Logger().i(resp.body);
+      List<dynamic> events = jsonDecode(resp.body);
+      return events.map((event) => Eventt.fromJson(event)).toList();
+    }catch(e){
+      Logger().e('Error searching events: $e');
+      rethrow;
+    }
+  }
 }

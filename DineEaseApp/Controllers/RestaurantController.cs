@@ -47,6 +47,31 @@ namespace DineEaseApp.Controllers
 
         }
 
+        [HttpGet("search/{someText}")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> Search(string someText)
+        {
+            
+            var results = _mapper.Map<List<RestaurantDto>?>(await _restaurantRepository.SearchRestaurants(someText));
+
+            var restaurantDtos = results
+                .Select(restaurant =>
+                {
+                    var restaurantDto = restaurant;
+                    restaurantDto.Owner = _mapper.Map<OwnerDto>(_ownerRepository.GetOwner(restaurant.OwnerId));
+                    restaurantDto.Price = _mapper.Map<PriceDto>(_priceRepository.GetPrice(restaurant.PriceId));
+                    return restaurantDto;
+                });
+
+            //var restaurants = _restaurantRepository.GetRestaurants();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            return Ok(restaurantDtos);
+
+        }
+
         [HttpGet("cuisines")]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetCuisines()

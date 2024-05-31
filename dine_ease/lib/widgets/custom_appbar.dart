@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget{
-  void Function(int)? onTabChange;
+  void Function(int,String?)? onTabChange;
 
   CustomAppBar(this.onTabChange, {Key? key});
   @override
@@ -53,7 +53,16 @@ class _CustomAppBar extends State<CustomAppBar>{
                             hintStyle: MaterialStateProperty.all(const TextStyle(color: Colors.grey, fontSize: 14.0)),                    
                           ),
                         ),
-                        IconButton(onPressed: (){},icon: const Icon(Icons.search_rounded)),
+                        IconButton(onPressed: (){
+                          if(textController.text.isNotEmpty)
+                          {
+                            widget.onTabChange!(4,textController.text);
+                            setState(() {
+                              textController.clear();
+                            });
+                          }
+                        },
+                        icon: const Icon(Icons.search_rounded)),
                         //space between
                         //notification button with an icon in background
                         // ElevatedButton(
@@ -105,7 +114,7 @@ class _CustomAppBar extends State<CustomAppBar>{
                       child: DefaultTabController(length: 4, child: 
                       TabBar(
                         
-                        onTap: (selectedTabIndex) {widget.onTabChange!(selectedTabIndex);},
+                        onTap: (selectedTabIndex) {widget.onTabChange!(selectedTabIndex,null);},
                         isScrollable: true,
                         //set tabalignment to center
                         tabAlignment: TabAlignment.center,

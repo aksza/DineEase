@@ -7,5 +7,6 @@ namespace DineEaseApp.Interfaces
         Task<ICollection<Event>> GetEventsAsync();
         Task<ICollection<Event>> GetEventsByUserFavorits();
         Task<Event?> GetEventById(int id);
+        Task<List<Event>?> SearchEvents(string someText);
     }
 }

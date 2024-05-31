@@ -14,6 +14,7 @@ import 'package:dine_ease/screens/meeting_screen.dart';
 import 'package:dine_ease/screens/menu_screen.dart';
 import 'package:dine_ease/screens/reservation_screen.dart';
 import 'package:dine_ease/screens/restaurant_details_screen.dart';
+import 'package:dine_ease/screens/search_page.dart';
 import 'package:dine_ease/screens/sign_up.dart';
 import 'package:dine_ease/screens/splash_screen.dart';
 import 'package:dine_ease/screens/user_meeting_screen.dart';
@@ -99,6 +100,7 @@ class MyApp extends StatelessWidget {
             '/user-meeting' : (context) => const UserMeetingScreen(),
             '/user-review' : (context) => const UserReviewScreen(),
             '/user-rating-screen' : (context) =>const UserRatingScreen(),
+            '/search' :(context) => SearchPage(),
           },
         )
     );

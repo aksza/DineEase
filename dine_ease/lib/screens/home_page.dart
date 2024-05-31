@@ -3,6 +3,7 @@ import 'package:dine_ease/screens/event_page.dart';
 import 'package:dine_ease/screens/for_you_page.dart';
 import 'package:dine_ease/screens/restaurant_for_event_page.dart';
 import 'package:dine_ease/screens/restaurant_page.dart';
+import 'package:dine_ease/screens/search_page.dart';
 import 'package:dine_ease/widgets/custom_appbar.dart';
 import 'package:dine_ease/widgets/restaurant_view.dart';
 import 'package:flutter/material.dart';
@@ -17,47 +18,53 @@ class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePage();
 }
-
 class _HomePage extends State<HomePage> {
-  // late String email = '';
-  // late SharedPreferences prefs;
-
-  // @override
-  // void initState(){
-  //   super.initState();
-  //   initSharedPrefs();
-  // }
-
-  // void initSharedPrefs() async{
-  //   prefs = await SharedPreferences.getInstance();
-  //   email = prefs.getString('email')!;
-  //   setState(() {
-  //     email = email;
-  //   });
-  // }
   int _selectedIndex = 0;
+  String query = '';
 
-  void navigateToScreens(int index){
-    setState(() {
-      _selectedIndex = index;
-    });
+  @override
+  void initState() {
+    super.initState();
+    navigateToScreens(0, query);
   }
 
-  final List<Widget> _pages = [
-    ForYouPage(),
-    RestaurantPage(),
-    EventPage(),
-    RestaurantForEventPage()
-  ];
+  void navigateToScreens(int index, String? q) {
+    setState(() {
+      _selectedIndex = index;
+      if (q != null) {
+        query = q;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: CustomAppBar(
-        (index) => navigateToScreens(index),
+        (index, q) {
+          navigateToScreens(index, q);
+        },
       ),
-      body: _pages[_selectedIndex],
+      body: _selectedIndex == 4 ? buildSearchPage() : _buildPage(_selectedIndex),
+    );
+  }
+
+  Widget _buildPage(int index) {
+    final List<Widget> _pages = [
+      ForYouPage(),
+      RestaurantPage(),
+      EventPage(),
+      RestaurantForEventPage(),
+    ];
+
+    return _pages[index];
+  }
+
+  Widget buildSearchPage() {
+    return KeyedSubtree(
+      key: UniqueKey(), 
+      child: SearchPage(query: query),
     );
   }
 }

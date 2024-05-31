@@ -3,6 +3,7 @@ using DineEaseApp.Dto;
 using DineEaseApp.Interfaces;
 using DineEaseApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace DineEaseApp.Controllers
 {
@@ -25,6 +26,31 @@ namespace DineEaseApp.Controllers
             _restaurantRepository = restaurantRepository;
             _mapper = mapper;
             //_configuration = configuration;
+        }
+
+
+        [HttpGet("search/{someText}")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> Search(string someText)
+        {
+            var results = _mapper.Map<List<EventDto>>(await _eventRepository.SearchEvents(someText));
+
+            var eventDtos = results
+                .Select(async e =>
+                {
+                    var eventDto = e;
+                    RestaurantDto res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(eventDto.RestaurantId));
+                    eventDto.RestaurantName = res.Name;
+                    return eventDto;
+                }
+                );
+            var eventDtoList = await Task.WhenAll(eventDtos);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(eventDtoList);
         }
 
         [HttpGet]

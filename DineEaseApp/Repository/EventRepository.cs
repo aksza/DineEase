@@ -37,5 +37,15 @@ namespace DineEaseApp.Repository
         {
             throw new NotImplementedException();
         }
+
+        public Task<List<Event>?> SearchEvents(string someText)
+        {
+            var result = _context.Events
+                .Where(r => EF.Functions.Like(r.EventName, $"%{someText}%") ||
+                            EF.Functions.Like(r.Description, $"%{someText}%"))
+                .ToListAsync();
+
+            return result;
+        }
     }
 }

@@ -169,5 +169,16 @@ namespace DineEaseApp.Repository
             return await Save();
         }
 
+        public Task<List<Restaurant>?> SearchRestaurants(string someText)
+        {
+            // Szűrés a Restaurants táblában a Name, Description és Address mezők alapján
+            var result = _context.Restaurants
+                .Where(r => EF.Functions.Like(r.Name, $"%{someText}%") ||
+                            EF.Functions.Like(r.Description, $"%{someText}%") ||
+                            EF.Functions.Like(r.Address, $"%{someText}%"))
+                .ToListAsync();
+
+            return result;
+        }
     }
 }
