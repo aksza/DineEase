@@ -1,15 +1,16 @@
 import 'package:dine_ease/auth/auth_service.dart';
 import 'package:dine_ease/screens/edit_profile_screen.dart';
+import 'package:dine_ease/screens/favorits_page.dart';
 import 'package:dine_ease/screens/user_meeting_screen.dart';
 import 'package:dine_ease/screens/user_rating_screen.dart';
 import 'package:dine_ease/screens/user_reservation_screen.dart';
 import 'package:dine_ease/screens/user_review_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserScreen extends StatefulWidget {
   static const routeName = '/user';
-  // final String token;
 
   const UserScreen({super.key});
 
@@ -38,7 +39,7 @@ class _UserScreen extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      // backgroundColor: Colors.grey[300],
       body: 
       SafeArea(
         child: 
@@ -46,136 +47,155 @@ class _UserScreen extends State<UserScreen> {
             //
             children: [
               //user icon
-              Center(child: const Icon(Icons.person, size: 100)),
-              //user name
-              Text(email),
-              //space between
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  Center(child: const Icon(Icons.person, size: 100)),
+                  //user name
+                  Center(child: Text(email)),
+                ],
+              ),
+              // Space between
               const SizedBox(height: 10),
               const Divider(),
 
-              //informations about user
+              // Information about user
               GestureDetector(
-                onTap: (){
-                  //navigate to edit profile
+                onTap: () {
+                  // Navigate to edit profile
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => EditProfileScreen()));
                 },
-                child: 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Edit Profile'),
-                      
-                    ],
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.edit),
+                    SizedBox(width: 10),
+                    const Text('Edit Profile'),
+                  ],
+                ),
               ),
               const Divider(),
-              //favorits
+
+              // Favorites
               GestureDetector(
-                //navigate to favorits
-                onTap: () => Navigator.of(context).pushNamed('/favorits') ,
-                child: 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Favorits'),
-                      
-                    ],
-                  ),
+                // Navigate to favorites
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => FavoritsPage())),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.favorite),
+                    SizedBox(width: 10),
+                    const Text('Favorites'),
+                  ],
+                ),
               ),
               const Divider(),
-              //reservations
+
+              // Reservations
               GestureDetector(
-                onTap: (){
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserReservationScreen(isreservation: true,)));
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserReservationScreen(isreservation: true)));
                 },
-                child: 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Reservations'),
-                      
-                    ],
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.book),
+                    SizedBox(width: 10),
+                    const Text('Reservations'),
+                  ],
+                ),
               ),
               const Divider(),
-              //waitinglist
+
+              // Waiting list
               GestureDetector(
-                onTap: (){
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserReservationScreen(isreservation: false,)));
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserReservationScreen(isreservation: false)));
                 },
-                child: 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Waitinglist'),
-                      
-                    ],
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.list),
+                    SizedBox(width: 10),
+                    const Text('Waiting list'),
+                  ],
+                ),
               ),
               const Divider(),
-              //meetings
+
+              // Meetings
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserMeetingScreen()));
                 },
-                child: 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Meetings'),
-                      
-                    ],
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.group),
+                    SizedBox(width: 10),
+                    const Text('Meetings'),
+                  ],
+                ),
               ),
               const Divider(),
-              //reviews
+
+              // Reviews
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserReviewScreen()));
                 },
-                child: 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Reviews'),
-                      
-                    ],
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.rate_review),
+                    SizedBox(width: 10),
+                    const Text('Reviews'),
+                  ],
+                ),
               ),
               const Divider(),
-              //ratings
+
+              // Ratings
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserRatingScreen()));
                 },
-                child: 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Ratings'),
-                      
-                    ],
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.star),
+                    SizedBox(width: 10),
+                    const Text('Ratings'),
+                  ],
+                ),
               ),
               const Divider(),
-              //logout
+
+              // Logout
               GestureDetector(
-                onTap: (){AuthService().logout(context);},
-                child: 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Logout'),
-                      
-                    ],
-                  ),
+                onTap: () {
+                  AuthService().logout(context);
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Icon(Icons.logout),
+                    SizedBox(width: 10),
+                    const Text('Logout'),
+                  ],
+                ),
               ),
               const Divider(),
             ],
-            
-          )
-      ),
-    );
-
+          ),
+        ),
+      );
+  
   }
 }
