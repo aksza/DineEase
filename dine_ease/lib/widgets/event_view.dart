@@ -28,7 +28,8 @@ class _EventViewState extends State<EventView> {
 
   Future<Eventt> getEventById(int id) async{
     var sevent = await _requestUtil.getEventById(id);
-    Logger().i('eventview:${sevent.eventName} ${sevent.restaurantName} ${sevent.startingDate} ${sevent.endingDate} ${sevent.id} ${sevent.restaurantId}');
+    // Logger().i('eventview:${sevent.eventName} ${sevent.restaurantName} ${sevent.startingDate} ${sevent.endingDate} ${sevent.id} ${sevent.restaurantId}');
+    sevent.eCategories = widget.event.eCategories;
     return sevent;
   }
   

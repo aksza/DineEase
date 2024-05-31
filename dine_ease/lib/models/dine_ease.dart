@@ -1,4 +1,5 @@
 import 'package:dine_ease/auth/db_service.dart';
+import 'package:dine_ease/models/e_category.dart';
 import 'package:dine_ease/models/event_post_model.dart';
 import 'package:dine_ease/models/eventt_model.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
@@ -105,6 +106,7 @@ void initApp() async {
     List<Eventt> events = await _requestUtil.getEvents();
     // List<RestaurantPost> restaurantList = [];
     for(var event in events){
+      List<ECategory> categories = await _requestUtil.getECategoriesByEvent(event.id);
       _eventList.add(EventPost(
         id: event.id,
         eventName: event.eventName,
@@ -112,7 +114,8 @@ void initApp() async {
         restaurantName: event.restaurantName,
         description: event.description,
         startingDate: event.startingDate,
-        endingDate: event.endingDate
+        endingDate: event.endingDate,
+        eCategories: categories
         // rating: 4.0,
         // imagePath: 'assets/test_images/kfc.jpeg'
       ));

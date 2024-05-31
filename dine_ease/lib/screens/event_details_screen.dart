@@ -102,6 +102,24 @@ class _EventDetailsState extends State<EventDetails> {
                     ),
                 ),
                 ),
+
+                //if the event has categories, display them
+                if(widget.selectedEvent!.eCategories != null)
+                ...[
+                  Padding(padding: 
+                    const EdgeInsets.fromLTRB(15.0, 15, 15, 5),
+                    child: Text('Categories:', style: TextStyle(fontSize: 20),),
+                  ),
+                  Padding(padding: 
+                    const EdgeInsets.fromLTRB(15.0, 0, 15, 5),
+                    child: Text('${widget.selectedEvent!.eCategories!.map((e) => e.eCategoryName).join(', ')}',
+                    style: TextStyle(
+                      fontSize: 17,
+                      color: Color.fromARGB(255, 102, 102, 102),
+                      ),
+                  ),
+                  ),
+                ],
                 //description title
                 Padding(padding: 
                   const EdgeInsets.fromLTRB(15.0, 15, 15, 5),
