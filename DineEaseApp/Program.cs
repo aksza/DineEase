@@ -23,6 +23,20 @@ builder.Services.AddScoped<IPriceRepository, PriceRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPhotosRestaurantRepository, PhotosRestaurantRepository>();
 builder.Services.AddTransient<IFileService,FileService>();
+builder.Services.AddScoped<IFavoritRepository, FavoritRepository>();
+builder.Services.AddScoped<IMeetingRepository, MeetingRepository>();
+builder.Services.AddScoped<IRatingRepository, RatingRepository>();
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IEventRepository,EventRepository>();
+builder.Services.AddScoped<IMenuRepository, MenuRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<ICategoriesEventRepository,CategoriesEventRepository>();
+builder.Services.AddScoped<ICategoriesRestaurantRepository,CategoriesRestaurantRepository>();
+builder.Services.AddScoped<ICuisinesRestaurantRepository, CuisinesRestaurantRepository>();
+builder.Services.AddScoped<IOpeningRepository, OpeningRepository>();
+builder.Services.AddScoped<ISeatingsRestaurantRepository,SeatingsRestaurantRepository>();
+builder.Services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
 
 builder.Services.AddSwaggerGen(opt =>
 {
@@ -54,6 +68,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 }
 );
 builder.Services.AddCors(options =>

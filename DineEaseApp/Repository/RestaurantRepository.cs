@@ -36,7 +36,17 @@ namespace DineEaseApp.Repository
         //    throw new NotImplementedException();
         //}
 
-        public async Task<Restaurant> GetRestaurantById(int id)
+        public async Task<Restaurant?> GetRestaurantWithDetailsAsync(int restaurantId)
+        {
+            return await _context.Restaurants
+                .Include(r => r.CuisinesRestaurants)
+                .Include(r => r.Openings)
+                .Include(r => r.SeatingsRestaurants)
+                .Include(r => r.CategoriesRestaurants)
+                .FirstOrDefaultAsync(r => r.Id == restaurantId);
+        }
+
+        public async Task<Restaurant?> GetRestaurantById(int id)
         {
             var restaurant =  await _context.Restaurants
                 .Where(r => r.Id == id)
@@ -55,10 +65,10 @@ namespace DineEaseApp.Repository
             return await _context.Restaurants.Where(r => r.Name == name).ToListAsync();
         }
 
-        public Task<ICollection<Restaurant>> GetRestaurantForEvent()
-        {
-            throw new NotImplementedException();
-        }
+        //public Task<ICollection<Restaurant>> GetRestaurantForEvent()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         //public string GetRestaurantDescription(int id)
         //{
@@ -100,13 +110,13 @@ namespace DineEaseApp.Repository
         //    throw new NotImplementedException();
         //}
 
-        public double GetRestaurantRating(int id)
+        public double? GetRestaurantRating(int id)
         {
             var rating = _context.Ratings.Where(r => r.Id == id);
 
             if(rating.Count() <= 0)
             {
-                return 0;
+                return null;
             }
             return ((double)rating.Sum(r => r.RatingNumber) / rating.Count());
 
@@ -142,6 +152,33 @@ namespace DineEaseApp.Repository
         {
             _context.Update(restaurant);
             return await Save();
+        }
+
+        public async Task<bool> UpdateRestaurantRating(Restaurant restaurant)
+        {
+            double ratingAverage = await _context.Ratings
+                .Where(x => x.RestaurantId == restaurant.Id)
+                .AverageAsync(x => x.RatingNumber);
+
+            string formattedRating = (ratingAverage).ToString("0.0");
+
+            double roundedRating = double.Parse(formattedRating);
+
+            restaurant.Rating = roundedRating;
+            _context.Update(restaurant);
+            return await Save();
+        }
+
+        public Task<List<Restaurant>?> SearchRestaurants(string someText)
+        {
+            // Szűrés a Restaurants táblában a Name, Description és Address mezők alapján
+            var result = _context.Restaurants
+                .Where(r => EF.Functions.Like(r.Name, $"%{someText}%") ||
+                            EF.Functions.Like(r.Description, $"%{someText}%") ||
+                            EF.Functions.Like(r.Address, $"%{someText}%"))
+                .ToListAsync();
+
+            return result;
         }
     }
 }

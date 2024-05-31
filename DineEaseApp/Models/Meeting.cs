@@ -19,5 +19,7 @@ namespace DineEaseApp.Models
         public DateTime MeetingDate { get; set; }
         public string PhoneNum { get; set; }
         public string? Comment { get; set; }
+        public bool? Accepted { get; set; }
+        public string? RestaurantResponse { get; set; }
     }
 }

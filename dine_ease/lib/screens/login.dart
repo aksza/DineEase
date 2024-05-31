@@ -1,10 +1,11 @@
 
 import 'package:dine_ease/auth/auth_service.dart';
-import 'package:dine_ease/screens/for_you.dart';
+import 'package:dine_ease/screens/home_page.dart';
 import 'package:dine_ease/screens/sign_up.dart';
 import 'package:flutter/material.dart';
 import 'package:dine_ease/widgets/custom_button.dart';
 import 'package:dine_ease/widgets/custom_text_field.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,16 +23,16 @@ class _LoginScreenState extends State<LoginScreen>{
   //text editing controllers
   final emailTextController = TextEditingController();
   final passwordTextController = TextEditingController();
-  late SharedPreferences prefs;
-  late String token;
+  // late SharedPreferences prefs;
+  // late String token='';
 
   @override
   void initState(){
     super.initState();
-    SharedPreferences.getInstance().then((value){
-      prefs = value;
-      token = prefs.getString('token')!;
-    });
+    // SharedPreferences.getInstance().then((value){
+    //   prefs = value;
+    //   token = prefs.getString('token')!;
+    // });
   }
 
   @override
@@ -99,9 +100,10 @@ class _LoginScreenState extends State<LoginScreen>{
                             passwordTextController.text
                           );
                           if(loginSuccessfull){
+                            // Logger().i(token);
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => ForYou(token: token,)),
+                              MaterialPageRoute(builder: (context) => HomePage()),
                             );
                           }
                           else{

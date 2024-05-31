@@ -2,6 +2,7 @@
 using DineEaseApp.Dto;
 using DineEaseApp.Interfaces;
 using DineEaseApp.Models;
+using DineEaseApp.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -16,14 +17,28 @@ namespace DineEaseApp.Controllers
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
+        //private readonly IFavoritRepository _favoritRepository;
+        //private readonly IMeetingRepository _meetingRepository;
+        //private readonly IRatingRepository _ratingRepository;
+        //private readonly IReservationRepository _reservationRepository;
+        //private readonly IReviewRepository _reviewRepository;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
 
-        public UserController(IUserRepository userRepository, IMapper mapper, IConfiguration configuration)
+        public UserController(IUserRepository userRepository,
+            //IFavoritRepository favoritRepository,
+            //IMeetingRepository meetingRepository,IRatingRepository ratingRepository,
+            //IReservationRepository reservationRepository, IReviewRepository reviewRepository,
+            IMapper mapper, IConfiguration configuration)
         {
-            _userRepository= userRepository;
-            _mapper= mapper;
-            _configuration= configuration;
+            _userRepository = userRepository;
+            //_favoritRepository = favoritRepository;
+            //_meetingRepository = meetingRepository;
+            //_ratingRepository = ratingRepository;
+            //_reservationRepository = reservationRepository;
+            //_reviewRepository = reviewRepository;
+            _mapper = mapper;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -46,12 +61,58 @@ namespace DineEaseApp.Controllers
             try
             {
                 var user = _mapper.Map<UserDto>(await _userRepository.GetUserById(userId));
+                //user.Favorits = _mapper.Map<List<FavoritDto>>(await _favoritRepository.GetFavoritsByUserId(userId));
+                //user.Meetings = _mapper.Map<List<MeetingDto>>(await _meetingRepository.GetMeetingsByUserId(userId));
+                //user.Ratings = _mapper.Map<List<RatingDto>>(await _ratingRepository.GetRatingsByUserId(userId));
+                //user.Reservations = _mapper.Map<List<ReservationDto>>(await _reservationRepository.GetReservationsByUserId(userId));
+                //user.Reviews = _mapper.Map<List<ReviewDto>>(await _reviewRepository.GetReviewsByUserId(userId));
+
                 return Ok(user);
             }
             catch (Exception ex)
             {
                 return StatusCode(500,ex.Message);
             }
+        }
+
+        [HttpPut("update/{userId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> UpdateUser(int userId,[FromBody]UserUpdateDto updatedUser)
+        {
+            if(updatedUser == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (userId != updatedUser.Id)
+            {
+                return BadRequest(ModelState);
+            }
+            var user = await _userRepository.GetUserById(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var userMap = _mapper.Map<User>(updatedUser);
+            //CreatePasswordHash(updatedUser.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            userMap.PasswordSalt = user.PasswordSalt;
+            userMap.PasswordHash = user.PasswordHash;
+            if (!await _userRepository.UpdateUser(userMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
         }
 
         [HttpPost("register")]

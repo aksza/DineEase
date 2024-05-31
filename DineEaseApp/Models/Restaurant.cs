@@ -12,7 +12,7 @@ namespace DineEaseApp.Models
         public string Email { get; set; }
         public byte[] PasswordSalt { get; set; }
         public byte[] PasswordHash { get; set; }
-        public double Rating { get; set; }
+        public double? Rating { get; set; }
         [ForeignKey("Price")]
         public int PriceId { get; set; }
         public Price Price { get; set; }
