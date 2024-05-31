@@ -2,18 +2,26 @@ import 'dart:convert';
 // import 'dart:html';
 
 import 'package:dine_ease/auth/db_service.dart';
+import 'package:dine_ease/models/cuisine_model.dart';
+import 'package:dine_ease/models/e_category.dart';
 import 'package:dine_ease/models/event_post_model.dart';
+import 'package:dine_ease/models/event_type_model.dart';
 import 'package:dine_ease/models/eventt_model.dart';
 import 'package:dine_ease/models/meeting_create.dart';
 import 'package:dine_ease/models/meeting_model.dart';
 import 'package:dine_ease/models/menu_model.dart';
+import 'package:dine_ease/models/menu_type_model.dart';
+import 'package:dine_ease/models/opening_model.dart';
 import 'package:dine_ease/models/order_model.dart';
+import 'package:dine_ease/models/price_model.dart';
+import 'package:dine_ease/models/r_category.dart';
 import 'package:dine_ease/models/rating_model.dart';
 import 'package:dine_ease/models/register_restaurant_form.dart';
 import 'package:dine_ease/models/reservation_create.dart';
 import 'package:dine_ease/models/reservation_model.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:dine_ease/models/review_models.dart';
+import 'package:dine_ease/models/seating_model.dart';
 import 'package:dine_ease/models/user_model.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -699,4 +707,291 @@ class RequestUtil {
       rethrow;
     }    
   }
+
+  //getEcategories
+  Future<List<ECategory>> getEcategories() async{
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['ECATEGORY_GET']!);
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }       
+      );
+      Logger().i(resp.body);
+      List<dynamic> eCategories = jsonDecode(resp.body);
+      return eCategories.map((eCategory) => ECategory.fromJson(eCategory)).toList();
+    }catch(e){
+      Logger().e('Error getting eCategories: $e');
+      rethrow;
+    }
+  }
+
+  //getECategoriesByEvent
+  Future<List<ECategory>> getECategoriesByEvent(int eventId) async{
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl  + dotenv.env['EVENT_GET_BY_ID']! + eventId.toString() + dotenv.env['ECATEGORY_GET_BY_EVENT']!);
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }       
+      );
+      Logger().i(resp.body);
+      List<dynamic> eCategories = jsonDecode(resp.body);
+      return eCategories.map((eCategory) => ECategory.fromEJson(eCategory)).toList();
+    }catch(e){
+      Logger().e('Error getting eCategories by event: $e');
+      rethrow;
+    }
+  }
+
+  //getRCategories
+  Future<List<RCategory>> getRcategories() async{
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['RCATEGORY_GET']!);
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }       
+      );
+      Logger().i(resp.body);
+      List<dynamic> rCategories = jsonDecode(resp.body);
+      return rCategories.map((rCategory) => RCategory.fromJson(rCategory)).toList();
+    }catch(e){
+      Logger().e('Error getting rCategories: $e');
+      rethrow;
+    }
+  }
+
+  //getRCategoriesByRestaurantId
+  Future<List<RCategory>> getRCategoriesByRestaurantId(int restaurantId) async{
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['RESTAURANT_GET_BY_ID']! + restaurantId.toString() +dotenv.env['RCATEGORY_GET_BY_RESTAURANT']! );
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }       
+      );
+      Logger().i(resp.body);
+      List<dynamic> rCategories = jsonDecode(resp.body);
+      return rCategories.map((rCategory) => RCategory.fromJson(rCategory)).toList();
+    }catch(e){
+      Logger().e('Error getting rCategories by restaurant: $e');
+      rethrow;
+    }
+  }
+
+  //getCuisines
+  Future<List<Cuisine>> getCuisines() async{
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['CUISINE_GET']!);
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }       
+      );
+      Logger().i(resp.body);
+      List<dynamic> cuisines = jsonDecode(resp.body);
+      return cuisines.map((cuisine) => Cuisine.fromJson(cuisine)).toList();
+    }catch(e){
+      Logger().e('Error getting cuisines: $e');
+      rethrow;
+    }
+  }
+
+  //getCuisinesByRestaurantId
+  Future<List<Cuisine>> getCuisinesByRestaurantId(int restaurantId) async{
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['RESTAURANT_GET_BY_ID']! + restaurantId.toString() +dotenv.env['CUISINE_GET_BY_RESTAURANT']! );
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }       
+      );
+      Logger().i(resp.body);
+      List<dynamic> cuisines = jsonDecode(resp.body);
+      return cuisines.map((cuisine) => Cuisine.fromJson(cuisine)).toList();
+    }catch(e){
+      Logger().e('Error getting cuisines by restaurant: $e');
+      rethrow;
+    }
+  }
+
+  //getOpeningsByRestaurantId
+  Future<List<Opening>> getOpeningsByRestaurantId(int restaurantId) async{
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['RESTAURANT_GET_BY_ID']! + restaurantId.toString() +dotenv.env['OPENING_GET_BY_RESTAURANT']! );
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }       
+      );
+      Logger().i(resp.body);
+      List<dynamic> openings = jsonDecode(resp.body);
+      return openings.map((opening) => Opening.fromJson(opening)).toList();
+    }catch(e){
+      Logger().e('Error getting openings by restaurant: $e');
+      rethrow;
+    }
+  }
+
+  //getPrices
+  Future<List<Price>> getPrices() async{
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['PRICE_GET']!);
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }       
+      );
+      Logger().i(resp.body);
+      List<dynamic> prices = jsonDecode(resp.body);
+      return prices.map((price) => Price.fromJson(price)).toList();
+    }catch(e){
+      Logger().e('Error getting prices: $e');
+      rethrow;
+    }
+  }
+
+  //getPriceByRestaurantId
+  Future<Price> getPriceByRestaurantId(int restaurantId) async{
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['RESTAURANT_GET_BY_ID']! + restaurantId.toString() +dotenv.env['PRICE_GET_BY_RESTAURANT']! );
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }       
+      );
+      Logger().i(resp.body);
+      return Price.fromJson(jsonDecode(resp.body));
+    }catch(e){
+      Logger().e('Error getting price by restaurant: $e');
+      rethrow;
+    }
+  }
+
+  //getSeatings
+  Future<List<Seating>> getSeatings() async{
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['SEATING_GET']!);
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }       
+      );
+      Logger().i(resp.body);
+      List<dynamic> seatings = jsonDecode(resp.body);
+      return seatings.map((seating) => Seating.fromJson(seating)).toList();
+    }catch(e){
+      Logger().e('Error getting seatings: $e');
+      rethrow;
+    }
+  }
+
+  //getSeatingsByRestaurantId
+  Future<List<Seating>> getSeatingsByRestaurantId(int restaurantId) async{
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['RESTAURANT_GET_BY_ID']! + restaurantId.toString() +dotenv.env['SEATING_GET_BY_RESTAURANT']! );
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }       
+      );
+      Logger().i(resp.body);
+      List<dynamic> seatings = jsonDecode(resp.body);
+      return seatings.map((seating) => Seating.fromJson(seating)).toList();
+    }catch(e){
+      Logger().e('Error getting seatings by restaurant: $e');
+      rethrow;
+    }
+  }
+
+  //getMeetingEventTypes
+  Future<List<EventType>> getMeetingEventTypes() async{
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['MEETING_EVENTTYPE_GET']!);
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }       
+      );
+      Logger().i(resp.body);
+      List<dynamic> eventTypes = jsonDecode(resp.body);
+      return eventTypes.map((eventType) => EventType.fromJson(eventType)).toList();
+    }catch(e){
+      Logger().e('Error getting eventTypes: $e');
+      rethrow;
+    }
+  }
+
+  //getMenuTypes
+  Future<List<MenuType>> getMenuTypes() async{
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['MENU_TYPE_GET']!);
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }       
+      );
+      Logger().i(resp.body);
+      List<dynamic> menuTypes = jsonDecode(resp.body);
+      return menuTypes.map((menuType) => MenuType.fromJson(menuType)).toList();
+    }catch(e){
+      Logger().e('Error getting menuTypes: $e');
+      rethrow;
+    }
+  }
+
+
 }

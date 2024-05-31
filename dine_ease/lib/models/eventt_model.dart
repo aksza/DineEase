@@ -1,3 +1,5 @@
+import 'package:dine_ease/models/e_category.dart';
+
 class Eventt{
   int id;
   String eventName;
@@ -6,6 +8,7 @@ class Eventt{
   String? description;
   DateTime startingDate;
   DateTime endingDate;
+  List<ECategory>? eCategories;
   // List<PhotoEvent>? photoEvents;
   // List<CategoriesEvent>? categoriesEvents;
 
@@ -17,6 +20,7 @@ class Eventt{
     this.description,
     required this.startingDate,
     required this.endingDate,
+    this.eCategories
     // this.photoEvents,
     // this.categoriesEvents
   });
