@@ -1,3 +1,4 @@
+import 'package:dine_ease/models/rating_model.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:dine_ease/models/restaurant_post.dart';
 import 'package:dine_ease/models/dine_ease.dart';
@@ -27,11 +28,16 @@ class RestaurantDetails extends StatefulWidget {
 class _RestaurantDetailsState extends State<RestaurantDetails> {
   late RestaurantPost sr;
   final RequestUtil _requestUtil = RequestUtil();
-  bool isLoading = true;  // Added loading state variable
-  final reviewTextController = TextEditingController();  // Added text controller for review text
+  bool isLoading = true;  
+  final reviewTextController = TextEditingController();  
   late int userId;
   late SharedPreferences prefs;
   late Review? review;
+  // late int rating;
+  late Rating rating;
+
+  int tempRating = 0; // Ideiglenes értékelés a csillagok kijelzésére
+  bool showRatingButtons = false; // A Send és Cancel gombok megjelenítése
 
   @override
   void initState() {
@@ -47,7 +53,30 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
     setState(() {
       userId = prefs.getInt('userId')!;
     });
+    initRating();
   }
+
+  void initRating() async{
+  try {
+    var ratingData = await _requestUtil.getRatingsByUserId(userId);
+    Rating rating1 = Rating(restaurantId: widget.selectedRestaurant!.id, userId: userId, ratingNumber: 0); // Alapértelmezett érték 0
+    // Megkeressük a megfelelő restaurantId-t a ratingek között
+    for (var ratingItem in ratingData) {
+      if (ratingItem.restaurantId == widget.selectedRestaurant!.id) {
+        rating1 = ratingItem;
+        break; // Ha megtaláltuk a megfelelő restaurantId-t, kilépünk a ciklusból
+      }
+    }
+    setState(() {
+      
+      rating = rating1;
+      tempRating = rating1.ratingNumber; // Az ideiglenes érték is a rating értékét kapja
+    });
+  } catch (e) {
+    Logger().e('Error fetching ratings: $e');
+  }
+}
+
 
   // Initialize the selected restaurant
   void initSelectedRestaurant() async {
@@ -166,6 +195,74 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
     Logger().i('Removed from favorites: ${sr.isFavorite}');
   }
 
+  // Function to add a rating
+  void addRating(int r) async {
+    try {
+      Rating rating1 = Rating(
+        restaurantId: widget.selectedRestaurant!.id,
+        userId: userId,
+        ratingNumber: r,
+      );
+      if (rating.ratingNumber != 0) {
+        rating1.id = rating.id;
+        await _requestUtil.updateRating(rating.id!,rating1);
+      } 
+      else
+      {
+        await _requestUtil.postAddRating(rating1);
+        initRating();
+      }
+      setState(() {
+        rating = rating1;
+        showRatingButtons = false; // Hide the rating buttons after submission
+      });
+      Logger().i('Rating added: $r');
+    } catch (e) {
+      Logger().e('Error adding rating: $e');
+    }
+  }
+
+  void _handleDelete(int ratingId) {
+    setState(() {
+      rating = Rating(restaurantId: widget.selectedRestaurant!.id, userId: userId, ratingNumber: 0);
+      tempRating = 0;
+      showRatingButtons = false;
+    });
+  }
+
+  void _showDeleteConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Delete Rating"),
+          content: Text("Are you sure you want to delete your rating?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); 
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () async {
+                try {
+                  await _requestUtil.deleteRemoveRating(rating.id!);
+                  Navigator.pop(context);
+                  _handleDelete(rating.id!); 
+                } catch (e) {
+                  print('Error deleting rating: $e');
+                  Navigator.pop(context); 
+                }
+              },
+              child: Text("Delete"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -180,7 +277,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
         title: Text(widget.selectedRestaurant!.name),
       ),
       body: SafeArea(
-        child: isLoading  // Show loading indicator if loading is true
+        child: isLoading  
             ? Center(child: CircularProgressIndicator())
             : SingleChildScrollView(  
                 child: Column(
@@ -418,6 +515,70 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                           ),
                         ),
                       ],
+                    //user's rating in star buttons, the user can rate the restaurant
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(15.0, 0, 15, 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Rating',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              // Display star icons based on the current rating
+                              for (int i = 1; i <= 5; i++)
+                                IconButton(
+                                  icon: Icon(
+                                    i <= tempRating ? Icons.star : Icons.star_border,
+                                    color: Colors.orange,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      tempRating = i;
+                                      showRatingButtons = true; // Show the rating buttons when a star is tapped
+                                    });
+                                  },
+                                ),
+                              // Show Send and Cancel buttons if showRatingButtons is true
+                              if (showRatingButtons)
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.send, color: Colors.orange),
+                                      onPressed: () {
+                                        addRating(tempRating);
+                                      },
+                                    ),
+                                    SizedBox(width: 10),
+                                    IconButton(
+                                      icon: Icon(Icons.cancel, color: Colors.red),
+                                      onPressed: () {
+                                        setState(() {
+                                          tempRating = rating.ratingNumber; // Revert to the previous rating
+                                          showRatingButtons = false;
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              // Show Trash icon if there is already a rating
+                              if (rating.ratingNumber != 0 && !showRatingButtons)
+                                IconButton(
+                                  icon: Icon(Icons.delete, color: Colors.red),
+                                  onPressed:() =>  _showDeleteConfirmationDialog(context),
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
 
                     Padding(
                       padding: const EdgeInsets.fromLTRB(20.0, 0, 15, 10),
@@ -434,8 +595,6 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                         ],
                       ),
                     ),
-
-
                     //a textcontroller for the review textfield and a button to sumbit the review
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
