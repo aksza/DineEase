@@ -1,6 +1,7 @@
 import 'package:dine_ease/models/cuisine_model.dart';
 import 'package:dine_ease/models/opening_model.dart';
 import 'package:dine_ease/models/r_category.dart';
+import 'package:dine_ease/models/review_models.dart';
 import 'package:dine_ease/models/seating_model.dart';
 import 'package:flutter/foundation.dart';
 
@@ -19,6 +20,7 @@ class Restaurant {
   List<RCategory>? categories;
   List<Opening>? openings;
   List<Seating>? seatings;
+  List<Review>? reviews;
 
   Restaurant({
     required this.id,
@@ -35,6 +37,7 @@ class Restaurant {
     this.categories,
     this.openings,
     this.seatings,
+    this.reviews,
   });
 
   factory Restaurant.fromJson(dynamic json) {

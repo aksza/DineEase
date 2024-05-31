@@ -1,21 +1,24 @@
 import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:dine_ease/models/restaurant_post.dart';
 import 'package:dine_ease/models/dine_ease.dart';
+import 'package:dine_ease/models/review_models.dart';
 import 'package:dine_ease/screens/meeting_screen.dart';
 import 'package:dine_ease/screens/menu_screen.dart';
 import 'package:dine_ease/screens/reservation_screen.dart';
 import 'package:dine_ease/utils/request_util.dart';
 import 'package:dine_ease/widgets/custom_carousel_slider.dart';
+import 'package:dine_ease/widgets/restaurant_review.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+
 import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RestaurantDetails extends StatefulWidget {
   static const routeName = '/restaurant_details_screen';
   Restaurant? selectedRestaurant;
 
-  RestaurantDetails({Key? key, this.selectedRestaurant});
+  RestaurantDetails({super.key, this.selectedRestaurant});
 
   @override
   State<RestaurantDetails> createState() => _RestaurantDetailsState();
@@ -25,12 +28,25 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
   late RestaurantPost sr;
   final RequestUtil _requestUtil = RequestUtil();
   bool isLoading = true;  // Added loading state variable
+  final reviewTextController = TextEditingController();  // Added text controller for review text
+  late int userId;
+  late SharedPreferences prefs;
+  late Review? review;
 
   @override
   void initState() {
     super.initState();
+    initPrefs();
     initSelectedRestaurant();
     sr = Provider.of<DineEase>(context, listen: false).getRestaurantById(widget.selectedRestaurant!.id);
+  }
+
+  //init shared preferences
+  void initPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getInt('userId')!;
+    });
   }
 
   // Initialize the selected restaurant
@@ -41,25 +57,60 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
         var cuisines = await _requestUtil.getCuisinesByRestaurantId(widget.selectedRestaurant!.id);
         var openings = await _requestUtil.getOpeningsByRestaurantId(widget.selectedRestaurant!.id);
         var seatings = await _requestUtil.getSeatingsByRestaurantId(widget.selectedRestaurant!.id);
+        var reviews = await _requestUtil.getReviewsByRestaurantId(widget.selectedRestaurant!.id);
         Logger().i('Categories: $categories');
         setState(() {
           widget.selectedRestaurant!.categories = categories;
           widget.selectedRestaurant!.cuisines = cuisines;
           widget.selectedRestaurant!.openings = openings;
           widget.selectedRestaurant!.seatings = seatings;
-          isLoading = false;  // Set loading to false once data is fetched
+          widget.selectedRestaurant!.reviews = reviews;
+          isLoading = false;  
         });
       } catch (e) {
         Logger().e('Error fetching restaurant details: $e');
         setState(() {
-          isLoading = false;  // Set loading to false in case of error
+          isLoading = false;  
         });
       }
     } else {
       Logger().i('Restaurant already available');
       setState(() {
-        isLoading = false;  // Set loading to false if data is already available
+        isLoading = false; 
       });
+    }
+  }
+
+  Future<void> deleteReview(int reviewId) async {
+    try {
+
+      await _requestUtil.deleteRemoveReview(reviewId);
+      setState(() {
+        widget.selectedRestaurant!.reviews!.removeWhere((review) => review.id == reviewId);
+      });
+    } catch (e) {
+      Logger().e('Error deleting review: $e');
+    }
+  }
+
+  // Function to edit a review
+  Future<void> editReview(int reviewId, String newText) async {
+    try {
+      
+      Review review = Review(
+        id: reviewId,
+        restaurantId: widget.selectedRestaurant!.id,
+        userId: userId,
+        content: newText,
+      );
+      await _requestUtil.updateReview(reviewId,review);
+      setState(() {
+        var review = widget.selectedRestaurant!.reviews!.firstWhere((review) => review.id == reviewId);
+        review.content = newText;
+        Logger().i('Review edited: ${review.content}');
+      });
+    } catch (e) {
+      Logger().e('Error editing review: $e');
     }
   }
 
@@ -76,6 +127,30 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
       setState(() {
         sr.isFavorite = true;
       });
+    }
+  }
+
+  //add review
+  void sendReview(String review) async {
+    try {
+      Review rev = Review(
+        restaurantId: widget.selectedRestaurant!.id,
+        userId: userId,
+        content: review,
+      );
+      await _requestUtil.postAddReview(rev);
+      Logger().i('Review added: ${rev.content}');
+      // Clear the text field after adding review
+      reviewTextController.clear();
+      // Fetch reviews again to update the list
+      var reviewData = await _requestUtil.getReviewsByRestaurantId(widget.selectedRestaurant!.id);
+
+      setState(() {
+        widget.selectedRestaurant!.reviews = reviewData;
+      });
+
+    } catch (e) {
+      Logger().e('Error adding review: $e');
     }
   }
 
@@ -107,7 +182,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
       body: SafeArea(
         child: isLoading  // Show loading indicator if loading is true
             ? Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(  // Added SingleChildScrollView
+            : SingleChildScrollView(  
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -142,23 +217,14 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20.0, 0, 15, 10),
-                      child: Text(
-                        '${widget.selectedRestaurant!.rating != null ? widget.selectedRestaurant!.rating.toString() : '0'} ⭐',
-                        style: const TextStyle(
-                          fontSize: 17,
-                          
-                        ),
-                      ),
-                    ),
+                    //an icon with a star and the rating of the restaurant
                     Padding(
                       padding: const EdgeInsets.fromLTRB(20.0, 0, 15, 10),
                       child: Row(
                         children: [
-                          Icon(Icons.comment, color: Colors.orange[700]),
+                          Icon(Icons.star, color: Colors.yellow[700]),
                           Text(
-                            '5 reviews',
+                            '${widget.selectedRestaurant!.rating != null ? widget.selectedRestaurant!.rating.toString() : '0'}',
                             style: const TextStyle(
                               fontSize: 17,
                               
@@ -284,7 +350,19 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(15.0, 15, 15, 5),
-                      child: Text('Description:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                          child: 
+                          Row(
+                            children: [
+                              Icon(Icons.description, color: Colors.orange[700]),
+                              const Text(
+                                'Description:',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold
+                                )
+                              )
+                            ]
+                          )
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(15.0, 0, 15, 5),
@@ -323,7 +401,6 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  // Text('${e.day[0].toUpperCase()}${e.day.substring(1)}:'),
                                   //day of the week is formatted to be displayed as a day
                                   Text('${DateTime.sunday == e.day ? 'Sunday' : DateTime.monday == e.day ? 'Monday' : DateTime.tuesday == e.day ? 'Tuesday' : DateTime.wednesday == e.day ? 'Wednesday' : DateTime.thursday == e.day ? 'Thursday' : DateTime.friday == e.day ? 'Friday' : 'Saturday'}',
                                   style: TextStyle(
@@ -342,6 +419,67 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                         ),
                       ],
 
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20.0, 0, 15, 10),
+                      child: Row(
+                        children: [
+                          Icon(Icons.comment, color: Colors.orange[700]),
+                          Text(
+                            '${widget.selectedRestaurant!.reviews != null ? widget.selectedRestaurant!.reviews!.length : 0} reviews',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+
+                    //a textcontroller for the review textfield and a button to sumbit the review
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              decoration: InputDecoration(
+                                hintText: 'Write your review here...',
+                                border: OutlineInputBorder(),
+                              ),
+                              controller: reviewTextController,
+                            ),
+                          ),
+                          //iconbutton to submit the review
+                          IconButton(
+                            icon: Icon(Icons.send, color: Colors.orange[700]),
+                            onPressed: () {
+                              if(reviewTextController.text.isNotEmpty)
+                              {
+                                sendReview(reviewTextController.text);
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: widget.selectedRestaurant!.reviews!.length,
+                      itemBuilder: (context, index) {
+                        return RestaurantReview(
+                          review: widget.selectedRestaurant!.reviews![index],
+                          onDelete: () async{
+                            await deleteReview(widget.selectedRestaurant!.reviews![index].id!);
+                          },
+                          onEdit: (newText)async => {
+                            await editReview(widget.selectedRestaurant!.reviews![index].id!,newText),
+                          },
+                        );
+                      },
+                    ),
+                                
                     if (!widget.selectedRestaurant!.forEvent)
                       Padding(
                         padding: const EdgeInsets.all(20.0),

@@ -1,10 +1,8 @@
-import 'package:dine_ease/models/dine_ease.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:dine_ease/models/restaurant_post.dart';
 import 'package:dine_ease/screens/restaurant_details_screen.dart';
 import 'package:dine_ease/utils/request_util.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class RestaurantView extends StatefulWidget {
   final RestaurantPost restaurant;
@@ -29,10 +27,6 @@ class _RestaurantViewState extends State<RestaurantView> {
 
   Future<Restaurant> getRestaurantById(int id) async{
     var srestaurant = await _requestUtil.getRestaurantById(id);
-    // var cuisines = await _requestUtil.getCuisinesByRestaurantId(id);
-    // var categories = await _requestUtil.getRCategoriesByRestaurantId(id);
-    // srestaurant.cuisines = cuisines;
-    // srestaurant.categories = categories;
     return srestaurant;
   }
 
@@ -69,7 +63,7 @@ class _RestaurantViewState extends State<RestaurantView> {
           subtitle: Text((widget.restaurant.rating != null ? widget.restaurant.rating.toString() : '0') + ' ⭐'),
           leading: Image.asset(widget.restaurant.imagePath, width: isPhone ? 50 : 100, height: isPhone ? 50 : 100, fit: BoxFit.cover,),
           trailing: IconButton(
-            icon: Icon(widget.restaurant.isFavorite ? Icons.favorite : Icons.favorite_border),
+            icon: Icon(widget.restaurant.isFavorite ? Icons.favorite : Icons.favorite_border, color: Colors.orange[700]),
             onPressed: (){
               widget.onPressed!();
               setState(() {

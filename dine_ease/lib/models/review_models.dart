@@ -1,14 +1,14 @@
 class Review{
-  int id;
+  int? id;
   int restaurantId;
-  String restaurantName;
+  String? restaurantName;
   int userId;
   String content;
 
   Review({
-    required this.id,
+    this.id,
     required this.restaurantId,
-    required this.restaurantName,
+    this.restaurantName,
     required this.userId,
     required this.content
   });
@@ -41,4 +41,13 @@ class Review{
       'content' : content,
     };
   }
+
+  Map<String,dynamic> toAddMap(){
+    return {
+      'restaurantId' : restaurantId,
+      'userId' : userId,
+      'content' : content,
+    };
+  }
+
 }

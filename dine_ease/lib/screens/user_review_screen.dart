@@ -54,7 +54,7 @@ class _UserReviewScreenState extends State<UserReviewScreen> {
     // Törlési logika, pl. HTTP kérés vagy lokális adatbázis művelet
     try{
       // Törlés a szerverről
-      await requestUtil.deleteRemoveReview(review.id);
+      await requestUtil.deleteRemoveReview(review.id!);
       setState(() {
         reviews.remove(review);
         //pop a navigatorbol
@@ -72,7 +72,7 @@ class _UserReviewScreenState extends State<UserReviewScreen> {
     try{
       // Frissítés a szerveren
       review.content = updatedContent;
-      await requestUtil.updateReview(review.id,review);
+      await requestUtil.updateReview(review.id!,review);
       print('Review updated: ${review.content}');
     }
     catch(e){

@@ -1008,5 +1008,52 @@ class RequestUtil {
     }
   }
 
+  //addReview
+  Future<void> postAddReview(Review review) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['ADD_REVIEW_POST']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(review.toAddMap())        
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error adding review: $e');
+      rethrow;
+    }    
+  }
+
+  //getReviewsByRestaurantId
+  Future<List<Review>?> getReviewsByRestaurantId(int restaurantId) async{
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['REVIEW_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }       
+      );
+      Logger().i(resp.body);
+      if (resp.body.isEmpty) {
+        return null;
+      }
+      List<dynamic> reviews = jsonDecode(resp.body);
+      return reviews.map((review) => Review.fromJson(review)).toList();
+    }catch(e){
+      Logger().e('Error getting reviews by restaurant: $e');
+      rethrow;
+    }
+  }
 
 }
