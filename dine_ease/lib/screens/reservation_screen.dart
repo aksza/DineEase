@@ -13,8 +13,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ReservationScreen extends StatefulWidget {
   static const routeName = '/reservation';
   final Restaurant? selectedRestaurant;
+  DateTime? startingDate;
+  DateTime? endingDate;
 
-  ReservationScreen({Key? key, this.selectedRestaurant});
+  ReservationScreen({Key? key, this.selectedRestaurant, this.startingDate, this.endingDate});
 
   @override
   State<ReservationScreen> createState() => _ReservationScreenState();
@@ -36,6 +38,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
   void initState() {
     super.initState();
     initSharedPrefs();
+    initDate();
   }
 
   void initSharedPrefs() async {
@@ -44,6 +47,15 @@ class _ReservationScreenState extends State<ReservationScreen> {
     setState(() {
       userId = userId;
     });
+  }
+
+  void initDate(){
+    if(widget.startingDate != null){
+      dateController.text = DateFormat('yyyy-MM-dd').format(widget.startingDate!);
+    }
+    if(widget.endingDate != null){
+      timeController.text = DateFormat('HH:mm').format(widget.startingDate!);
+    }
   }
 
   Future<void> reserve(OrderProvider orderProvider) async {

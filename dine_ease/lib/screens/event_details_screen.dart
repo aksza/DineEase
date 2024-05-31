@@ -145,7 +145,7 @@ class _EventDetailsState extends State<EventDetails> {
               onPressed: (){
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ReservationScreen(selectedRestaurant: restaurant,)),
+                  MaterialPageRoute(builder: (context) => ReservationScreen(selectedRestaurant: restaurant,startingDate: widget.selectedEvent!.startingDate,endingDate: widget.selectedEvent!.endingDate,)),
                 );
               }, 
               child: Text('Reserve a table'),
