@@ -1,6 +1,9 @@
 
 import 'package:dine_ease/auth/auth_service.dart';
+import 'package:dine_ease/auth/db_service.dart';
 import 'package:dine_ease/screens/home_page.dart';
+import 'package:dine_ease/screens/r_home_screen.dart';
+import 'package:dine_ease/screens/r_reservation_screen.dart';
 import 'package:dine_ease/screens/sign_up.dart';
 import 'package:flutter/material.dart';
 import 'package:dine_ease/widgets/custom_button.dart';
@@ -100,11 +103,22 @@ class _LoginScreenState extends State<LoginScreen>{
                             passwordTextController.text
                           );
                           if(loginSuccessfull){
+                            //from the token, we can get the user details, like role
+                            String role = await DataBaseProvider().getRole();
                             // Logger().i(token);
+                            if(role == 'User'){
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => HomePage()),
                             );
+                            }
+
+                            if(role == 'Restaurant'){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => RHomeScreen()),
+                            );
+                            }
                           }
                           else{
                             ScaffoldMessenger.of(context).showSnackBar(
