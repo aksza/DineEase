@@ -200,7 +200,6 @@ class _REventsScreenState extends State<REventsScreen> {
             TextButton(
               child: const Text('Add'),
               onPressed: () async {
-                // Ensure all fields are filled before adding the event
                 if (event.eventName.isEmpty ||
                     event.description == null ||
                     event.startingDate == DateTime(1999, 1, 1) ||
@@ -212,6 +211,15 @@ class _REventsScreenState extends State<REventsScreen> {
                   );
                   return;
                 }
+                if (event.startingDate.isAfter(event.endingDate)) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Starting date must be before ending date.'),
+                    ),
+                  );
+                  return;
+                }
+                
                 event.restaurantId = await DataBaseProvider().getUserId();
                 addEvent(event);
                 Navigator.of(context).pop();
@@ -229,10 +237,9 @@ class _REventsScreenState extends State<REventsScreen> {
     );
   }
 
+  // Update event with requestutil
   void updateEvent() {
-    setState(() {
-      fetchEvents(); // Refresh events when an event is updated
-    });
+    fetchEvents(); 
   }
 
   @override
@@ -242,7 +249,6 @@ class _REventsScreenState extends State<REventsScreen> {
           ? const Center(child: CircularProgressIndicator())
           : LayoutBuilder(
               builder: (context, constraints) {
-                // Determine the number of columns based on screen width
                 int crossAxisCount = constraints.maxWidth > 800 ? 3 : 2;
                 return GridView.builder(
                   padding: const EdgeInsets.all(16.0),
@@ -261,7 +267,7 @@ class _REventsScreenState extends State<REventsScreen> {
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.orange[700],
+                            color: Colors.orange[500],
                             borderRadius: BorderRadius.circular(10.0),
                             boxShadow: const [
                               BoxShadow(
@@ -285,7 +291,9 @@ class _REventsScreenState extends State<REventsScreen> {
                       );
                     } else {
                       final event = events[index - 1];
-                      return REventViewScreen(event: event, onUpdate: updateEvent);
+                      return REventViewScreen(event: event,
+                      //update event 
+                       onUpdate: updateEvent);
                     }
                   },
                 );

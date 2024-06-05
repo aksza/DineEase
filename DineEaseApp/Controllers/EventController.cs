@@ -129,6 +129,36 @@ namespace DineEaseApp.Controllers
             return Ok(events);
         }
 
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateEvent(EventDto eventDto)
+        {
+            if(eventDto == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var e = await _eventRepository.GetEventById(eventDto.Id);
+            if(e == null)
+            {
+                return NotFound();
+            }
+
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var eventMap = _mapper.Map<Event>(eventDto);
+
+            if(!await _eventRepository.UpdateAsync(eventMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
         [HttpGet("eCategories")]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetECategories()

@@ -1234,5 +1234,27 @@ class RequestUtil {
     }    
   }
 
+  //update event
+  Future<void> putUpdateEvent(Eventt eventt) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['EVENT_UPDATE']!);
+      Logger().i(url);
+      resp = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(eventt.toMap())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error updating event: $e');
+      rethrow;
+    }    
+  }
   
 }
