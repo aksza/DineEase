@@ -1099,4 +1099,93 @@ class RequestUtil {
       rethrow;
     }
   }
+
+  //put function updating reservation
+  Future<void> putUpdateReservation(int reservationId,Reservation reservation) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['RESERVATION_UPDATE']!);
+      Logger().i(url);
+      resp = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(reservation.toMap())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error updating reservation: $e');
+      rethrow;
+    }    
+  }
+
+  //get waitinglist by restaurant id
+  Future<List<Reservation>> getWaitingListByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['WAITING_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> waitingList = jsonDecode(resp.body);
+      return waitingList.map((waiting) => Reservation.fromJson(waiting)).toList();
+    }catch(e){
+      Logger().e('Error getting waiting list by restaurant id: $e');
+      rethrow;
+    }
+  }
+
+  //get accepted reservations by restaurant id
+  Future<List<Reservation>> getAcceptedReservationsByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['ACCEPTED_RESERVATION_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> acceptedReservations = jsonDecode(resp.body);
+      return acceptedReservations.map((acceptedReservation) => Reservation.fromJson(acceptedReservation)).toList();
+    }catch(e){
+      Logger().e('Error getting accepted reservations by restaurant id: $e');
+      rethrow;
+    }
+  }
+
+  //getorders by reservation id
+  Future<List<Order>> getOrdersByReservationId(int reservationId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['ORDER_GET_BY_RES_ID']! + reservationId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> orders = jsonDecode(resp.body);
+      return orders.map((order) => Order.fromJson(order)).toList();
+    }catch(e){
+      Logger().e('Error getting orders by reservation id: $e');
+      rethrow;
+    }
+  }
 }

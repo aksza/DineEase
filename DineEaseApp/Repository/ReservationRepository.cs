@@ -14,6 +14,33 @@ namespace DineEaseApp.Repository
             _context = context;
         }
 
+        public async Task<Reservation?> GetReservationById(int id)
+        {
+            var reservation = await _context.Reservations
+                .Where(r => r.Id == id)
+                .FirstOrDefaultAsync();
+
+            if(reservation != null)
+            {
+                return reservation;
+            }
+
+            return null;
+        }
+
+        public async Task<ICollection<Reservation>?> GetReservationsByRestaurantId(int id)
+        {
+            var reservations = await _context.Reservations
+                .Where(r => r.RestaurantId == id)
+                .ToListAsync();
+
+            if(reservations != null)
+            {
+                return reservations;
+            }
+            return null;
+        }
+
         public async Task<ICollection<Reservation>> GetReservationsByUserId(int userId)
         {
             return await _context.Reservations.Where(r => r.UserId == userId).ToListAsync();
@@ -29,6 +56,12 @@ namespace DineEaseApp.Repository
         {
             var saved = await _context.SaveChangesAsync();
             return saved > 0;
+        }
+
+        public async Task<bool> UpdateReservation(Reservation reservation)
+        {
+            _context.Update(reservation);
+            return await Save();
         }
     }
 }

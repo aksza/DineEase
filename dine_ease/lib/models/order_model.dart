@@ -16,6 +16,7 @@ class Order{
   factory Order.fromJson(dynamic json){
     return Order(
       menuId: json['menuId'] as int,
+      menuName: json['menuName'] ?? '',
       comment: json['comment'] as String,
       reservationId: json['reservationId'] as int,
     );
@@ -24,6 +25,7 @@ class Order{
   Map<String, dynamic> toMap(){
     return {
       'menuId': menuId,
+      'menuName': menuName ?? '',
       'comment': comment,
       'reservationId': reservationId,
     };
