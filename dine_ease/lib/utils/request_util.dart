@@ -1194,7 +1194,7 @@ class RequestUtil {
     try{
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
-      final url = Uri.parse(baseUrl + dotenv.env['EVENT_GET_BY_RES_ID']! + restaurantId.toString());
+      final url = Uri.parse(baseUrl + dotenv.env['EVENT_GET_F_BY_RES_ID']! + restaurantId.toString());
       Logger().i(url);
       resp = await http.get(
         url,
@@ -1206,7 +1206,30 @@ class RequestUtil {
       List<dynamic> events = jsonDecode(resp.body);
       return events.map((event) => Eventt.fromJson(event)).toList();
     }catch(e){
-      Logger().e('Error getting events by restaurant id: $e');
+      // Logger().e('Error getting events by restaurant id: $e');
+      Logger().e(baseUrl + dotenv.env['EVENT_GET_F_BY_RES_ID']! + restaurantId.toString());
+      rethrow;
+    }
+  }
+
+  //get old events
+  Future<List<Eventt>> getOldEvents(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['EVENT_GET_O_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> events = jsonDecode(resp.body);
+      return events.map((event) => Eventt.fromJson(event)).toList();
+    }catch(e){
+      Logger().e('Error getting old events: $e');
       rethrow;
     }
   }

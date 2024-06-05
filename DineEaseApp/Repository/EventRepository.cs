@@ -33,10 +33,10 @@ namespace DineEaseApp.Repository
             return await _context.Events.ToListAsync();
         }
 
-        public async Task<ICollection<Event>?> GetEventsByRestaurantId(int restaurantId)
+        public async Task<ICollection<Event>?> GetFutureEventsByRestaurantId(int restaurantId)
         {
             var e = await _context.Events
-                .Where(e => e.RestaurantId == restaurantId)
+                .Where(e => e.RestaurantId == restaurantId && e.StartingDate > DateTime.Now)
                 .ToListAsync();
 
             if(e != null)
@@ -60,6 +60,20 @@ namespace DineEaseApp.Repository
                 .ToListAsync();
 
             return result;
+        }
+
+        public async Task<ICollection<Event>?> GetOldEventsByRestaurantId(int restaurantId) 
+        {
+            var e = await _context.Events
+                .Where(e => e.RestaurantId == restaurantId && e.StartingDate <= DateTime.Now)
+                .ToListAsync();
+
+            if (e != null)
+            {
+                return e;
+            }
+
+            return null;
         }
     }
 }

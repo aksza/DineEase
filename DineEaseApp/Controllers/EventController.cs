@@ -110,10 +110,10 @@ namespace DineEaseApp.Controllers
         }
         
 
-        [HttpGet("restaurant/{restaurantId}")]
-        public async Task<IActionResult> GetEventsByRestaurantId(int restaurantId)
+        [HttpGet("restaurant/future/{restaurantId}")]
+        public async Task<IActionResult> GetFutureEventsByRestaurantId(int restaurantId)
         {
-            var events = _mapper.Map<List<EventDto>>(await _eventRepository.GetEventsByRestaurantId(restaurantId));
+            var events = _mapper.Map<List<EventDto>>(await _eventRepository.GetFutureEventsByRestaurantId(restaurantId));
 
             foreach (var eventDto in events)
             {
@@ -128,6 +128,26 @@ namespace DineEaseApp.Controllers
 
             return Ok(events);
         }
+
+        [HttpGet("restaurant/old/{restaurantId}")]
+        public async Task<IActionResult> GetOldEventsByRestaurantId(int restaurantId)
+        {
+            var events = _mapper.Map<List<EventDto>>(await _eventRepository.GetOldEventsByRestaurantId(restaurantId));
+
+            foreach (var eventDto in events)
+            {
+                var res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(eventDto.RestaurantId));
+                eventDto.RestaurantName = res.Name;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(events);
+        }
+
 
         [HttpPut("update")]
         public async Task<IActionResult> UpdateEvent(EventDto eventDto)

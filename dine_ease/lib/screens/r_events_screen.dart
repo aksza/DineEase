@@ -3,7 +3,9 @@ import 'package:dine_ease/models/eventt_model.dart';
 import 'package:dine_ease/utils/request_util.dart';
 import 'package:dine_ease/widgets/r_event_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 
 class REventsScreen extends StatefulWidget {
   static const routeName = '/r_events';
@@ -17,21 +19,32 @@ class REventsScreen extends StatefulWidget {
 class _REventsScreenState extends State<REventsScreen> {
   RequestUtil requestUtil = RequestUtil();
   List<Eventt> events = [];
+  List<Eventt> oldEvents = [];
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
     fetchEvents();
+    fetchOldEvents();
   }
 
   // Fetching events
   void fetchEvents() async {
     int restaurantId = await DataBaseProvider().getUserId();
-
     final response = await requestUtil.getEventsByRestaurantId(restaurantId);
     setState(() {
       events = response;
+      isLoading = false;
+    });
+  }
+
+  //fetch old events
+  void fetchOldEvents() async {
+    int restaurantId = await DataBaseProvider().getUserId();
+    final response = await requestUtil.getOldEvents(restaurantId);
+    setState(() {
+      oldEvents = response;
       isLoading = false;
     });
   }
@@ -93,14 +106,14 @@ class _REventsScreenState extends State<REventsScreen> {
                       lastDate: DateTime(2101),
                     );
                     if (selectedDate != null) {
-                       if (selectedDate.isBefore(DateTime.now())) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Please select a future date.'),
-                            ),
-                          );
-                          return;
-                        }
+                      if (selectedDate.isBefore(DateTime.now())) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Please select a future date.'),
+                          ),
+                        );
+                        return;
+                      }
                       setState(() {
                         event.startingDate = DateTime(
                           selectedDate.year,
@@ -149,7 +162,7 @@ class _REventsScreenState extends State<REventsScreen> {
                       lastDate: DateTime(2101),
                     );
                     if (selectedDate != null) {
-                       if (selectedDate.isBefore(DateTime.now())) {
+                      if (selectedDate.isBefore(DateTime.now())) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Please select a future date.'),
@@ -247,57 +260,95 @@ class _REventsScreenState extends State<REventsScreen> {
     return Scaffold(
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : LayoutBuilder(
-              builder: (context, constraints) {
-                int crossAxisCount = constraints.maxWidth > 800 ? 4 : 2;
-                return GridView.builder(
-                  padding: const EdgeInsets.all(16.0),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: crossAxisCount,
-                    crossAxisSpacing: constraints.maxWidth > 800 ? 24.0 : 16.0,
-                    mainAxisSpacing: constraints.maxWidth > 800 ? 24.0 : 16.0,
-                    childAspectRatio: 1.2,
-                  ),
-                  itemCount: events.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return GestureDetector(
-                        onTap: () {
-                          showAddEventDialog();
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.orange[500],
-                            borderRadius: BorderRadius.circular(10.0),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Colors.black26,
-                                offset: Offset(0, 2),
-                                blurRadius: 6.0,
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'You have ${events.length} upcoming events',
+                      style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 16.0),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(8.0),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: MediaQuery.of(context).size.width > 800 ? 4 : 2,
+                        crossAxisSpacing: MediaQuery.of(context).size.width > 800 ? 24.0 : 16.0,
+                        mainAxisSpacing: MediaQuery.of(context).size.width > 800 ? 24.0 : 16.0,
+                        childAspectRatio: 1.2,
+                      ),
+                      itemCount: events.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return GestureDetector(
+                            onTap: () {
+                              showAddEventDialog();
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.orange[500],
+                                borderRadius: BorderRadius.circular(10.0),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    offset: Offset(0, 2),
+                                    blurRadius: 6.0,
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          child: const Center(
-                            child: Text(
-                              '+',
-                              style: TextStyle(
-                                fontSize: 50.0,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
+                              child: const Center(
+                                child: Text(
+                                  '+',
+                                  style: TextStyle(
+                                    fontSize: 50.0,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                      );
-                    } else {
-                      final event = events[index - 1];
-                      return REventViewScreen(event: event,
-                      //update event 
-                       onUpdate: updateEvent);
-                    }
-                  },
-                );
-              },
+                          );
+                        } else {
+                          final event = events[index - 1];
+                          return REventViewScreen(
+                            event: event,
+                            onUpdate: updateEvent,
+                          );
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 32.0),
+                    Text(
+                      'You already organized ${oldEvents.length} events',
+                      style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 16.0),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(8.0),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: MediaQuery.of(context).size.width > 800 ? 4 : 2,
+                        crossAxisSpacing: MediaQuery.of(context).size.width > 800 ? 24.0 : 16.0,
+                        mainAxisSpacing: MediaQuery.of(context).size.width > 800 ? 24.0 : 16.0,
+                        childAspectRatio: 1.2,
+                      ),
+                      itemCount: oldEvents.length,
+                      itemBuilder: (context, index) {
+                        final event = oldEvents[index];
+                        return REventViewScreen(
+                          event: event,
+                          onUpdate: updateEvent,
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ),
     );
   }
