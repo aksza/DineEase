@@ -59,22 +59,74 @@ namespace DineEaseApp.Controllers
         {
             var events = _mapper.Map<List<EventDto>>(await _eventRepository.GetEventsAsync());
 
-            var eventDtos = events
-                .Select (async e =>
-                {
-                    var eventDto = e;
-                    RestaurantDto res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(eventDto.RestaurantId));
-                    eventDto.RestaurantName = res.Name;
-                    return eventDto;
-                }
-                );
-            var eventDtoList = await Task.WhenAll(eventDtos);
+            //var eventDtos = events
+            //    .Select (async e =>
+            //    {
+            //        var eventDto = e;
+            //        RestaurantDto res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(eventDto.RestaurantId));
+            //        eventDto.RestaurantName = res.Name;
+            //        return eventDto;
+            //    }
+            //    );
+            //var eventDtoList = await Task.WhenAll(eventDtos);
+            foreach(var eventDto in events)
+            {
+                var res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(eventDto.RestaurantId));
+                eventDto.RestaurantName = res.Name;
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            return Ok(eventDtoList);
+            return Ok(events);
+        }
+
+        [HttpPost("addEvent")]
+        public async Task<IActionResult> AddEvent(EventCreateDto eventDto)
+        {
+            try
+            {
+                if(eventDto == null)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var eventMAp = _mapper.Map<Event>(eventDto);
+                if(!await _eventRepository.AddAsync(eventMAp))
+                {
+                    ModelState.AddModelError("", "Something went wrong while saving");
+                    return StatusCode(500, ModelState);
+                }
+
+                return Ok("Successfully created");
+
+            }
+            catch(Exception ex)
+            {
+                return (StatusCode(500, ex.Message));
+            }
+        }
+        
+
+        [HttpGet("restaurant/{restaurantId}")]
+        public async Task<IActionResult> GetEventsByRestaurantId(int restaurantId)
+        {
+            var events = _mapper.Map<List<EventDto>>(await _eventRepository.GetEventsByRestaurantId(restaurantId));
+
+            foreach (var eventDto in events)
+            {
+                var res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(eventDto.RestaurantId));
+                eventDto.RestaurantName = res.Name;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(events);
         }
 
         [HttpGet("eCategories")]

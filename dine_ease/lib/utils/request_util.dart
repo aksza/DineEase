@@ -1188,4 +1188,51 @@ class RequestUtil {
       rethrow;
     }
   }
+
+  //get events by restaurant id
+  Future<List<Eventt>> getEventsByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['EVENT_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> events = jsonDecode(resp.body);
+      return events.map((event) => Eventt.fromJson(event)).toList();
+    }catch(e){
+      Logger().e('Error getting events by restaurant id: $e');
+      rethrow;
+    }
+  }
+
+  //add event
+  Future<void> postAddEvent(Eventt eventt) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['EVENT_POST']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(eventt.toCreateMap())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error adding event: $e');
+      rethrow;
+    }    
+  }
+
+  
 }
