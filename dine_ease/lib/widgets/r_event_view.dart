@@ -1,5 +1,6 @@
 import 'package:dine_ease/models/eventt_model.dart';
 import 'package:dine_ease/utils/request_util.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
@@ -79,33 +80,96 @@ class _REventViewScreenState extends State<REventViewScreen> {
             ),
           ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Event Name
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                _eventNameController.text,
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            // Event Date and Time
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                '${_startingDateController.text} - ${_endingDateController.text}',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
+        child: Builder(
+          builder: (context) {
+            if (kIsWeb) { // KisWeb csomag használata
+              return SingleChildScrollView(
+                child:
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Event Name
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      _eventNameController.text,
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  // Date
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Date: ${_startingDateController.text} - ${_endingDateController.text}',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  // Time
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Time: ${_startingHourController.text} - ${_endingHourController.text}',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  // Description
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'Description: ${_descriptionController.text}',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+              );
+            } else { // Nem webes platform
+              return SingleChildScrollView(
+                child:
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Event Name
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      _eventNameController.text,
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  // Date and Time
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      '${_startingDateController.text} - ${_endingDateController.text}',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+              );
+            }
+          },
         ),
       ),
     );

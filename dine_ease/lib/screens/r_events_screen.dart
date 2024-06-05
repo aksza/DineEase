@@ -249,7 +249,7 @@ class _REventsScreenState extends State<REventsScreen> {
           ? const Center(child: CircularProgressIndicator())
           : LayoutBuilder(
               builder: (context, constraints) {
-                int crossAxisCount = constraints.maxWidth > 800 ? 3 : 2;
+                int crossAxisCount = constraints.maxWidth > 800 ? 4 : 2;
                 return GridView.builder(
                   padding: const EdgeInsets.all(16.0),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
