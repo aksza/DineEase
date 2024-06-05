@@ -275,6 +275,43 @@ namespace DineEaseApp.Controllers
             }
         }
 
+        [HttpPut("update")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> UpdateRestaurant(RestaurantUpdateDto updateRestaurant)
+        {
+            if(updateRestaurant == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var restaurant = await _restaurantRepository.GetRestaurantById(updateRestaurant.Id);
+
+            if(restaurant == null)
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var restaurantMap = _mapper.Map<Restaurant>(updateRestaurant);
+
+            restaurantMap.PasswordSalt = restaurant.PasswordSalt;
+            restaurantMap.PasswordHash = restaurant.PasswordHash;
+
+            if(!await _restaurantRepository.UpdateRestaurant(restaurantMap))
+            {
+                ModelState.AddModelError("", "Something went wrong while saving");
+                return StatusCode(500, ModelState);
+            }
+
+            return NoContent();
+        }
+
         [HttpGet("{id}/rating")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]

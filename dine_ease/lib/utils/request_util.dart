@@ -1279,5 +1279,28 @@ class RequestUtil {
       rethrow;
     }    
   }
+
+  //update restaurant
+  Future<void> putUpdateRestaurant(Restaurant restaurant) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['RESTAURANT_UPDATE']!);
+      Logger().i(url);
+      resp = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(restaurant.toMap())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error updating restaurant: $e');
+      rethrow;
+    }    
+  }
   
 }

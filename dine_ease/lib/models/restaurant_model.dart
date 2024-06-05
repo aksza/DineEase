@@ -12,6 +12,7 @@ class Restaurant {
   String address;
   String phoneNum;
   String email;
+  int? ownerId;
   double? rating; // Módosítás: átállítás int-ről double-re
   String price;
   bool forEvent;
@@ -29,6 +30,7 @@ class Restaurant {
     required this.address,
     required this.phoneNum,
     required this.email,
+    this.ownerId,
     this.rating,
     required this.price,
     required this.forEvent,
@@ -48,6 +50,7 @@ class Restaurant {
       address: json['address'] as String,
       phoneNum: json['phoneNum'] as String,
       email: json['email'] as String,
+      ownerId: json['ownerId'],
       rating: json['rating'] is int ? (json['rating'] as int).toDouble() : json['rating'], // Módosítás: átállítás int-ről double-re
       price: json['price']['priceName'] as String,
       forEvent: json['forEvent'] as bool,
@@ -69,4 +72,21 @@ class Restaurant {
       'maxTableCap': maxTableCapacity,
     };
   }
+
+  Map<String, dynamic> toUpdateMap() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'address': address,
+      'phoneNum': phoneNum,
+      'email': email,
+      'ownerId': ownerId,
+      'price': price,
+      'forEvent': forEvent,
+      'maxTableCap': maxTableCapacity,
+    };
+  }
+
+
 }
