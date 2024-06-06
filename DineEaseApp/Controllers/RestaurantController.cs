@@ -302,6 +302,11 @@ namespace DineEaseApp.Controllers
 
             restaurantMap.PasswordSalt = restaurant.PasswordSalt;
             restaurantMap.PasswordHash = restaurant.PasswordHash;
+            restaurantMap.Rating = restaurant.Rating;
+            restaurantMap.ForEvent = restaurant.ForEvent;
+            restaurantMap.OwnerId = restaurant.OwnerId;
+            restaurantMap.TaxIdNum = restaurant.TaxIdNum;
+            restaurantMap.BusinessLicense = restaurant.BusinessLicense;
 
             if(!await _restaurantRepository.UpdateRestaurant(restaurantMap))
             {

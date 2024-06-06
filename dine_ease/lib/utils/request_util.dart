@@ -1294,8 +1294,9 @@ class RequestUtil {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token'
         },
-        body: jsonEncode(restaurant.toMap())
+        body: jsonEncode(restaurant.toUpdateMap())
       );
+      Logger().i(restaurant.toUpdateMap());
       Logger().i(resp.body);
     }catch(e){
       Logger().e('Error updating restaurant: $e');
