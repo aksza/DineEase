@@ -18,6 +18,10 @@ namespace DineEaseApp.Helper
             CreateMap<CuisineDto,Cuisine>();
             CreateMap<CuisineRestaurantDto, CuisinesRestaurant>();
             CreateMap<CuisinesRestaurant, CuisineRestaurantDto>();
+            CreateMap<CuisineRestaurantCreateDto, CuisinesRestaurant>();
+            CreateMap<CuisinesRestaurant,CuisineRestaurantCreateDto>();
+            CreateMap<CategoriesRestaurantCreateDto, CategoriesRestaurant>();
+            CreateMap<CategoriesRestaurant,CategoriesRestaurantCreateDto>();
             CreateMap<CategoriesEventDto,CategoriesEvent>();
             CreateMap<CategoriesEvent,CategoriesEventDto>();
             CreateMap<ECategory,ECategoryDto>();
@@ -54,6 +58,8 @@ namespace DineEaseApp.Helper
             CreateMap<Order, OrderCreateDto>();
             CreateMap<Owner,OwnerDto>();
             CreateMap<OwnerDto,Owner>();
+            CreateMap<OpeningCreateDto,Opening>();
+            CreateMap<Opening,OpeningCreateDto>();
             CreateMap<PhotosRestaurantDto,PhotosRestaurant>();
             CreateMap<PhotosRestaurantUpdateDto,PhotosRestaurant>();
             //CreateMap<Photo,PhotoDto>();
@@ -76,6 +82,8 @@ namespace DineEaseApp.Helper
             CreateMap<Review,ReviewCreateDto>();
             CreateMap<Seating,SeatingDto>();
             CreateMap<SeatingDto,Seating>();
+            CreateMap<SeatingsRestaurantCreateDto,SeatingsRestaurant>();
+            CreateMap<SeatingsRestaurant,SeatingsRestaurantCreateDto>();
             CreateMap<User,UserDto>();
             CreateMap<UserDto,User>();
             CreateMap<UserCreateDto, User>();

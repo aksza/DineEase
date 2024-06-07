@@ -14,6 +14,21 @@ namespace DineEaseApp.Repository
             _context = context;
         }
 
+        public async Task<CategoriesRestaurant?> GetCategoriesRestaurantsByRestaurantCategoryId(int restaurantId, int categoryId)
+        {
+            var categories = await _context.CategoriesRestaurants
+                .Where(x => x.RCategoryId == categoryId && x.RestaurantId == restaurantId)
+                .FirstOrDefaultAsync();
+
+            await Save();
+
+            if(categories != null)
+            {
+                return categories;
+            }
+            return null;
+        }
+
         public async Task<ICollection<CategoriesRestaurant>?> GetCategoriesRestaurantsByRestaurantId(int restaurantId)
         {
             var categories = await _context.CategoriesRestaurants
