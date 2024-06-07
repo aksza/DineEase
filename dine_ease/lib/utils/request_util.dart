@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:dine_ease/auth/db_service.dart';
 import 'package:dine_ease/models/cuisine_model.dart';
+import 'package:dine_ease/models/cuisines_restaurant_model.dart';
 import 'package:dine_ease/models/e_category.dart';
 import 'package:dine_ease/models/event_post_model.dart';
 import 'package:dine_ease/models/event_type_model.dart';
@@ -1300,6 +1301,30 @@ class RequestUtil {
       Logger().i(resp.body);
     }catch(e){
       Logger().e('Error updating restaurant: $e');
+      rethrow;
+    }    
+  }
+
+  //add cuisinerestaurant
+  Future<void> postAddCuisinesRestaurant(List<CuisineRestaurant> cuisinerestaurant)async
+  {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['CUISINE_RESTAURANT_POST']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(cuisinerestaurant.map((cuisinerestaurant) => cuisinerestaurant.toMap()).toList())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error adding cuisinerestaurant: $e');
       rethrow;
     }    
   }
