@@ -13,7 +13,7 @@ class Restaurant {
   String phoneNum;
   String email;
   int? ownerId;
-  double? rating; // Módosítás: átállítás int-ről double-re
+  double? rating; 
   int? priceId;
   String price;
   bool forEvent;

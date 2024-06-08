@@ -247,7 +247,7 @@ class _SignUpScreenState extends State<SignUpScreen>{
                             //space between
                             const SizedBox(width: 20),
                             DropdownButton(
-                              value: rprice,
+                              value: rprice - 1,
                               items: const [
                                 DropdownMenuItem(
                                   value: 1,
@@ -265,8 +265,8 @@ class _SignUpScreenState extends State<SignUpScreen>{
                               ],
                               onChanged: (int? value){
                                 setState(() {
-                                  rprice = value!;
-                                  value = rprice;
+                                  rprice = value! + 1;
+                                  value = rprice -1;
                                 });
                               },
                             )

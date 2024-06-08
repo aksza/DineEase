@@ -2,7 +2,7 @@
 
 namespace DineEaseApp.Interfaces
 {
-    public interface IPriceRepository
+    public interface IPriceRepository : IRepository<Price>
     {
         ICollection<Price> GetPrices();
         Price GetPrice(int id);

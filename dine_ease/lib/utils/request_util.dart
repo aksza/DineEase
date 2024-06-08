@@ -2,6 +2,7 @@ import 'dart:convert';
 // import 'dart:html';
 
 import 'package:dine_ease/auth/db_service.dart';
+import 'package:dine_ease/models/categories_restaurant_model.dart';
 import 'package:dine_ease/models/cuisine_model.dart';
 import 'package:dine_ease/models/cuisines_restaurant_model.dart';
 import 'package:dine_ease/models/e_category.dart';
@@ -23,6 +24,7 @@ import 'package:dine_ease/models/reservation_model.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:dine_ease/models/review_models.dart';
 import 'package:dine_ease/models/seating_model.dart';
+import 'package:dine_ease/models/seatings_restaurant_model.dart';
 import 'package:dine_ease/models/user_model.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -1329,4 +1331,121 @@ class RequestUtil {
     }    
   }
   
+  //remove cuisinerestaurant
+  Future<void> deleteRemoveCuisineRestaurant(List<CuisineRestaurant> cuisinerestaurant) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['REMOVE_CUISINE_RESTAURANT_DELETE']!);
+      Logger().i(url);
+      resp = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(cuisinerestaurant.map((cuisinerestaurant) => cuisinerestaurant.toMap()).toList())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error removing cuisinerestaurant: $e');
+      rethrow;
+    }    
+  }
+
+  //add seatingrestaurant
+  Future<void> postAddSeatingRestaurant(List<SeatingRestaurant> seatingrestaurant)async
+  {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['SEATING_RESTAURANT_POST']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(seatingrestaurant.map((seatingrestaurant) => seatingrestaurant.toMap()).toList())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error adding seatingrestaurant: $e');
+      rethrow;
+    }    
+  }
+
+  //remove seatingrestaurant
+  Future<void> deleteRemoveSeatingRestaurant(List<SeatingRestaurant> seatingrestaurant) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['REMOVE_SEATING_RESTAURANT_DELETE']!);
+      Logger().i(url);
+      resp = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(seatingrestaurant.map((seatingrestaurant) => seatingrestaurant.toMap()).toList())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error removing seatingrestaurant: $e');
+      rethrow;
+    }    
+  }
+
+  //add categoriesrestaurant
+  Future<void> postAddCategoriesRestaurant(List<CategoriesRestaurant> categoriesrestaurant)async
+  {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['CATEGORIES_RESTAURANT_POST']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(categoriesrestaurant.map((categoriesrestaurant) => categoriesrestaurant.toMap()).toList())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error adding categoriesrestaurant: $e');
+      rethrow;
+    }    
+  }
+
+  //remove categoriesrestaurant
+  Future<void> deleteRemoveCategoriesRestaurant(List<CategoriesRestaurant> categoriesrestaurant) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['REMOVE_CATEGORIES_RESTAURANT_DELETE']!);
+      Logger().i(url);
+      resp = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(categoriesrestaurant.map((categoriesrestaurant) => categoriesrestaurant.toMap()).toList())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error removing categoriesrestaurant: $e');
+      rethrow;
+    }    
+  }
+
 }

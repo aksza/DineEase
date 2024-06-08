@@ -4,11 +4,11 @@ using DineEaseApp.Models;
 
 namespace DineEaseApp.Repository
 {
-    public class PriceRepository : IPriceRepository
+    public class PriceRepository :  Repository<Price>, IPriceRepository
     {
         private readonly DataContext _context;
 
-        public PriceRepository(DataContext context)
+        public PriceRepository(DataContext context) : base(context)
         {
             _context = context;
         }

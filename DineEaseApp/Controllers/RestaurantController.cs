@@ -339,40 +339,48 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpDelete("deleteCuisine")]
+        [HttpDelete("deleteCuisines")]
         [ProducesResponseType(200)]
-        public async Task<IActionResult> DeleteCuisine(int cuisineId,int restaurantId)
+        public async Task<IActionResult> DeleteCuisine(List<CuisineRestaurantCreateDto> cuisineRestaurantCreateDtos)
         {
             try
             {
-                var c = await _cuisine.GetByIdAsync(cuisineId);
-
-                if(c == null)
+                if(cuisineRestaurantCreateDtos == null)
                 {
-                    return BadRequest("Cuisine does not exist");
+                    return BadRequest();
                 }
 
-                var r = await _restaurantRepository.GetRestaurantById(restaurantId);
-                if(r == null)
+                foreach (var cuisineRestaurant in cuisineRestaurantCreateDtos)
                 {
-                    return BadRequest("Restaurant does not exist");
-                }
+                    var c = await _cuisine.GetByIdAsync(cuisineRestaurant.CuisineId);
 
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
+                    if (c == null)
+                    {
+                        return BadRequest("Cuisine does not exist");
+                    }
 
-                var cr = await _cuisinesRestaurantRepository.GetCuisinesRestaurantsByRestaurantCuisineId(restaurantId, cuisineId);
-                
-                if (cr == null)
-                {
-                    return BadRequest(ModelState);
-                }
-                if(!await _cuisinesRestaurantRepository.DeleteAsync(cr))
-                {
-                    ModelState.AddModelError("", "Something went wrong while saving");
-                    return BadRequest(ModelState);
+                    var r = await _restaurantRepository.GetRestaurantById(cuisineRestaurant.RestaurantId);
+                    if (r == null)
+                    {
+                        return BadRequest("Restaurant does not exist");
+                    }
+
+                    if (!ModelState.IsValid)
+                    {
+                        return BadRequest(ModelState);
+                    }
+
+                    var cr = await _cuisinesRestaurantRepository.GetCuisinesRestaurantsByRestaurantCuisineId(cuisineRestaurant.RestaurantId, cuisineRestaurant.CuisineId);
+
+                    if (cr == null)
+                    {
+                        return BadRequest(ModelState);
+                    }
+                    if (!await _cuisinesRestaurantRepository.DeleteAsync(cr))
+                    {
+                        ModelState.AddModelError("", "Something went wrong while saving");
+                        return BadRequest(ModelState);
+                    }
                 }
 
                 return Ok("Successfully removed");
@@ -386,7 +394,7 @@ namespace DineEaseApp.Controllers
 
         [HttpPost("addCategories")]
         [ProducesResponseType(200)]
-        public async Task<IActionResult> AddCategories(List<CategoriesRestaurantCreateDto> categoriesRestaurantCreateDtos)
+        public async Task<IActionResult> AddCategoriesToRestaurant(List<CategoriesRestaurantCreateDto> categoriesRestaurantCreateDtos)
         {
             try
             {
@@ -395,15 +403,15 @@ namespace DineEaseApp.Controllers
                     return BadRequest();
                 }
 
-                var categoriesRestaurantMap = _mapper.Map<List<CategoriesRestaurant>>(categoriesRestaurantCreateDtos);
+                var categoriesRestaurantsMap = _mapper.Map<List<CategoriesRestaurant>>(categoriesRestaurantCreateDtos);
 
-                Restaurant? res = await _restaurantRepository.GetRestaurantById(categoriesRestaurantMap[0].RestaurantId);
+                Restaurant? res = await _restaurantRepository.GetRestaurantById(categoriesRestaurantsMap[0].RestaurantId);
                 if (res == null)
                 {
                     return NotFound();
                 }
 
-                foreach (var category in categoriesRestaurantMap)
+                foreach (var category in categoriesRestaurantsMap)
                 {
                     var c = await _rcategoryRepository.GetByIdAsync(category.RCategoryId);
                     if (c == null)
@@ -411,11 +419,17 @@ namespace DineEaseApp.Controllers
                         return NotFound();
                     }
 
-                    if (!await _categoriesRestaurantRepository.AddAsync(category))
+                    var c2 = await _categoriesRestaurantRepository.GetCategoriesRestaurantsByRestaurantCategoryId(category.RestaurantId, category.RCategoryId);
+
+                    if (c2 == null)
                     {
-                        ModelState.AddModelError("", "Something went wrong while saving");
-                        return StatusCode(500, ModelState);
+                        if (!await _categoriesRestaurantRepository.AddAsync(category))
+                        {
+                            ModelState.AddModelError("", "Something went wrong while saving");
+                            return StatusCode(500, ModelState);
+                        }
                     }
+                    c2 = null;
                 }
                 return Ok("Successfully added");
 
@@ -426,40 +440,48 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpDelete("deleteCategory")]
+        [HttpDelete("deleteCategories")]
         [ProducesResponseType(200)]
-        public async Task<IActionResult> DeleteCategory(int categoryId, int restaurantId)
+        public async Task<IActionResult> DeleteCategories(List<CategoriesRestaurantCreateDto> categoriesRestaurantCreateDtos)
         {
             try
             {
-                var c = await _rcategoryRepository.GetByIdAsync(categoryId);
-
-                if (c == null)
+                if (categoriesRestaurantCreateDtos == null)
                 {
-                    return BadRequest("Category does not exist");
+                    return BadRequest();
                 }
 
-                var r = await _restaurantRepository.GetRestaurantById(restaurantId);
-                if (r == null)
+                foreach (var categoriesRestaurant in categoriesRestaurantCreateDtos)
                 {
-                    return BadRequest("Restaurant does not exist");
-                }
+                    var c = await _rcategoryRepository.GetByIdAsync(categoriesRestaurant.RCategoryId);
 
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
+                    if (c == null)
+                    {
+                        return BadRequest("Category does not exist");
+                    }
 
-                var cr = await _categoriesRestaurantRepository.GetCategoriesRestaurantsByRestaurantCategoryId(restaurantId, categoryId);
+                    var r = await _restaurantRepository.GetRestaurantById(categoriesRestaurant.RestaurantId);
+                    if (r == null)
+                    {
+                        return BadRequest("Restaurant does not exist");
+                    }
 
-                if (cr == null)
-                {
-                    return BadRequest(ModelState);
-                }
-                if (!await _categoriesRestaurantRepository.DeleteAsync(cr))
-                {
-                    ModelState.AddModelError("", "Something went wrong while saving");
-                    return BadRequest(ModelState);
+                    if (!ModelState.IsValid)
+                    {
+                        return BadRequest(ModelState);
+                    }
+
+                    var cr = await _categoriesRestaurantRepository.GetCategoriesRestaurantsByRestaurantCategoryId(categoriesRestaurant.RestaurantId, categoriesRestaurant.RCategoryId);
+
+                    if (cr == null)
+                    {
+                        return BadRequest(ModelState);
+                    }
+                    if (!await _categoriesRestaurantRepository.DeleteAsync(cr))
+                    {
+                        ModelState.AddModelError("", "Something went wrong while saving");
+                        return BadRequest(ModelState);
+                    }
                 }
 
                 return Ok("Successfully removed");
@@ -471,9 +493,10 @@ namespace DineEaseApp.Controllers
         }
 
 
+
         [HttpPost("addSeatings")]
         [ProducesResponseType(200)]
-        public async Task<IActionResult> AddSeatings(List<SeatingsRestaurantCreateDto> seatingsRestaurantCreateDtos)
+        public async Task<IActionResult> AddSeatingsToRestaurant(List<SeatingsRestaurantCreateDto> seatingsRestaurantCreateDtos)
         {
             try
             {
@@ -482,15 +505,15 @@ namespace DineEaseApp.Controllers
                     return BadRequest();
                 }
 
-                var seatingsRestaurantMap = _mapper.Map<List<SeatingsRestaurant>>(seatingsRestaurantCreateDtos);
+                var seatinggsRestaurantMap = _mapper.Map<List<SeatingsRestaurant>>(seatingsRestaurantCreateDtos);
 
-                Restaurant? res = await _restaurantRepository.GetRestaurantById(seatingsRestaurantMap[0].RestaurantId);
+                Restaurant? res = await _restaurantRepository.GetRestaurantById(seatinggsRestaurantMap[0].RestaurantId);
                 if (res == null)
                 {
                     return NotFound();
                 }
 
-                foreach (var seating in seatingsRestaurantMap)
+                foreach (var seating in seatinggsRestaurantMap)
                 {
                     var c = await _seating.GetByIdAsync(seating.SeatingId);
                     if (c == null)
@@ -498,13 +521,20 @@ namespace DineEaseApp.Controllers
                         return NotFound();
                     }
 
-                    if (!await _seatingsRestaurantRepository.AddAsync(seating))
+                    var c2 = await _seatingsRestaurantRepository.GetSeatingsRestaurantsByRestaurantSeatingId(seating.RestaurantId, seating.SeatingId);
+
+                    if (c2 == null)
                     {
-                        ModelState.AddModelError("", "Something went wrong while saving");
-                        return StatusCode(500, ModelState);
+                        if (!await _seatingsRestaurantRepository.AddAsync(seating))
+                        {
+                            ModelState.AddModelError("", "Something went wrong while saving");
+                            return StatusCode(500, ModelState);
+                        }
                     }
+                    c2 = null;
                 }
                 return Ok("Successfully added");
+
             }
             catch (Exception ex)
             {
@@ -512,41 +542,48 @@ namespace DineEaseApp.Controllers
             }
         }
 
-
-        [HttpDelete("deleteSeating")]
+        [HttpDelete("deleteSeatings")]
         [ProducesResponseType(200)]
-        public async Task<IActionResult> DeleteSeating(int seatingId, int restaurantId)
+        public async Task<IActionResult> DeleteSeatings(List<SeatingsRestaurantCreateDto> seatingsRestaurantCreateDtos)
         {
             try
             {
-                var c = await _seating.GetByIdAsync(seatingId);
-
-                if (c == null)
+                if (seatingsRestaurantCreateDtos == null)
                 {
-                    return BadRequest("Seating does not exist");
+                    return BadRequest();
                 }
 
-                var r = await _restaurantRepository.GetRestaurantById(restaurantId);
-                if (r == null)
+                foreach (var seatingRestaurant in seatingsRestaurantCreateDtos)
                 {
-                    return BadRequest("Restaurant does not exist");
-                }
+                    var c = await _seating.GetByIdAsync(seatingRestaurant.SeatingId);
 
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
+                    if (c == null)
+                    {
+                        return BadRequest("Seating does not exist");
+                    }
 
-                var sr = await _seatingsRestaurantRepository.GetSeatingsRestaurantsByRestaurantSeatingId(restaurantId, seatingId);
+                    var r = await _restaurantRepository.GetRestaurantById(seatingRestaurant.RestaurantId);
+                    if (r == null)
+                    {
+                        return BadRequest("Restaurant does not exist");
+                    }
 
-                if (sr == null)
-                {
-                    return BadRequest(ModelState);
-                }
-                if (!await _seatingsRestaurantRepository.DeleteAsync(sr))
-                {
-                    ModelState.AddModelError("", "Something went wrong while saving");
-                    return BadRequest(ModelState);
+                    if (!ModelState.IsValid)
+                    {
+                        return BadRequest(ModelState);
+                    }
+
+                    var cr = await _seatingsRestaurantRepository.GetSeatingsRestaurantsByRestaurantSeatingId(seatingRestaurant.RestaurantId, seatingRestaurant.SeatingId);
+
+                    if (cr == null)
+                    {
+                        return BadRequest(ModelState);
+                    }
+                    if (!await _seatingsRestaurantRepository.DeleteAsync(cr))
+                    {
+                        ModelState.AddModelError("", "Something went wrong while saving");
+                        return BadRequest(ModelState);
+                    }
                 }
 
                 return Ok("Successfully removed");
@@ -556,6 +593,7 @@ namespace DineEaseApp.Controllers
                 return (StatusCode(500, ex.Message));
             }
         }
+
 
         [HttpGet]
         [ProducesResponseType(200,Type = typeof(IEnumerable<Restaurant>))]
@@ -633,13 +671,18 @@ namespace DineEaseApp.Controllers
             restaurantMap.TaxIdNum = restaurant.TaxIdNum;
             restaurantMap.BusinessLicense = restaurant.BusinessLicense;
 
+
             if(!await _restaurantRepository.UpdateRestaurant(restaurantMap))
             {
                 ModelState.AddModelError("", "Something went wrong while saving");
                 return StatusCode(500, ModelState);
             }
 
-            return NoContent();
+            //var price = _mapper.Map<Price>(await _priceRepository.GetByIdAsync(restaurantMap.Id));
+
+            //if (!await _priceRepository.UpdateAsync()
+
+                return NoContent();
         }
 
         [HttpGet("{id}/rating")]
