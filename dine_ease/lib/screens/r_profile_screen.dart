@@ -12,6 +12,7 @@ import 'package:dine_ease/models/seatings_restaurant_model.dart';
 import 'package:dine_ease/utils/request_util.dart';
 import 'package:flutter/material.dart';
 import 'package:dine_ease/widgets/custom_text_field.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
 class RProfileScreen extends StatefulWidget {
@@ -274,6 +275,63 @@ class _RProfileScreenState extends State<RProfileScreen> {
     }
   }
 
+  //update openings
+  void updateOpenings(List<Opening> openings) async {
+    try {
+      await _requestUtil.putUpdateOpenings(openings);
+      setState(() {
+        restaurant.openings = openings;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Openings updated successfully'),
+      ));
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Failed to update openings'),
+      ));
+    }
+  }
+
+  //add openings
+  void addOpenings(List<Opening> openings) async {
+    try {
+      await _requestUtil.postAddOpenings(openings);
+      setState(() {
+        restaurant.openings = openings;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Openings added successfully'),
+      ));
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Failed to add openings'),
+      ));
+    }
+  }
+
+  void addOrUpdateOpenings(List<Opening> openings) async {
+    List<Opening> newOpenings = [];
+    List<Opening> updatedOpenings = [];
+    for (var opening in openings) {
+      if (opening.id == null) {
+        newOpenings.add(opening);
+      } else {
+        updatedOpenings.add(opening);
+      }
+    }
+    Logger().i(newOpenings);
+    Logger().i(updatedOpenings);
+
+    if (newOpenings.isNotEmpty) {
+      addOpenings(newOpenings);
+    }
+
+    if (updatedOpenings.isNotEmpty) {
+      updateOpenings(updatedOpenings);
+    }
+  }
+
+
   void _showSelectionDialog<T>({
   required String title,
   required List<T> allItems,
@@ -281,7 +339,7 @@ class _RProfileScreenState extends State<RProfileScreen> {
   required Function(List<T>) onAdd,
   required Function(List<T>) onRemove,
   required String Function(T) itemLabel,
-  required bool Function(T, T) itemEquality, // Equality function for items
+  required bool Function(T, T) itemEquality, 
   }) {
     showDialog(
       context: context,
@@ -295,7 +353,7 @@ class _RProfileScreenState extends State<RProfileScreen> {
               content: Container(
                 width: double.maxFinite,
                 constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.6, // Ensure it is scrollable
+                  maxHeight: MediaQuery.of(context).size.height * 0.6,
                 ),
                 child: ListView.builder(
                   shrinkWrap: true,
@@ -388,6 +446,203 @@ class _RProfileScreenState extends State<RProfileScreen> {
     );
   }
 
+  // Show opening edit dialog
+  void _showOpeningEditDialog() {
+  showDialog(
+    context: context,
+    builder: (context) {
+      List<Opening> tempOpenings = List.from(restaurant.openings ?? []);
+      List<TextEditingController> startControllers = List.generate(7, (index) {
+        final opening = tempOpenings.firstWhere(
+          (o) => o.day == index,
+          orElse: () => Opening(day: index, openingHour: '', closingHour: ''),
+        );
+        return TextEditingController(text: opening.openingHour);
+      });
+
+      List<TextEditingController> endControllers = List.generate(7, (index) {
+        final opening = tempOpenings.firstWhere(
+          (o) => o.day == index,
+          orElse: () => Opening(day: index, openingHour: '', closingHour: ''),
+        );
+        return TextEditingController(text: opening.closingHour);
+      });
+
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: const Text('Edit Openings'),
+            contentPadding: EdgeInsets.all(16.0),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: 7,
+                itemBuilder: (context, index) {
+                  final opening = tempOpenings.firstWhere(
+                    (o) => o.day == index,
+                    orElse: () => Opening(day: index, openingHour: '', closingHour: ''),
+                  );
+
+                  return Column(
+                    children: [
+                      Row(
+                        children: [
+                          Text(DateFormat.EEEEE('en_US').format(DateTime(2022, 1, 3 + index))),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                showTimePicker(
+                                  context: context,
+                                  initialTime: TimeOfDay.now(),
+                                ).then((selectedTime) {
+                                  if (selectedTime != null) {
+                                    final formattedTime = _formatTime(selectedTime);
+                                    setState(() {
+                                      opening.openingHour = formattedTime;
+                                      startControllers[index].text = formattedTime;
+                                    });
+                                  }
+                                });
+                              },
+                              child: AbsorbPointer(
+                                child: MyTextField(
+                                  controller: startControllers[index],
+                                  hintText: 'Start Time',
+                                  obscureText: false,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                showTimePicker(
+                                  context: context,
+                                  initialTime: TimeOfDay.now(),
+                                ).then((selectedTime) {
+                                  if (selectedTime != null) {
+                                    final formattedTime = _formatTime(selectedTime);
+                                    setState(() {
+                                      opening.closingHour = formattedTime;
+                                      endControllers[index].text = formattedTime;
+                                    });
+                                  }
+                                });
+                              },
+                              child: AbsorbPointer(
+                                child: MyTextField(
+                                  controller: endControllers[index],
+                                  hintText: 'End Time',
+                                  obscureText: false,
+                                ),
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () {
+                              setState(() {
+                                startControllers[index].text = '';
+                                opening.openingHour = '';
+                                endControllers[index].text = '';
+                                opening.closingHour = '';
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                  );
+                },
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  bool allFieldsValid = true;
+                  bool allTimingsValid = true;
+
+                  for (int i = 0; i < 7; i++) {
+                    if ((startControllers[i].text.isNotEmpty && endControllers[i].text.isEmpty) ||
+                        (startControllers[i].text.isEmpty && endControllers[i].text.isNotEmpty)) {
+                      allFieldsValid = false;
+                      continue; 
+                    }
+                    
+                    if (_compareTime(startControllers[i].text, endControllers[i].text) > 0) {
+                      allTimingsValid = false;
+                      break;
+                    }
+                  }
+
+                  if (allFieldsValid && allTimingsValid) {
+                    setState(() {
+                      restaurant.openings = tempOpenings;
+                      Logger().i(restaurant.openings!.map((o) => o.toMap()).toList());
+                    });
+                    addOrUpdateOpenings(tempOpenings);
+                    Navigator.pop(context);
+                  } else {
+                    String message = '';
+                    if (!allFieldsValid) {
+                      message = 'Some fields are empty. Are you sure you want to save?';
+                    } else if (!allTimingsValid) {
+                      message = 'Start time cannot be greater than end time.';
+                    }
+                    
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(message),
+                      ),
+                    );
+                  }
+                },
+                child: const Text('Save'),
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
+}
+
+  int _compareTime(String startTime, String endTime) {
+    if (startTime.isEmpty && endTime.isEmpty) {
+      return 0;
+    }
+
+    if (startTime.isEmpty) {
+      return 1;
+    }
+    if (endTime.isEmpty) {
+      return -1;
+    }
+
+    DateTime start = DateTime.tryParse(startTime) ?? DateTime(2000);
+    DateTime end = DateTime.tryParse(endTime) ?? DateTime(2000);
+
+    return start.compareTo(end);
+  }
+
+  String _formatTime(TimeOfDay timeOfDay) {
+    int hour = timeOfDay.hour;
+    int minute = timeOfDay.minute;    
+
+    String formattedTime = '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+
+    return formattedTime;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -556,6 +811,54 @@ class _RProfileScreenState extends State<RProfileScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      //text openings
+                      const Text(
+                        'Openings',
+                        style: TextStyle(
+                          fontSize: 20,
+                          // fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                      //Openings listazas textkent, nem chipkent
+                      Padding(
+                      padding: const EdgeInsets.fromLTRB(80.0, 8.0, 80.0, 8.0),
+                      child: Column(
+                        //center
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: List.generate(7, (index) {
+                          final opening = restaurant.openings?.firstWhere(
+                            (o) => o.day == index,
+                            orElse: () => Opening(day: index, openingHour: '', closingHour: '',id: 0),
+                          );
+
+                          final dayName = DateFormat.EEEE('en_US').format(DateTime(2022, 1, 3 + index)); 
+                          final isClosed = opening?.openingHour.isEmpty ?? true;
+
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              //day
+                              Text(
+                                dayName,
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                              //time
+                              Text(
+                                isClosed ? 'Closed' : '${opening!.openingHour} - ${opening.closingHour}',
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                            ],
+                          );
+                        }),
+                      ),
+                    ),
+                      //edit opening button that looks like update button
+                      ElevatedButton(
+                        onPressed: (){
+                          _showOpeningEditDialog();
+                        }, child: 
+                        const Text('Edit Openings')
+                      ),
                       //text "Cuisines"
                       const Text(
                         'Cuisines',
@@ -579,7 +882,7 @@ class _RProfileScreenState extends State<RProfileScreen> {
                           }).toList() ?? [],
                         ),
                       ),
-                      TextButton(
+                      ElevatedButton(
                         onPressed: _showCuisineSelectionDialog,
                         child: Text('+ Add Cuisine'),
                       ),
@@ -607,7 +910,7 @@ class _RProfileScreenState extends State<RProfileScreen> {
                           }).toList() ?? [],
                         ),
                       ),
-                      TextButton(
+                      ElevatedButton(
                         onPressed: _showCategorySelectionDialog,
                         child: Text('+ Add Category'),
                       ),
@@ -634,7 +937,7 @@ class _RProfileScreenState extends State<RProfileScreen> {
                           }).toList() ?? [],
                         ),
                       ),
-                      TextButton(
+                      ElevatedButton(
                         onPressed: _showSeatingSelectionDialog,
                         child: Text('+ Add Seating'),
                       ),

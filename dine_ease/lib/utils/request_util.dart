@@ -874,6 +874,53 @@ class RequestUtil {
     }
   }
 
+  //add openings
+  Future<void> postAddOpenings(List<Opening> openings)async{
+    try{
+      String token =await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['OPENING_POST']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(openings.map((opening) => opening.toCreateMap()).toList())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error adding openings: $e');
+      rethrow;
+    }
+  }
+
+  //update openings
+  Future<void> putUpdateOpenings(List<Opening> openings)async{
+    try{
+      String token =await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['OPENING_PUT']!);
+      Logger().i(url);
+      resp = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(openings.map((opening) => opening.toUpdateMap()).toList())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error updating openings: $e');
+      rethrow;
+    }
+  }
+  
+
   //getPrices
   Future<List<Price>> getPrices() async{
     try{

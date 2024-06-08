@@ -5,6 +5,7 @@ class MyTextField extends StatelessWidget{
   final String hintText;
   final bool obscureText;
   final String? Function(String?)? validator;
+  final Function(String)? onChanged;
 
   const MyTextField({
     super.key,
@@ -12,6 +13,7 @@ class MyTextField extends StatelessWidget{
     required this.hintText,
     required this.obscureText,
     this.validator,
+    this.onChanged,
   });
 
   @override
@@ -26,7 +28,8 @@ class MyTextField extends StatelessWidget{
       child: TextFormField(
         controller: controller,
         obscureText: obscureText,
-        validator: validator, 
+        validator: validator,
+        onChanged: onChanged,
         decoration: InputDecoration(
           enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),

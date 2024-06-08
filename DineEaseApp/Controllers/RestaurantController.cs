@@ -203,35 +203,38 @@ namespace DineEaseApp.Controllers
            return Ok(openings);
         }
 
-        [HttpPut("updateOpening")]
+        [HttpPut("updateOpenings")]
         [ProducesResponseType(200)]
-        public async Task<IActionResult> UpdateOpening(OpeningDto openingDto)
+        public async Task<IActionResult> UpdateOpening(List<OpeningDto> openingDtos)
         {
-            if(openingDto == null)
+            if(openingDtos == null)
             {
                 return BadRequest(ModelState);
             }
 
-            var opening = await _openingRepository.GetByIdAsync(openingDto.Id);
-            if(opening == null)
+            foreach (var openingDto in openingDtos)
             {
-                return NotFound();
+                var opening = await _openingRepository.GetByIdAsync(openingDto.Id);
+                if (opening == null)
+                {
+                    return NotFound();
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                var openingMap = _mapper.Map<Opening>(openingDto);
+
+                if (!await _openingRepository.UpdateAsync(openingMap))
+                {
+                    ModelState.AddModelError("", "Something went wrong while saving");
+                    return StatusCode(500, ModelState);
+                }
             }
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var openingMap = _mapper.Map<Opening>(openingDto);
-
-            if (!await _openingRepository.UpdateAsync(openingMap))
-            {
-                ModelState.AddModelError("", "Something went wrong while saving");
-                return StatusCode(500, ModelState);
-            }
-
-            return NoContent();
+            return Ok("Successfully updated");
         }
 
         [HttpPost("addOpenings")]
