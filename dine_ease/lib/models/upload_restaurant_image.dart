@@ -1,22 +1,26 @@
 class UploadImages{
-  String? imageFile;
+  int id;
+  String? image;
   int restaurantId;
 
   UploadImages({
-    this.imageFile,
+    required this.id,
+    this.image,
     required this.restaurantId,
   });
 
-  factory UploadImages.fromJson(dynamic json){
+  factory UploadImages.fromJson(Map<String, dynamic> json) {
     return UploadImages(
-      imageFile: json['imageFile'] as String,
-      restaurantId: json['restaurantId'] as int,
+      id: json['id'],
+      image: json['image'],
+      restaurantId: json['restaurantId'],
     );
   }
 
   Map<String, dynamic> toMap(){
     return {
-      'imageFile': imageFile,
+      'id': id,
+      'image': image,
       'restaurantId': restaurantId,
     };
   }

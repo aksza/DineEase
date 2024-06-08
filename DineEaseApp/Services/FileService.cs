@@ -26,7 +26,8 @@ public class FileService : IFileService
     }
 
     var contentPath = _environment.ContentRootPath;
-    var path = Path.Combine(contentPath, "Uploads");
+        //var path = Path.Combine(contentPath, "Uploads");
+        var path = Path.GetFullPath("E:\\egyetem\\allamvizsga\\DineEase\\dine_ease\\assets\\test_images");
     // path = "c://projects/ImageManipulation.Ap/uploads" ,not exactly, but something like that
 
     if (!Directory.Exists(path))
@@ -56,8 +57,9 @@ public void DeleteFile(string fileNameWithExtension)
     {
         throw new ArgumentNullException(nameof(fileNameWithExtension));
     }
-    var contentPath = _environment.ContentRootPath;
-    var path = Path.Combine(contentPath, $"Uploads", fileNameWithExtension);
+        //var contentPath = _environment.ContentRootPath;
+        //var path = Path.Combine(contentPath, $"Uploads", fileNameWithExtension);
+    var path = Path.GetFullPath("E:\\egyetem\\allamvizsga\\DineEase\\dine_ease\\assets\\test_images\\"+fileNameWithExtension);
 
     if (!File.Exists(path))
     {

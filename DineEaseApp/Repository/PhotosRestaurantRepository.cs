@@ -33,6 +33,15 @@ namespace DineEaseApp.Repository
             return photo;
         }
 
+        public async Task<ICollection<PhotosRestaurant>?> GetPhotosByRestaurantId(int restaurantId)
+        {
+            var photo = await _context.PhotosRestaurants
+                .Where(x => x.RestaurantId == restaurantId)
+                .ToListAsync();
+
+            return photo;
+        }
+
         public async Task<IEnumerable<PhotosRestaurant>> GetPhotosRestaurantsAsync()
         {
             return await _context.PhotosRestaurants.ToListAsync();

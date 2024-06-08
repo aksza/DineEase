@@ -25,6 +25,7 @@ import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:dine_ease/models/review_models.dart';
 import 'package:dine_ease/models/seating_model.dart';
 import 'package:dine_ease/models/seatings_restaurant_model.dart';
+import 'package:dine_ease/models/upload_restaurant_image.dart';
 import 'package:dine_ease/models/user_model.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -1559,6 +1560,72 @@ class RequestUtil {
       Logger().i(resp.body);
     }catch(e){
       Logger().e('Error updating menu: $e');
+      rethrow;
+    }    
+  }
+  //get photos by restaurant id
+  Future<List<UploadImages>> getPhotosByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['PHOTO_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> photos = jsonDecode(resp.body);
+      return photos.map((photo) => UploadImages.fromJson(photo)).toList();
+    }catch(e){
+      Logger().e('Error getting photos by restaurant id: $e');
+      rethrow;
+    }
+  }
+
+  //delete photo
+  Future<void> deleteRemovePhoto(int photoId) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['REMOVE_PHOTO_DELETE']! + photoId.toString());
+      Logger().i(url);
+      resp = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error removing photo: $e');
+      rethrow;
+    }    
+  }
+
+  //add photo
+  Future<void> postAddPhoto(UploadImages photo) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['PHOTO_POST']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        // body: jsonEncode(photo.toCreateMap())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error adding photo: $e');
       rethrow;
     }    
   }

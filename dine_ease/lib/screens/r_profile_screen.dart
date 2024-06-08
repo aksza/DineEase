@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dine_ease/auth/db_service.dart';
 import 'package:dine_ease/models/categories_restaurant_model.dart';
 import 'package:dine_ease/models/cuisine_model.dart';
@@ -9,6 +12,7 @@ import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:dine_ease/models/review_models.dart';
 import 'package:dine_ease/models/seating_model.dart';
 import 'package:dine_ease/models/seatings_restaurant_model.dart';
+import 'package:dine_ease/models/upload_restaurant_image.dart';
 import 'package:dine_ease/utils/request_util.dart';
 import 'package:flutter/material.dart';
 import 'package:dine_ease/widgets/custom_text_field.dart';
@@ -41,6 +45,7 @@ class _RProfileScreenState extends State<RProfileScreen> {
   List<RCategory> allCategories = [];
   List<Seating> allSeatings = [];
   List<Price> allPrices = [];
+  late List<UploadImages> images;
   
   final _formKey = GlobalKey<FormState>();
 
@@ -62,6 +67,7 @@ class _RProfileScreenState extends State<RProfileScreen> {
       List<Opening>? openings = await _requestUtil.getOpeningsByRestaurantId(resid);
       List<Seating>? seatings = await _requestUtil.getSeatingsByRestaurantId(resid);
       List<Review>? reviews = await _requestUtil.getReviewsByRestaurantId(resid);
+      var image = await _requestUtil.getPhotosByRestaurantId(resid);
 
       response.categories = categories;
       response.cuisines = cuisines;
@@ -81,6 +87,7 @@ class _RProfileScreenState extends State<RProfileScreen> {
         allCategories = allCategories;
         allSeatings = allSeatings;
         allPrices = allPrices;
+        images = image;
         isLoading = false;
       });
     } catch (error) {
@@ -331,6 +338,66 @@ class _RProfileScreenState extends State<RProfileScreen> {
     }
   }
 
+  //delete photo
+  void deletePhoto(UploadImages photo) async {
+    try {
+      await _requestUtil.deleteRemovePhoto(photo.id);
+
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Photo deleted successfully'),
+      ));
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Failed to delete photo'),
+      ));
+    }
+  }
+
+  //add photo
+  // void addPhoto(File photo) async {
+  //   try {
+  //     await _requestUtil.postAddPhoto(UploadImages(restaurantId: restaurant.id, image: photo.path));
+  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //       content: Text('Photo added successfully'),
+  //     ));
+  //   } catch (error) {
+  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+  //       content: Text('Failed to add photo'),
+  //     ));
+  //   }
+  // }
+
+  //show alert dialog delete photo
+  void _showDeletePhotoDialog(UploadImages photo) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Photo'),
+          content: const Text('Are you sure you want to delete this photo?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Logger().i('Delete photo with id: ${photo.id}');
+                deletePhoto(photo);
+                setState(() {
+                  images.removeWhere((element) => element.id == photo.id);
+                });
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void _showSelectionDialog<T>({
   required String title,
@@ -798,6 +865,67 @@ class _RProfileScreenState extends State<RProfileScreen> {
                         },
                         child: const Text('Update'),
                       ),
+                      //elvalaszto vonal
+                      const Divider(
+                        color: Colors.grey,
+                        thickness: 1,
+                      ),
+                      //text photos
+                      const Text(
+                        'Photos',
+                        style: TextStyle(
+                          fontSize: 20,
+                          // fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                      //photos
+                      if(images.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CarouselSlider.builder(
+                          itemCount: images.length,
+                          itemBuilder: (BuildContext context, int index, int realIndex) {
+                            return Stack(
+                              children: [
+                                Image.asset(
+                                  "assets/test_images/${images[index].image!}",
+                                  fit: BoxFit.cover,
+                                ),
+                                Positioned(
+                                  top: 0,
+                                  right: 0,
+                                  child: IconButton(
+                                    icon: Icon(Icons.delete, color: Colors.red),
+                                    onPressed: () {
+                                      // Itt írd meg a törlés logikáját
+                                      _showDeletePhotoDialog(images[index]);
+                                      
+                                    },
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                          options: CarouselOptions(
+                            height: 200,
+                            aspectRatio: 16 / 9,
+                            viewportFraction: 0.8,
+                            initialPage: 0,
+                            enableInfiniteScroll: true,
+                            reverse: false,
+                            autoPlay: false,
+                            enlargeCenterPage: true,
+                            scrollDirection: Axis.horizontal,
+                          ),
+                        ),
+                      ),
+                      //add photo button
+                      ElevatedButton(
+                        onPressed: () {
+                          // addPhoto();
+                        },
+                        child: const Text('Add Photo'),
+                      ),           
                       //elvalaszto vonal
                       const Divider(
                         color: Colors.grey,
