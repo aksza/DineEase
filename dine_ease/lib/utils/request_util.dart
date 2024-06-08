@@ -1448,4 +1448,71 @@ class RequestUtil {
     }    
   }
 
+  //add menu
+  Future<void> postAddMenu(Menu menu) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['MENU_POST']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(menu.toCreateMap())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error adding menu: $e');
+      rethrow;
+    }    
+  }
+
+  //delete menu
+  Future<void> deleteRemoveMenu(int menuId) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['REMOVE_MENU_DELETE']! + menuId.toString());
+      Logger().i(url);
+      resp = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error removing menu: $e');
+      rethrow;
+    }    
+  }
+
+  //update menu
+  Future<void> putUpdateMenu(Menu menu) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['MENU_UPDATE']! + menu.id.toString());
+      Logger().i(url);
+      resp = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(menu.toMap())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error updating menu: $e');
+      rethrow;
+    }    
+  }
 }

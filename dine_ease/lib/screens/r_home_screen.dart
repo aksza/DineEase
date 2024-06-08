@@ -1,5 +1,6 @@
 import 'package:dine_ease/auth/auth_service.dart';
 import 'package:dine_ease/screens/r_events_screen.dart';
+import 'package:dine_ease/screens/r_menu_screen.dart';
 import 'package:dine_ease/screens/r_profile_screen.dart';
 import 'package:dine_ease/screens/r_reservation_screen.dart';
 import 'package:dine_ease/screens/r_statistics_screen.dart';
@@ -23,6 +24,7 @@ class _RHomeScreenState extends State<RHomeScreen> {
     RReservationScreen(),
     RWaitingListScreen(),
     REventsScreen(),
+    RMenuScreen(),
     RProfileScreen(),
     RStatisticsScreen(),
   ];
@@ -31,6 +33,7 @@ class _RHomeScreenState extends State<RHomeScreen> {
     'Reservations',
     'Waitinglist',
     'Your Events',
+    'Your Menu',
     'Restaurant',
     'Statistics',
   ];
@@ -39,7 +42,7 @@ class _RHomeScreenState extends State<RHomeScreen> {
     setState(() {
       _selectedIndex = index;
     });
-    Navigator.of(context).pop();  // Bezárja az oldalsó sávot
+    Navigator.of(context).pop(); 
   }
 
   @override
@@ -86,17 +89,24 @@ class _RHomeScreenState extends State<RHomeScreen> {
               },
             ),
             ListTile(
+              leading: Icon(Icons.menu_book_outlined),
+              title: Text('Your Menu'),
+              onTap: () {
+                _onItemTapped(3);
+              },
+            ),
+            ListTile(
               leading: Icon(Icons.restaurant),
               title: Text('Restaurant'),
               onTap: () {
-                _onItemTapped(3);
+                _onItemTapped(4);
               },
             ),
             ListTile(
               leading: Icon(Icons.bar_chart),
               title: Text('Statistics'),
               onTap: () {
-                _onItemTapped(4);
+                _onItemTapped(5);
               },
             ),
             Divider(),
