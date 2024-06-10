@@ -1,4 +1,6 @@
+import 'dart:ffi';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dine_ease/auth/db_service.dart';
@@ -13,9 +15,11 @@ import 'package:dine_ease/models/review_models.dart';
 import 'package:dine_ease/models/seating_model.dart';
 import 'package:dine_ease/models/seatings_restaurant_model.dart';
 import 'package:dine_ease/models/upload_restaurant_image.dart';
+import 'package:dine_ease/utils/image_util.dart';
 import 'package:dine_ease/utils/request_util.dart';
 import 'package:flutter/material.dart';
 import 'package:dine_ease/widgets/custom_text_field.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
@@ -711,6 +715,42 @@ class _RProfileScreenState extends State<RProfileScreen> {
     return formattedTime;
   }
 
+  //add photo
+  Future<UploadImages?> addPhoto(Uint8List photo) async {
+    try {
+      // Uint8List image = await photo.readAsBytes();
+      var resp = await _requestUtil.postAddPhoto(restaurant.id, photo);
+      if(resp != null){
+        setState(() {
+          images.add(resp);
+        });
+        return resp;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Photo added successfully'),
+      ));
+      return null;
+      //  final _directory =
+      // await getTemporaryDirectory();
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Failed to add photo'),
+      ));
+      return null;
+    }
+  }
+
+  void selectImage() async{
+    Uint8List? image = await pickImage(ImageSource.gallery);
+    if(image != null){
+      // addPhoto(File(image.toString()));
+      await addPhoto(image);
+      setState((){
+        
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -891,6 +931,7 @@ class _RProfileScreenState extends State<RProfileScreen> {
                                   "assets/test_images/${images[index].image!}",
                                   fit: BoxFit.cover,
                                 ),
+                                
                                 Positioned(
                                   top: 0,
                                   right: 0,
@@ -922,7 +963,7 @@ class _RProfileScreenState extends State<RProfileScreen> {
                       //add photo button
                       ElevatedButton(
                         onPressed: () {
-                          // addPhoto();
+                          selectImage();
                         },
                         child: const Text('Add Photo'),
                       ),           

@@ -1,4 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 // import 'dart:html';
 
 import 'package:dine_ease/auth/db_service.dart';
@@ -1608,25 +1612,32 @@ class RequestUtil {
   }
 
   //add photo
-  Future<void> postAddPhoto(UploadImages photo) async {
-    try{
-      String token = await DataBaseProvider().getToken();
-      http.Response resp;
-      await dotenv.load(fileName: "assets/env/.env");
-      final url = Uri.parse(baseUrl + dotenv.env['PHOTO_POST']!);
-      Logger().i(url);
-      resp = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token'
-        },
-        // body: jsonEncode(photo.toCreateMap())
-      );
-      Logger().i(resp.body);
-    }catch(e){
-      Logger().e('Error adding photo: $e');
-      rethrow;
-    }    
+  Future<UploadImages?> postAddPhoto(int restaurantId, Uint8List photo) async {
+  try {
+    String token = await DataBaseProvider().getToken();
+    await dotenv.load(fileName: "assets/env/.env");
+    final url = Uri.parse(baseUrl + dotenv.env['PHOTO_POST']!);
+    Logger().i(url);
+
+    // MultipartRequest használata bináris fájl küldéséhez
+    var request = http.MultipartRequest('POST', url)
+      ..headers['Authorization'] = 'Bearer $token'
+      ..fields['restaurantId'] = restaurantId.toString()
+      ..files.add(http.MultipartFile.fromBytes(
+        'imageFile',
+        photo,
+        filename: 'photo.jpg', // Ezt lehet dinamikusan is generálni
+        contentType: MediaType('image', 'jpeg'),
+      ));
+
+    var response = await request.send();
+    var responseBody = await response.stream.bytesToString();
+    Logger().i(responseBody);
+    return UploadImages.fromJson(jsonDecode(responseBody));
+  } catch (e) {
+    Logger().e('Error adding photo: $e');
+    rethrow;
   }
+  }
+
 }
