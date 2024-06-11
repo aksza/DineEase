@@ -141,7 +141,7 @@ class _RStatisticsScreenState extends State<RStatisticsScreen> {
                   child: Column(
                     children: [
                       Text('Rating', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                      Text(_restaurant.rating.toString() + '⭐', style: TextStyle(fontSize: 20),),
+                      Text( _restaurant.rating == null ? '0⭐' : _restaurant.rating.toString() + '⭐', style: TextStyle(fontSize: 20),),
                     ],
                   ),
                 ),

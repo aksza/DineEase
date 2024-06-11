@@ -1639,4 +1639,48 @@ class RequestUtil {
   }
   }
 
+  //get accepted meetings by restaurant id
+  Future<List<Meeting>> getAcceptedMeetingsByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['ACCEPTED_MEETING_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> acceptedMeetings = jsonDecode(resp.body);
+      return acceptedMeetings.map((acceptedMeeting) => Meeting.fromJson(acceptedMeeting)).toList();
+    }catch(e){
+      Logger().e('Error getting accepted meetings by restaurant id: $e');
+      rethrow;
+    }
+  }
+
+  //get waitinglist by restaurant id
+  Future<List<Meeting>> getWaitingMeetingsByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['WAITING_MEETING_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> waitingList = jsonDecode(resp.body);
+      return waitingList.map((waiting) => Meeting.fromJson(waiting)).toList();
+    }catch(e){
+      Logger().e('Error getting waiting list by restaurant id: $e');
+      rethrow;
+    }
+  }
+
 }

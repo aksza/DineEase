@@ -61,6 +61,10 @@ class _RWaitingListScreenState extends State<RWaitingListScreen> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
+          : waitingList.isEmpty
+            ? const Center(
+                child: Text('The waiting list is empty'),
+              )
           : ListView.builder(
               itemCount: waitingList.length,
               itemBuilder: (context, index) {

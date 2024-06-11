@@ -14,6 +14,7 @@ import 'package:dine_ease/screens/meeting_screen.dart';
 import 'package:dine_ease/screens/menu_screen.dart';
 import 'package:dine_ease/screens/r_events_screen.dart';
 import 'package:dine_ease/screens/r_home_screen.dart';
+import 'package:dine_ease/screens/r_meeting_screen.dart';
 import 'package:dine_ease/screens/r_menu_screen.dart';
 import 'package:dine_ease/screens/r_reservation_screen.dart';
 import 'package:dine_ease/screens/r_waitinglist_screen.dart';
@@ -127,6 +128,7 @@ class MyApp extends StatelessWidget {
             '/r_profile' : (context) => const RWaitingListScreen(),
             'r_home' :(context) => const RHomeScreen(),
             '/r_menu' : (context) => const RMenuScreen(),
+            '/r_meeting' : (context) => const RMeetingScreen(),
           },
         )
     );
