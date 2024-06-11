@@ -1205,7 +1205,7 @@ class RequestUtil {
     try{
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
-      final url = Uri.parse(baseUrl + dotenv.env['ACCEPTED_RESERVATION_GET_BY_RES_ID']! + restaurantId.toString());
+      final url = Uri.parse(baseUrl + dotenv.env['ACCEPTED_GET_BY_RES_ID']! + restaurantId.toString());
       Logger().i(url);
       resp = await http.get(
         url,
