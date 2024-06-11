@@ -61,12 +61,14 @@ namespace DineEaseApp.Controllers
 
                 if(rating != null)
                 {
+                    rating.RatingNumber = ratingDto.RatingNumber;
                     if (!await _ratingRepository.UpdateAsync(rating))
                     {
                         ModelState.AddModelError("", "Something went wrong while saving");
                         return StatusCode(500, ModelState);
                     }
                     var res2 = await _restaurantRepository.GetRestaurantById(ratingDto.RestaurantId);
+                     
                     if (res2 == null)
                     {
                         BadRequest("Restaurant not found");
@@ -77,6 +79,7 @@ namespace DineEaseApp.Controllers
                         BadRequest(ModelState);
                     }
                     return Ok("Rating already existed, updated");
+                    //return Ok(_mapper.Map<RestaurantDto>(res2));
                 }
 
                 if (!ModelState.IsValid)

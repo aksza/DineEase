@@ -691,14 +691,14 @@ namespace DineEaseApp.Controllers
         [HttpGet("{id}/rating")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult GetRestaurantRating(int id)
+        public async Task<IActionResult> GetRestaurantRating(int id)
         {
             if (!_restaurantRepository.RestaurantExists(id))
             {
                 return NotFound();
             }
 
-            var rating = _restaurantRepository.GetRestaurantRating(id);
+            var rating = await _restaurantRepository.GetRestaurantRating(id);
 
             if (!ModelState.IsValid)
             {

@@ -1,3 +1,4 @@
+import 'package:dine_ease/auth/db_service.dart';
 import 'package:dine_ease/models/review_models.dart';
 import 'package:dine_ease/utils/request_util.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class RestaurantReview extends StatefulWidget {
 class _RestaurantReviewState extends State<RestaurantReview> {
   late SharedPreferences prefs;
   late String ownEmail;
+  late String role;
   late String email;
   RequestUtil requestUtil = RequestUtil();
   bool isExpanded = false;
@@ -51,9 +53,13 @@ class _RestaurantReviewState extends State<RestaurantReview> {
   }
 
   void initPrefs() async {
-    prefs = await SharedPreferences.getInstance();
+    // prefs = await SharedPreferences.getInstance();
+    String email1 = await DataBaseProvider().getEmail();
+    String role1 = await DataBaseProvider().getRole();
+
     setState(() {
-      ownEmail = prefs.getString('email')!;
+      ownEmail = email1;
+      role = role1;
     });
   }
 
@@ -111,7 +117,7 @@ class _RestaurantReviewState extends State<RestaurantReview> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          email,
+                          widget.review.userName ?? 'Unknown',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16.0,
@@ -136,7 +142,7 @@ class _RestaurantReviewState extends State<RestaurantReview> {
                       ],
                     ),
                   ),
-                  if (ownEmail == email)
+                  if (ownEmail == email || role == 'Restaurant')
                     Column(
                       children: [
                         IconButton(
@@ -152,6 +158,7 @@ class _RestaurantReviewState extends State<RestaurantReview> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               if (isEditing) 
+                                if(role == 'User')
                                 Row(
                                   children: [
                                     IconButton(

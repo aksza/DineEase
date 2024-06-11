@@ -1619,14 +1619,13 @@ class RequestUtil {
     final url = Uri.parse(baseUrl + dotenv.env['PHOTO_POST']!);
     Logger().i(url);
 
-    // MultipartRequest használata bináris fájl küldéséhez
     var request = http.MultipartRequest('POST', url)
       ..headers['Authorization'] = 'Bearer $token'
       ..fields['restaurantId'] = restaurantId.toString()
       ..files.add(http.MultipartFile.fromBytes(
         'imageFile',
         photo,
-        filename: 'photo.jpg', // Ezt lehet dinamikusan is generálni
+        filename: 'photo.jpg',
         contentType: MediaType('image', 'jpeg'),
       ));
 

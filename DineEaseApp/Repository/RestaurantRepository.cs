@@ -110,15 +110,15 @@ namespace DineEaseApp.Repository
         //    throw new NotImplementedException();
         //}
 
-        public double? GetRestaurantRating(int id)
+        public async Task<double?> GetRestaurantRating(int id)
         {
-            var rating = _context.Ratings.Where(r => r.Id == id);
+            var rating = await _context.Ratings.Where(r => r.Id == id).ToListAsync();
 
             if(rating.Count() <= 0)
             {
                 return null;
             }
-            return ((double)rating.Sum(r => r.RatingNumber) / rating.Count());
+            return (double)((double)rating.Sum(r => r.RatingNumber) / (double)rating.Count());
 
         }
 
