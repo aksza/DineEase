@@ -50,7 +50,7 @@ class _SignUpScreenState extends State<SignUpScreen>{
   final rconfirmPasswordTextController = TextEditingController();
   final rdescription = TextEditingController();
   final raddress = TextEditingController();
-  late int rprice = 1; //TODO:ehelyett lehetne egy dropdown menu is
+  late int rprice = 2;
   final rownerName = TextEditingController();
   final rownerPhoneNum = TextEditingController();
   final rmaxTableCap = TextEditingController();
@@ -266,7 +266,7 @@ class _SignUpScreenState extends State<SignUpScreen>{
                               onChanged: (int? value){
                                 setState(() {
                                   rprice = value! + 1;
-                                  value = rprice -1;
+                                  value = rprice - 1;
                                 });
                               },
                             )
