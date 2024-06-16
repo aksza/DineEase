@@ -463,6 +463,9 @@ namespace DineEaseApp.Migrations
                     b.Property<string>("RestaurantResponse")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TableNumber")
+                        .HasColumnType("int");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 

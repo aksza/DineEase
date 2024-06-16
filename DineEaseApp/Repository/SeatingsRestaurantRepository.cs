@@ -29,5 +29,20 @@ namespace DineEaseApp.Repository
 
             return null;
         }
+
+        public async Task<SeatingsRestaurant?> GetSeatingsRestaurantsByRestaurantSeatingId(int restaurantId, int seatingId)
+        {
+            var seating = await _context.SeatingsRestaurants
+                .Where(x => x.RestaurantId == restaurantId && x.SeatingId == seatingId)
+                .FirstOrDefaultAsync();
+
+            await Save();
+
+            if(seating != null)
+            {
+                return seating;
+            }
+            return null;
+        }
     }
 }

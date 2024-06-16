@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DineEaseApp.Repository
 {
-    public class EventRepository : IEventRepository
+    public class EventRepository : Repository<Event>, IEventRepository
     {
         private DataContext _context;
 
-        public EventRepository(DataContext context)
+        public EventRepository(DataContext context) : base (context) 
         {
             _context = context;
         }
@@ -33,6 +33,20 @@ namespace DineEaseApp.Repository
             return await _context.Events.ToListAsync();
         }
 
+        public async Task<ICollection<Event>?> GetFutureEventsByRestaurantId(int restaurantId)
+        {
+            var e = await _context.Events
+                .Where(e => e.RestaurantId == restaurantId && e.StartingDate > DateTime.Now)
+                .ToListAsync();
+
+            if(e != null)
+            {
+                return e;
+            }
+
+            return null;
+        }
+
         public Task<ICollection<Event>> GetEventsByUserFavorits()
         {
             throw new NotImplementedException();
@@ -46,6 +60,20 @@ namespace DineEaseApp.Repository
                 .ToListAsync();
 
             return result;
+        }
+
+        public async Task<ICollection<Event>?> GetOldEventsByRestaurantId(int restaurantId) 
+        {
+            var e = await _context.Events
+                .Where(e => e.RestaurantId == restaurantId && e.StartingDate <= DateTime.Now)
+                .ToListAsync();
+
+            if (e != null)
+            {
+                return e;
+            }
+
+            return null;
         }
     }
 }

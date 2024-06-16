@@ -14,6 +14,13 @@ namespace DineEaseApp.Repository
             _context = context;
         }
 
+        public async Task<ICollection<Meeting>?> GetMeetingByRestaurantId(int id)
+        {
+            return await _context.Meetings
+                .Where(m => m.RestaurantId == id)
+                .ToListAsync();
+        }
+
         public async Task<ICollection<Meeting>> GetMeetingsByUserId(int id)
         {
             return await _context.Meetings.Where(m => m.UserId == id).ToListAsync();

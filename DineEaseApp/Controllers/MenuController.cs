@@ -127,7 +127,7 @@ namespace DineEaseApp.Controllers
             return NoContent();
         }
 
-        [HttpDelete]
+        [HttpDelete("delete/{id}")]
         [ProducesResponseType(200)]
         public async Task<IActionResult> DeleteMenu(int id)
         {

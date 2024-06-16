@@ -3,6 +3,7 @@ class Review{
   int restaurantId;
   String? restaurantName;
   int userId;
+  String? userName;
   String content;
 
   Review({
@@ -10,6 +11,7 @@ class Review{
     required this.restaurantId,
     this.restaurantName,
     required this.userId,
+    this.userName,
     required this.content
   });
 
@@ -19,6 +21,7 @@ class Review{
       restaurantId: json['restaurantId'] as int,
       restaurantName: json['restaurantName'] as String,
       userId: json['userId'] as int,
+      userName: json['userName'] as String?,
       content: json['content'] as String,
     );
   }
@@ -29,6 +32,7 @@ class Review{
       'restaurantId': restaurantId,
       'restaurantName': restaurantName,
       'userId': userId,
+      'userName': userName,
       'content': content,
     };
   }

@@ -41,6 +41,31 @@ namespace DineEaseApp.Controllers
             return Ok(eventtypes);
         }
 
+        [HttpGet("acceptedRes/{restaurantId}")]
+        public async Task<IActionResult> GetAcceptedMeetingsByRestaurantId(int restaurantId)
+        {
+            var meetings = _mapper.Map<List<MeetingDto>>(await _meetingRepository.GetMeetingByRestaurantId(restaurantId));
+            var acceptedMeetings = new List<MeetingDto>();
+            foreach (var meeting in meetings)
+            {
+                if (meeting.Accepted == true)
+                {
+                    //meeting.Event = _mapper.Map<EventTypeDto>(await _eventTypeRepository.GetByIdAsync(meeting.EventId));
+                    var ev = _mapper.Map<EventTypeDto>(await _eventTypeRepository.GetByIdAsync(meeting.EventId));
+                    var restaurant = _mapper.Map<Restaurant>(await _restaurantRepository.GetRestaurantById(meeting.RestaurantId));
+                    meeting.EventName = ev.EventName;
+                    meeting.RestaurantName = restaurant.Name;
+                    acceptedMeetings.Add(meeting);
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(meetings);
+            }
+            return Ok(acceptedMeetings);
+        }
+
         [HttpGet("accepted/{userId}")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Meeting>))]
         public async Task<IActionResult> GetAcceptedMeetingsByUserId(int userId)
@@ -65,6 +90,32 @@ namespace DineEaseApp.Controllers
                 return BadRequest(meetings);
             }
             return Ok(acceptedMeetings);
+        }
+
+        [HttpGet("waitingRes/{restaurantId}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Meeting>))]
+        public async Task<IActionResult> GetWaitingMeetingsByRestaurantId(int restaurantId)
+        {
+            var meetings = _mapper.Map<List<MeetingDto>>(await _meetingRepository.GetMeetingByRestaurantId(restaurantId));
+            var res = new List<MeetingDto>();
+            foreach (var meeting in meetings)
+            {
+                if (meeting.Accepted == null)
+                {
+                    //meeting.Event = _mapper.Map<EventTypeDto>(await _eventTypeRepository.GetByIdAsync(meeting.EventId));
+                    var ev = _mapper.Map<EventTypeDto>(await _eventTypeRepository.GetByIdAsync(meeting.EventId));
+                    var restaurant = _mapper.Map<Restaurant>(await _restaurantRepository.GetRestaurantById(meeting.RestaurantId));
+                    meeting.EventName = ev.EventName;
+                    meeting.RestaurantName = restaurant.Name;
+                    res.Add(meeting);
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(meetings);
+            }
+            return Ok(res);
         }
 
         [HttpGet("waiting/{userId}")]

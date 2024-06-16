@@ -13,6 +13,7 @@ namespace DineEaseApp.Dto
         //[ForeignKey("User")]
         public int UserId { get; set; }
         //public UserDto User { get; set; }
+        public string? UserName { get; set; }
         public string Content { get; set; }
     }
 }

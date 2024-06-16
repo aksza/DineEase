@@ -37,6 +37,14 @@ namespace DineEaseApp.Controllers
                 var res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(review.RestaurantId));
 
                 review.RestaurantName = res.Name;
+
+                var user = _mapper.Map<UserDto>(await _userRepository.GetUserById(review.UserId));
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                review.UserName = user.FirstName + ' ' + user.LastName;
             }
 
             if (!ModelState.IsValid)
@@ -57,6 +65,14 @@ namespace DineEaseApp.Controllers
                 var res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(review.RestaurantId));
 
                 review.RestaurantName = res.Name;
+                
+                var user = _mapper.Map<UserDto>(await _userRepository.GetUserById(review.UserId));
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                review.UserName = user.FirstName + ' ' + user.LastName;
             }
 
             if (!ModelState.IsValid)

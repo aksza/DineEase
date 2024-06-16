@@ -5,13 +5,13 @@ class ReviewView extends StatefulWidget {
   final Review review;
   final String email;
   final VoidCallback onDelete; // Callback függvény a törléshez
-  final Function(String) onUpdate; // Callback függvény a frissítéshez
+  final Function(String)? onUpdate; // Callback függvény a frissítéshez
 
   const ReviewView({super.key, 
     required this.review,
     required this.email,
     required this.onDelete,
-    required this.onUpdate,
+    this.onUpdate,
   });
 
   @override
@@ -56,13 +56,14 @@ class _ReviewViewState extends State<ReviewView> {
               children: [
                 Expanded(
                   child: Text(
-                    '${widget.email} to ${widget.review.restaurantName}',
+                    '${widget.review.userName} to ${widget.review.restaurantName}',
                     style: const TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
+                if(widget.onUpdate != null)
                 IconButton(
                   icon: const Icon(Icons.edit),
                   onPressed: () => _enableEditing(true), // Szerkesztés engedélyezése
@@ -74,6 +75,7 @@ class _ReviewViewState extends State<ReviewView> {
               ],
             ),
             const SizedBox(height: 8.0),
+            if(widget.onUpdate != null)
             _isEditingEnabled
                 ? TextField(
                     controller: _editingController,
@@ -123,7 +125,7 @@ class _ReviewViewState extends State<ReviewView> {
   }
 
   void _saveChanges() {
-    widget.onUpdate(_editedContent); // Módosítások mentése
+    widget.onUpdate!(_editedContent); // Módosítások mentése
     _enableEditing(false); // Szerkesztés kikapcsolása
   }
 

@@ -4,12 +4,16 @@ class MyTextField extends StatelessWidget{
   final TextEditingController controller;
   final String hintText;
   final bool obscureText;
+  final String? Function(String?)? validator;
+  final Function(String)? onChanged;
 
   const MyTextField({
     super.key,
     required this.controller,
     required this.hintText,
-    required this.obscureText
+    required this.obscureText,
+    this.validator,
+    this.onChanged,
   });
 
   @override
@@ -21,9 +25,11 @@ class MyTextField extends StatelessWidget{
       constraints: const BoxConstraints(
         maxHeight: 50, 
       ),
-      child: TextField(
+      child: TextFormField(
         controller: controller,
         obscureText: obscureText,
+        validator: validator,
+        onChanged: onChanged,
         decoration: InputDecoration(
           enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
@@ -43,5 +49,4 @@ class MyTextField extends StatelessWidget{
       ),
     );
   }
-
 }

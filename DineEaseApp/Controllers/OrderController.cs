@@ -14,17 +14,27 @@ namespace DineEaseApp.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IOrderRepository _orderRepository;
+        private readonly IReservationRepository _reservationRepository;
+        private readonly IMenuRepository _menuRepository;
 
-        public OrderController(IMapper mapper, IOrderRepository orderRepository)
+        public OrderController(IMapper mapper, IOrderRepository orderRepository, IReservationRepository reservationRepository,IMenuRepository menuRepository)
         {
             _mapper = mapper;
             _orderRepository = orderRepository;
+            _reservationRepository = reservationRepository;
+            _menuRepository = menuRepository;
         }
 
         [HttpGet("{reservationId}")]
         public async Task<IActionResult> GetOrderByReservationId(int reservationId) 
         {
             var orders = _mapper.Map<List<OrderDto>>(await _orderRepository.GetOrdersByReservationId(reservationId));
+            
+            foreach(var order in orders)
+            {
+                var menu = await _menuRepository.GetByIdAsync(order.MenuId);
+                order.MenuName = menu.Name;
+            }
 
             if(orders == null)
             {
@@ -51,6 +61,21 @@ namespace DineEaseApp.Controllers
 
                 var orderMap = _mapper.Map<Order>(orderDto);
                 if (!await _orderRepository.AddAsync(orderMap))
+                {
+                    ModelState.AddModelError("", "Something went wrong while saving");
+                    return StatusCode(500, ModelState);
+                }
+
+                var reservation = await _reservationRepository.GetReservationById(orderDto.ReservationId);
+                if (reservation == null)
+                {
+                    BadRequest(ModelState);
+                }
+
+                reservation.Ordered = true;
+                //reservation.Orders.Add(orderMap);
+
+                if (!await _reservationRepository.UpdateReservation(reservation))
                 {
                     ModelState.AddModelError("", "Something went wrong while saving");
                     return StatusCode(500, ModelState);

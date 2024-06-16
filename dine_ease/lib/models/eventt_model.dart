@@ -53,4 +53,16 @@ class Eventt{
     };
   }
 
+  Map<String, dynamic> toCreateMap(){
+    return {
+      'eventName': eventName,
+      'restaurantId': restaurantId,
+      'description': description,
+      'startingDate': startingDate.toIso8601String(),
+      'endingDate': endingDate.toIso8601String(),
+    };
+  }
+
+
+
 }

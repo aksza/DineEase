@@ -50,7 +50,7 @@ class _SignUpScreenState extends State<SignUpScreen>{
   final rconfirmPasswordTextController = TextEditingController();
   final rdescription = TextEditingController();
   final raddress = TextEditingController();
-  late int rprice = 1; //TODO:ehelyett lehetne egy dropdown menu is
+  late int rprice = 2;
   final rownerName = TextEditingController();
   final rownerPhoneNum = TextEditingController();
   final rmaxTableCap = TextEditingController();
@@ -247,7 +247,7 @@ class _SignUpScreenState extends State<SignUpScreen>{
                             //space between
                             const SizedBox(width: 20),
                             DropdownButton(
-                              value: rprice,
+                              value: rprice - 1,
                               items: const [
                                 DropdownMenuItem(
                                   value: 1,
@@ -265,8 +265,8 @@ class _SignUpScreenState extends State<SignUpScreen>{
                               ],
                               onChanged: (int? value){
                                 setState(() {
-                                  rprice = value!;
-                                  value = rprice;
+                                  rprice = value! + 1;
+                                  value = rprice - 1;
                                 });
                               },
                             )

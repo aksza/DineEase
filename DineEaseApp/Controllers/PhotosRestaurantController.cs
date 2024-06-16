@@ -22,7 +22,7 @@ namespace DineEaseApp.Controllers
             _photosRestaurantRepository = photosRestaurantRepository;
         }
 
-        [HttpPost]
+        [HttpPost("addPhoto")]
         [ProducesResponseType(200,Type = typeof(PhotosRestaurant))]
         public async Task<IActionResult> CreatePhotosRestaurant([FromForm] PhotosRestaurantDto photoToAdd)
         {
@@ -53,7 +53,20 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpGet("getPhoto/{restaurantId}")]
+        public async Task<IActionResult> GetPhotosByRestaurantId(int restaurantId)
+        {
+            var photo = await _photosRestaurantRepository.GetPhotosByRestaurantId(restaurantId);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(photo);
+        }
+
+        [HttpPut("update/{id}")]
         [ProducesResponseType(200, Type = typeof(PhotosRestaurant))]
         public async Task<IActionResult> UpdatePhotosRestaurant(int id, [FromForm] PhotosRestaurantUpdateDto photoToUpdate)
         {
@@ -101,7 +114,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         [ProducesResponseType(200)]
         public async Task<IActionResult> DeletePhoto(int id)
         {
@@ -123,7 +136,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("get/{id}")]
         [ProducesResponseType(200, Type = typeof(PhotosRestaurant))]
         public async Task<IActionResult> GetPhoto(int id)
         {

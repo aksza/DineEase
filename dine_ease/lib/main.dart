@@ -3,8 +3,8 @@ import 'package:dine_ease/auth/auth_service.dart';
 import 'package:dine_ease/auth/db_service.dart';
 import 'package:dine_ease/helper/order_notifier.dart';
 import 'package:dine_ease/models/dine_ease.dart';
-import 'package:dine_ease/models/event_post_model.dart';
-import 'package:dine_ease/models/eventt_model.dart';
+// import 'package:dine_ease/models/event_post_model.dart';
+// import 'package:dine_ease/models/eventt_model.dart';
 import 'package:dine_ease/screens/edit_profile_screen.dart';
 import 'package:dine_ease/screens/event_details_screen.dart';
 import 'package:dine_ease/screens/favorits_page.dart';
@@ -12,6 +12,12 @@ import 'package:dine_ease/screens/home_page.dart';
 import 'package:dine_ease/screens/login.dart';
 import 'package:dine_ease/screens/meeting_screen.dart';
 import 'package:dine_ease/screens/menu_screen.dart';
+import 'package:dine_ease/screens/r_events_screen.dart';
+import 'package:dine_ease/screens/r_home_screen.dart';
+import 'package:dine_ease/screens/r_meeting_screen.dart';
+import 'package:dine_ease/screens/r_menu_screen.dart';
+import 'package:dine_ease/screens/r_reservation_screen.dart';
+import 'package:dine_ease/screens/r_waitinglist_screen.dart';
 import 'package:dine_ease/screens/reservation_screen.dart';
 import 'package:dine_ease/screens/restaurant_details_screen.dart';
 import 'package:dine_ease/screens/search_page.dart';
@@ -30,18 +36,32 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
+
   HttpOverrides.global = MyHttpOverrides();
-  runApp(MyApp(token: prefs.getString('token')));
+  runApp(MyApp(token: prefs.getString('token'), role: prefs.getString('role')));
 }
 
 class MyApp extends StatelessWidget {
 
   final token;
+  final role;
 
   const MyApp({
     @required this.token,
+    @required this.role,
     super.key
   });
+
+  String _decideInitialRoute(){
+    if (token != null) {
+      if (role == 'User') {
+        return '/home';
+      } else if (role == 'Restaurant') {
+        return 'r_home';
+      }
+    }
+    return '/';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +79,7 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(230, 81, 0, 1)),
             useMaterial3: true,
           ),
-          initialRoute: token != null ? '/home' : '/',
+          initialRoute: _decideInitialRoute(),
           routes: {
             '/': (context) => const SplashScreen(),
             '/login': (context) => const LoginScreen(),
@@ -101,6 +121,14 @@ class MyApp extends StatelessWidget {
             '/user-review' : (context) => const UserReviewScreen(),
             '/user-rating-screen' : (context) =>const UserRatingScreen(),
             '/search' :(context) => SearchPage(),
+            '/r_reservation' : (context) => const RReservationScreen(),
+            '/r_waitinglist' : (context) => const RWaitingListScreen(),
+            '/r_events' : (context) => const REventsScreen(),
+            '/r_statistics' : (context) => const RWaitingListScreen(),
+            '/r_profile' : (context) => const RWaitingListScreen(),
+            'r_home' :(context) => const RHomeScreen(),
+            '/r_menu' : (context) => const RMenuScreen(),
+            '/r_meeting' : (context) => const RMeetingScreen(),
           },
         )
     );

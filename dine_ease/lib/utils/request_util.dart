@@ -1,8 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 // import 'dart:html';
 
 import 'package:dine_ease/auth/db_service.dart';
+import 'package:dine_ease/models/categories_restaurant_model.dart';
 import 'package:dine_ease/models/cuisine_model.dart';
+import 'package:dine_ease/models/cuisines_restaurant_model.dart';
 import 'package:dine_ease/models/e_category.dart';
 import 'package:dine_ease/models/event_post_model.dart';
 import 'package:dine_ease/models/event_type_model.dart';
@@ -22,6 +28,8 @@ import 'package:dine_ease/models/reservation_model.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:dine_ease/models/review_models.dart';
 import 'package:dine_ease/models/seating_model.dart';
+import 'package:dine_ease/models/seatings_restaurant_model.dart';
+import 'package:dine_ease/models/upload_restaurant_image.dart';
 import 'package:dine_ease/models/user_model.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -871,6 +879,53 @@ class RequestUtil {
     }
   }
 
+  //add openings
+  Future<void> postAddOpenings(List<Opening> openings)async{
+    try{
+      String token =await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['OPENING_POST']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(openings.map((opening) => opening.toCreateMap()).toList())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error adding openings: $e');
+      rethrow;
+    }
+  }
+
+  //update openings
+  Future<void> putUpdateOpenings(List<Opening> openings)async{
+    try{
+      String token =await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['OPENING_PUT']!);
+      Logger().i(url);
+      resp = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(openings.map((opening) => opening.toUpdateMap()).toList())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error updating openings: $e');
+      rethrow;
+    }
+  }
+  
+
   //getPrices
   Future<List<Price>> getPrices() async{
     try{
@@ -1099,4 +1154,533 @@ class RequestUtil {
       rethrow;
     }
   }
+
+  //put function updating reservation
+  Future<void> putUpdateReservation(int reservationId,Reservation reservation) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['RESERVATION_UPDATE']!);
+      Logger().i(url);
+      resp = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(reservation.toMap())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error updating reservation: $e');
+      rethrow;
+    }    
+  }
+
+  //get waitinglist by restaurant id
+  Future<List<Reservation>> getWaitingListByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['WAITING_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> waitingList = jsonDecode(resp.body);
+      return waitingList.map((waiting) => Reservation.fromJson(waiting)).toList();
+    }catch(e){
+      Logger().e('Error getting waiting list by restaurant id: $e');
+      rethrow;
+    }
+  }
+
+  //get accepted reservations by restaurant id
+  Future<List<Reservation>> getAcceptedReservationsByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['ACCEPTED_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> acceptedReservations = jsonDecode(resp.body);
+      return acceptedReservations.map((acceptedReservation) => Reservation.fromJson(acceptedReservation)).toList();
+    }catch(e){
+      Logger().e('Error getting accepted reservations by restaurant id: $e');
+      rethrow;
+    }
+  }
+
+  //getorders by reservation id
+  Future<List<Order>> getOrdersByReservationId(int reservationId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['ORDER_GET_BY_RES_ID']! + reservationId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> orders = jsonDecode(resp.body);
+      return orders.map((order) => Order.fromJson(order)).toList();
+    }catch(e){
+      Logger().e('Error getting orders by reservation id: $e');
+      rethrow;
+    }
+  }
+
+  //get events by restaurant id
+  Future<List<Eventt>> getEventsByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['EVENT_GET_F_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> events = jsonDecode(resp.body);
+      return events.map((event) => Eventt.fromJson(event)).toList();
+    }catch(e){
+      // Logger().e('Error getting events by restaurant id: $e');
+      Logger().e(baseUrl + dotenv.env['EVENT_GET_F_BY_RES_ID']! + restaurantId.toString());
+      rethrow;
+    }
+  }
+
+  //get old events
+  Future<List<Eventt>> getOldEvents(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['EVENT_GET_O_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> events = jsonDecode(resp.body);
+      return events.map((event) => Eventt.fromJson(event)).toList();
+    }catch(e){
+      Logger().e('Error getting old events: $e');
+      rethrow;
+    }
+  }
+
+  //add event
+  Future<void> postAddEvent(Eventt eventt) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['EVENT_POST']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(eventt.toCreateMap())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error adding event: $e');
+      rethrow;
+    }    
+  }
+
+  //update event
+  Future<void> putUpdateEvent(Eventt eventt) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['EVENT_UPDATE']!);
+      Logger().i(url);
+      resp = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(eventt.toMap())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error updating event: $e');
+      rethrow;
+    }    
+  }
+
+  //update restaurant
+  Future<void> putUpdateRestaurant(Restaurant restaurant) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['RESTAURANT_UPDATE']!);
+      Logger().i(url);
+      resp = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(restaurant.toUpdateMap())
+      );
+      Logger().i(restaurant.toUpdateMap());
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error updating restaurant: $e');
+      rethrow;
+    }    
+  }
+
+  //add cuisinerestaurant
+  Future<void> postAddCuisinesRestaurant(List<CuisineRestaurant> cuisinerestaurant)async
+  {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['CUISINE_RESTAURANT_POST']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(cuisinerestaurant.map((cuisinerestaurant) => cuisinerestaurant.toMap()).toList())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error adding cuisinerestaurant: $e');
+      rethrow;
+    }    
+  }
+  
+  //remove cuisinerestaurant
+  Future<void> deleteRemoveCuisineRestaurant(List<CuisineRestaurant> cuisinerestaurant) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['REMOVE_CUISINE_RESTAURANT_DELETE']!);
+      Logger().i(url);
+      resp = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(cuisinerestaurant.map((cuisinerestaurant) => cuisinerestaurant.toMap()).toList())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error removing cuisinerestaurant: $e');
+      rethrow;
+    }    
+  }
+
+  //add seatingrestaurant
+  Future<void> postAddSeatingRestaurant(List<SeatingRestaurant> seatingrestaurant)async
+  {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['SEATING_RESTAURANT_POST']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(seatingrestaurant.map((seatingrestaurant) => seatingrestaurant.toMap()).toList())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error adding seatingrestaurant: $e');
+      rethrow;
+    }    
+  }
+
+  //remove seatingrestaurant
+  Future<void> deleteRemoveSeatingRestaurant(List<SeatingRestaurant> seatingrestaurant) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['REMOVE_SEATING_RESTAURANT_DELETE']!);
+      Logger().i(url);
+      resp = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(seatingrestaurant.map((seatingrestaurant) => seatingrestaurant.toMap()).toList())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error removing seatingrestaurant: $e');
+      rethrow;
+    }    
+  }
+
+  //add categoriesrestaurant
+  Future<void> postAddCategoriesRestaurant(List<CategoriesRestaurant> categoriesrestaurant)async
+  {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['CATEGORIES_RESTAURANT_POST']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(categoriesrestaurant.map((categoriesrestaurant) => categoriesrestaurant.toMap()).toList())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error adding categoriesrestaurant: $e');
+      rethrow;
+    }    
+  }
+
+  //remove categoriesrestaurant
+  Future<void> deleteRemoveCategoriesRestaurant(List<CategoriesRestaurant> categoriesrestaurant) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['REMOVE_CATEGORIES_RESTAURANT_DELETE']!);
+      Logger().i(url);
+      resp = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(categoriesrestaurant.map((categoriesrestaurant) => categoriesrestaurant.toMap()).toList())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error removing categoriesrestaurant: $e');
+      rethrow;
+    }    
+  }
+
+  //add menu
+  Future<void> postAddMenu(Menu menu) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['MENU_POST']!);
+      Logger().i(url);
+      resp = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(menu.toCreateMap())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error adding menu: $e');
+      rethrow;
+    }    
+  }
+
+  //delete menu
+  Future<void> deleteRemoveMenu(int menuId) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['REMOVE_MENU_DELETE']! + menuId.toString());
+      Logger().i(url);
+      resp = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error removing menu: $e');
+      rethrow;
+    }    
+  }
+
+  //update menu
+  Future<void> putUpdateMenu(Menu menu) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['MENU_UPDATE']! + menu.id.toString());
+      Logger().i(url);
+      resp = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(menu.toMap())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error updating menu: $e');
+      rethrow;
+    }    
+  }
+  //get photos by restaurant id
+  Future<List<UploadImages>> getPhotosByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['PHOTO_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> photos = jsonDecode(resp.body);
+      return photos.map((photo) => UploadImages.fromJson(photo)).toList();
+    }catch(e){
+      Logger().e('Error getting photos by restaurant id: $e');
+      rethrow;
+    }
+  }
+
+  //delete photo
+  Future<void> deleteRemovePhoto(int photoId) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['REMOVE_PHOTO_DELETE']! + photoId.toString());
+      Logger().i(url);
+      resp = await http.delete(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error removing photo: $e');
+      rethrow;
+    }    
+  }
+
+  //add photo
+  Future<UploadImages?> postAddPhoto(int restaurantId, Uint8List photo) async {
+  try {
+    String token = await DataBaseProvider().getToken();
+    await dotenv.load(fileName: "assets/env/.env");
+    final url = Uri.parse(baseUrl + dotenv.env['PHOTO_POST']!);
+    Logger().i(url);
+
+    var request = http.MultipartRequest('POST', url)
+      ..headers['Authorization'] = 'Bearer $token'
+      ..fields['restaurantId'] = restaurantId.toString()
+      ..files.add(http.MultipartFile.fromBytes(
+        'imageFile',
+        photo,
+        filename: 'photo.jpg',
+        contentType: MediaType('image', 'jpeg'),
+      ));
+
+    var response = await request.send();
+    var responseBody = await response.stream.bytesToString();
+    Logger().i(responseBody);
+    return UploadImages.fromJson(jsonDecode(responseBody));
+  } catch (e) {
+    Logger().e('Error adding photo: $e');
+    rethrow;
+  }
+  }
+
+  //get accepted meetings by restaurant id
+  Future<List<Meeting>> getAcceptedMeetingsByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['ACCEPTED_MEETING_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> acceptedMeetings = jsonDecode(resp.body);
+      return acceptedMeetings.map((acceptedMeeting) => Meeting.fromJson(acceptedMeeting)).toList();
+    }catch(e){
+      Logger().e('Error getting accepted meetings by restaurant id: $e');
+      rethrow;
+    }
+  }
+
+  //get waitinglist by restaurant id
+  Future<List<Meeting>> getWaitingMeetingsByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['WAITING_MEETING_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> waitingList = jsonDecode(resp.body);
+      return waitingList.map((waiting) => Meeting.fromJson(waiting)).toList();
+    }catch(e){
+      Logger().e('Error getting waiting list by restaurant id: $e');
+      rethrow;
+    }
+  }
+
 }

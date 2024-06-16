@@ -1,18 +1,18 @@
 class Menu{
-  int id;
+  int? id;
   int restaurantId;
   String name;
   int menuypeId;
-  String menuTypeName;
+  String? menuTypeName;
   String ingredients;
   int price;
 
   Menu({
-    required this.id,
+    this.id,
     required this.restaurantId,
     required this.name,
     required this.menuypeId,
-    required this.menuTypeName,
+     this.menuTypeName,
     required this.ingredients,
     required this.price,
   });
@@ -36,6 +36,15 @@ class Menu{
       'name': name,
       'menuTypeId': menuypeId,
       'menuTypeName': menuTypeName,
+      'ingredients': ingredients,
+      'price': price,
+    };
+  }
+  Map<String, dynamic> toCreateMap(){
+    return {
+      'restaurantId': restaurantId,
+      'name': name,
+      'menuTypeId': menuypeId,
       'ingredients': ingredients,
       'price': price,
     };

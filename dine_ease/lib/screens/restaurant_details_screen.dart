@@ -36,8 +36,8 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
   // late int rating;
   late Rating rating;
 
-  int tempRating = 0; // Ideiglenes értékelés a csillagok kijelzésére
-  bool showRatingButtons = false; // A Send és Cancel gombok megjelenítése
+  int tempRating = 0; 
+  bool showRatingButtons = false; 
 
   @override
   void initState() {
@@ -59,26 +59,23 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
   void initRating() async{
   try {
     var ratingData = await _requestUtil.getRatingsByUserId(userId);
-    Rating rating1 = Rating(restaurantId: widget.selectedRestaurant!.id, userId: userId, ratingNumber: 0); // Alapértelmezett érték 0
-    // Megkeressük a megfelelő restaurantId-t a ratingek között
+    Rating rating1 = Rating(restaurantId: widget.selectedRestaurant!.id, userId: userId, ratingNumber: 0); 
     for (var ratingItem in ratingData) {
       if (ratingItem.restaurantId == widget.selectedRestaurant!.id) {
         rating1 = ratingItem;
-        break; // Ha megtaláltuk a megfelelő restaurantId-t, kilépünk a ciklusból
+        break; 
       }
     }
     setState(() {
       
       rating = rating1;
-      tempRating = rating1.ratingNumber; // Az ideiglenes érték is a rating értékét kapja
+      tempRating = rating1.ratingNumber; 
     });
   } catch (e) {
     Logger().e('Error fetching ratings: $e');
   }
 }
 
-
-  // Initialize the selected restaurant
   void initSelectedRestaurant() async {
     if (widget.selectedRestaurant != null) {
       try {
@@ -122,7 +119,6 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
     }
   }
 
-  // Function to edit a review
   Future<void> editReview(int reviewId, String newText) async {
     try {
       
@@ -169,9 +165,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
       );
       await _requestUtil.postAddReview(rev);
       Logger().i('Review added: ${rev.content}');
-      // Clear the text field after adding review
       reviewTextController.clear();
-      // Fetch reviews again to update the list
       var reviewData = await _requestUtil.getReviewsByRestaurantId(widget.selectedRestaurant!.id);
 
       setState(() {
@@ -541,11 +535,10 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                                   onPressed: () {
                                     setState(() {
                                       tempRating = i;
-                                      showRatingButtons = true; // Show the rating buttons when a star is tapped
+                                      showRatingButtons = true; 
                                     });
                                   },
                                 ),
-                              // Show Send and Cancel buttons if showRatingButtons is true
                               if (showRatingButtons)
                                 Row(
                                   children: [
@@ -560,14 +553,13 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                                       icon: Icon(Icons.cancel, color: Colors.red),
                                       onPressed: () {
                                         setState(() {
-                                          tempRating = rating.ratingNumber; // Revert to the previous rating
+                                          tempRating = rating.ratingNumber; 
                                           showRatingButtons = false;
                                         });
                                       },
                                     ),
                                   ],
                                 ),
-                              // Show Trash icon if there is already a rating
                               if (rating.ratingNumber != 0 && !showRatingButtons)
                                 IconButton(
                                   icon: Icon(Icons.delete, color: Colors.red),

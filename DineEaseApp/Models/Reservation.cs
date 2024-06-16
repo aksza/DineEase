@@ -18,6 +18,7 @@ namespace DineEaseApp.Models
         public bool Ordered { get; set; }
         //public int? OrderId { get; set; }
         //public Order? Order { get; set; }
+        public int TableNumber { get; set; }
         public string? Comment { get; set; }
         public bool? Accepted { get; set; }
         public string? RestaurantResponse { get; set; }
