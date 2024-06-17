@@ -2,6 +2,7 @@
 using DineEaseApp.Dto;
 using DineEaseApp.Interfaces;
 using DineEaseApp.Models;
+using DineEaseApp.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -28,6 +29,20 @@ namespace DineEaseApp.Controllers
             //_configuration = configuration;
         }
 
+        [HttpGet("eventNumber/{restaurantId}")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetEventsByRestaurantId(int restaurantId)
+        {
+            try
+            {
+                var dailyReservations = await _eventRepository.EventsPerWeekByRestaurantId(restaurantId);
+                return Ok(dailyReservations);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
         [HttpGet("search/{someText}")]
         [ProducesResponseType(200)]

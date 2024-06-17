@@ -6,6 +6,7 @@
 
 DineEaseApp/appsettings.Development.json
 DineEaseApp/appsettings.json
+.VSCodeCounter/
 
 # User-specific files
 *.rsuser

@@ -196,5 +196,65 @@ namespace DineEaseApp.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpGet("dailyReservations/{restaurantId}")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetDailyReservationsByRestaurantId(int restaurantId)
+        {
+            try
+            {
+                var dailyReservations = await _reservationRepository.AverageDailyReservationsByRestaurantId(restaurantId);
+                return Ok(dailyReservations);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("hourReservations/{restaurantId}")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetReservationsPerHourByRestaurantId(int restaurantId)
+        {
+            try
+            {
+                var dailyReservations = await _reservationRepository.AverageReservationsPerHoursByRestaurantId(restaurantId);
+                return Ok(dailyReservations);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("lastMonthReservation/{restaurantId}")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetLastMonthReservationsByRestaurantId(int restaurantId)
+        {
+            try
+            {
+                var dailyReservations = await _reservationRepository.AverageReservationsLastMonthByRestaurantId(restaurantId);
+                return Ok(dailyReservations);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("ordersPerReservation/{restaurantId}")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetOrdersPerReservationsByRestaurantId(int restaurantId)
+        {
+            try
+            {
+                var dailyReservations = await _reservationRepository.OrdersPerReservationsByRestaurantId(restaurantId);
+                return Ok(dailyReservations);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

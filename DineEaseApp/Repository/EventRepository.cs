@@ -75,5 +75,30 @@ namespace DineEaseApp.Repository
 
             return null;
         }
+
+        public async Task<ICollection<int>> EventsPerWeekByRestaurantId(int restaurantId)
+        {
+            DateTime fiveweeks = DateTime.Today.AddYears(-35);
+
+            var events = await _context.Events
+                .Where(e => e.RestaurantId == restaurantId && e.StartingDate >= fiveweeks)
+                .ToListAsync();
+
+            var eventsPerWeek = new List<int>();
+
+            for ( int i = 0; i < 5; i++ )
+            {
+                DateTime start = DateTime.Today.AddDays(-i * 7).Date;
+                DateTime end = start.AddDays(7).Date;
+
+                int count = events.Count(e => start >= e.StartingDate && e.StartingDate < end);
+
+                eventsPerWeek.Add(count);
+            }
+
+            eventsPerWeek.Reverse();
+
+            return eventsPerWeek;
+        }
     }
 }

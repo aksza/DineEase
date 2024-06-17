@@ -300,9 +300,7 @@ class _SignUpScreenState extends State<SignUpScreen>{
                         )
                       ),
                       //space between
-                      const SizedBox(height: 10),
-                      //Photo upload button
-                      
+                      const SizedBox(height: 10),                      
                       //owner input
                       MyTextField(controller: rownerName, hintText: 'Owner', obscureText: false),
                       //space between
