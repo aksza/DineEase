@@ -47,6 +47,73 @@ namespace DineEaseApp.Controllers
 
         }
 
+        [HttpGet("mostreservations")]
+        public async Task<IActionResult> GetRestaurantsWithMostReservations()
+        {
+            var restaurants = _mapper.Map<List<RestaurantDto>>(await _restaurantRepository.GetRestaurantsWithMostReservation());
+
+
+            var restaurantDtos = restaurants
+                .Select(restaurant =>
+                {
+                    var restaurantDto = restaurant;
+                    restaurantDto.Owner = _mapper.Map<OwnerDto>(_ownerRepository.GetOwner(restaurant.OwnerId));
+                    restaurantDto.Price = _mapper.Map<PriceDto>(_priceRepository.GetPrice(restaurant.PriceId));
+                    return restaurantDto;
+                });
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            return Ok(restaurantDtos);
+        }
+
+        [HttpGet("lastReservations/{userId}")]
+        public async Task<IActionResult> GetLastReservationsByUserId(int userId)
+        {
+            var restaurants = _mapper.Map<List<RestaurantDto>>(await _restaurantRepository.LastFiveReservationByUserId(userId));
+
+
+            var restaurantDtos = restaurants
+                .Select(restaurant =>
+                {
+                    var restaurantDto = restaurant;
+                    restaurantDto.Owner = _mapper.Map<OwnerDto>(_ownerRepository.GetOwner(restaurant.OwnerId));
+                    restaurantDto.Price = _mapper.Map<PriceDto>(_priceRepository.GetPrice(restaurant.PriceId));
+                    return restaurantDto;
+                });
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            return Ok(restaurantDtos);
+        }
+
+        [HttpGet("mostRated")]
+        public async Task<IActionResult> GetMostRated()
+        {
+            var restaurants = _mapper.Map<List<RestaurantDto>>(await _restaurantRepository.FiveMostRated());
+
+
+            var restaurantDtos = restaurants
+                .Select(restaurant =>
+                {
+                    var restaurantDto = restaurant;
+                    restaurantDto.Owner = _mapper.Map<OwnerDto>(_ownerRepository.GetOwner(restaurant.OwnerId));
+                    restaurantDto.Price = _mapper.Map<PriceDto>(_priceRepository.GetPrice(restaurant.PriceId));
+                    return restaurantDto;
+                });
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            return Ok(restaurantDtos);
+        }
+
+
         [HttpGet("search/{someText}")]
         [ProducesResponseType(200)]
         public async Task<IActionResult> Search(string someText)
@@ -615,7 +682,6 @@ namespace DineEaseApp.Controllers
                     return restaurantDto;
                 });
                 
-            //var restaurants = _restaurantRepository.GetRestaurants();
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

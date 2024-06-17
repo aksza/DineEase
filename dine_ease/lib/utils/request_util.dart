@@ -1905,4 +1905,91 @@ class RequestUtil {
     }    
   }
 
+  //get restaurants with most reservations
+  Future<List<Restaurant>> getRestaurantsWithMostReservations() async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['RESTAURANT_MOST_RESERVATIONS_GET']!);
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> restaurants = jsonDecode(resp.body);
+      return restaurants.map((restaurant) => Restaurant.fromJson(restaurant)).toList();
+    }catch(e){
+      Logger().e('Error getting restaurants with most reservations: $e');
+      rethrow;
+    }
+  }
+
+  //restaurants by last five reservations
+  Future<List<Restaurant>> getRestaurantsByLastFiveReservations(int userId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['RESTAURANT_LAST_FIVE_RESERVATIONS_GET']! + userId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> restaurants = jsonDecode(resp.body);
+      return restaurants.map((restaurant) => Restaurant.fromJson(restaurant)).toList();
+    }catch(e){
+      Logger().e('Error getting restaurants by last five reservations: $e');
+      rethrow;
+    }
+  }
+
+  //get most rated restaurants
+  Future<List<Restaurant>> getMostRatedRestaurants() async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['MOST_RATED_RESTAURANTS_GET']!);
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> restaurants = jsonDecode(resp.body);
+      return restaurants.map((restaurant) => Restaurant.fromJson(restaurant)).toList();
+    }catch(e){
+      Logger().e('Error getting most rated restaurants: $e');
+      rethrow;
+    }
+  }
+
+  //get events by favorit restaurant
+  Future<List<Eventt>> getEventsByFavoritRestaurant(int userId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['EVENT_GET_BY_FAVORIT_RESTAURANT']! + userId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> events = jsonDecode(resp.body);
+      return events.map((event) => Eventt.fromJson(event)).toList();
+    }catch(e){
+      Logger().e('Error getting events by favorit restaurant: $e');
+      rethrow;
+    }
+  }
 }

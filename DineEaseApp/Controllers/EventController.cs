@@ -29,6 +29,25 @@ namespace DineEaseApp.Controllers
             //_configuration = configuration;
         }
 
+        [HttpGet("byfavorits/{userId}")]
+        public async Task<IActionResult> GetEventsByFavorits(int userId)
+        {
+            var events = _mapper.Map<List<EventDto>>(await _eventRepository.GetEventsByFavoritAsync(userId));
+
+            foreach (var eventDto in events)
+            {
+                var res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(eventDto.RestaurantId));
+                eventDto.RestaurantName = res.Name;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(events);
+        }
+
         [HttpGet("eventNumber/{restaurantId}")]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetEventsByRestaurantId(int restaurantId)

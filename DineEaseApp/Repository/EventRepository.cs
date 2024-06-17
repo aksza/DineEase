@@ -30,8 +30,41 @@ namespace DineEaseApp.Repository
 
         public async Task<ICollection<Event>> GetEventsAsync()
         {
-            return await _context.Events.ToListAsync();
+            var events = await _context.Events
+                .Include(e => e.Restaurant)
+                .Where(e => e.StartingDate.Date >= DateTime.Today)
+                .OrderBy(e => e.StartingDate)
+                .ToListAsync();
+
+            return events;
         }
+
+        public async Task<ICollection<Event>> GetEventsByFavoritAsync(int userId)
+        {
+            var today = DateTime.Today;
+
+            var favoriteRestaurantIds = await _context.Favorits
+                .Where(f => f.UserId == userId)
+                .Select(f => f.RestaurantId)
+                .ToListAsync();
+
+            var events = await _context.Events
+                .Include(e => e.Restaurant)
+                .Where(e => e.StartingDate.Date >= today && favoriteRestaurantIds.Contains(e.RestaurantId))
+                .OrderBy(e => e.StartingDate)
+                .ToListAsync();
+
+            var otherEvents = await _context.Events
+                .Include(e => e.Restaurant)
+                .Where(e => e.StartingDate.Date >= today && !favoriteRestaurantIds.Contains(e.RestaurantId))
+                .OrderBy(e => e.StartingDate)
+                .ToListAsync();
+
+            var result = events.Concat(otherEvents).ToList();
+
+            return result;
+        }
+
 
         public async Task<ICollection<Event>?> GetFutureEventsByRestaurantId(int restaurantId)
         {

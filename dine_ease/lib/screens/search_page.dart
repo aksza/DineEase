@@ -39,11 +39,32 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       userId = prefs.getInt('userId')!;
     });
-    searchRestaurants();
-    searchEvents();
+    _loadData();
   }
 
-  void searchRestaurants() async {
+  void _loadData() async {
+    await searchRestaurants();
+    await searchEvents();
+    setState(() {
+      isLoading = false;
+    });
+  }
+    
+  Future<void> getFavoriteRestaurantsByUserId() async {
+    var resp = await _requestUtil.getFavoritRestaurantsByUserId(userId);
+    for (var restaurant in resp) {
+      for (var fav in restaurants) {
+        if (fav.id == restaurant.id) {
+          setState(() {
+            fav.isFavorite = true;
+          });
+        }
+      }
+    }
+    
+  }
+
+  Future<void> searchRestaurants() async {
     var resp = await _requestUtil.searchRestaurants(widget.query!);
     if (resp != null) {
       setState(() {
@@ -54,11 +75,11 @@ class _SearchPageState extends State<SearchPage> {
           imagePath: 'assets/test_images/kfc.jpeg',
         )).toList();
       });
-      getFavoriteRestaurantsByUserId();
+      await getFavoriteRestaurantsByUserId();
     }
   }  
 
-  void searchEvents() async {
+  Future<void> searchEvents() async {
     var resp = await _requestUtil.searchEvents(widget.query!);
     if (resp != null) {
       setState(() {
@@ -74,21 +95,7 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  void getFavoriteRestaurantsByUserId() async {
-    var resp = await _requestUtil.getFavoritRestaurantsByUserId(userId);
-    for (var restaurant in resp) {
-      for (var fav in restaurants) {
-        if (fav.id == restaurant.id) {
-          setState(() {
-            fav.isFavorite = true;
-          });
-        }
-      }
-    }
-    setState(() {
-      isLoading = false;
-    });
-  }
+  
   
   void toggleFavorite(RestaurantPost restaurant){
     if(Provider.of<DineEase>(context, listen: false).isFavorite(restaurant)){

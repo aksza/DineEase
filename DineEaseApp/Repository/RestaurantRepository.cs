@@ -25,16 +25,41 @@ namespace DineEaseApp.Repository
             return await Save();
         }
 
-        //public string GetRestaurantAddress(int id)
-        //{
-        //    throw new NotImplementedException();
+        public async Task<ICollection<Restaurant>> GetRestaurantsWithMostReservation()
+        {
+            var oneWeekAgo = DateTime.Now.AddDays(-7);
 
-        //}
+            var result = await _context.Reservations
+            .Where(r => r.Date >= oneWeekAgo)
+            .GroupBy(r => r.RestaurantId)
+            .OrderByDescending(g => g.Count())
+            .Take(3)
+            .Select(g => g.Key)
+            .ToListAsync();
 
-        //public byte[] GetRestaurantBusinessLicense(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
+            var res = await _context.Restaurants
+                .Where(r => result.Contains(r.Id))
+                .ToListAsync();
+
+            return res;
+        }
+
+        public async Task<ICollection<Restaurant>> LastFiveReservationByUserId(int userId)
+        {
+            var result = await _context.Reservations
+                .Where(r => r.UserId == userId)
+                .OrderByDescending(r => r.Date)
+                .Select(r => r.RestaurantId)
+                .Distinct()
+                .Take(3)
+                .ToListAsync();
+
+            var res = await _context.Restaurants
+                .Where(r => result.Contains(r.Id))
+                .ToListAsync();
+
+            return res;
+        }
 
         public async Task<Restaurant?> GetRestaurantWithDetailsAsync(int restaurantId)
         {
@@ -64,51 +89,6 @@ namespace DineEaseApp.Repository
         {
             return await _context.Restaurants.Where(r => r.Name == name).ToListAsync();
         }
-
-        //public Task<ICollection<Restaurant>> GetRestaurantForEvent()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public string GetRestaurantDescription(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public string GetRestaurantEmail(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public ICollection<Restaurant> GetRestaurantForEvent()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public int GetRestaurantMaxTableCap(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public string GetRestaurantName(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Owner GetRestaurantOwner(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public string GetRestaurantPhoneNum(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public Price GetRestaurantPrice(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         public async Task<double?> GetRestaurantRating(int id)
         {
@@ -171,11 +151,20 @@ namespace DineEaseApp.Repository
 
         public Task<List<Restaurant>?> SearchRestaurants(string someText)
         {
-            // Szűrés a Restaurants táblában a Name, Description és Address mezők alapján
             var result = _context.Restaurants
                 .Where(r => EF.Functions.Like(r.Name, $"%{someText}%") ||
                             EF.Functions.Like(r.Description, $"%{someText}%") ||
                             EF.Functions.Like(r.Address, $"%{someText}%"))
+                .ToListAsync();
+
+            return result;
+        }
+
+        public async Task<ICollection<Restaurant>> FiveMostRated()
+        {
+            var result = await _context.Restaurants
+                .OrderByDescending(r => r.Rating)
+                .Take(3)
                 .ToListAsync();
 
             return result;
