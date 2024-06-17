@@ -1683,4 +1683,181 @@ class RequestUtil {
     }
   }
 
+  //daily reservations by restaurant id - list of int
+  Future<List<int>> getDailyReservationsByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['DAILY_RESERVATIONS_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> dailyReservations = jsonDecode(resp.body);
+      return dailyReservations.map((dailyReservation) => dailyReservation as int).toList();
+    }catch(e){
+      Logger().e('Error getting daily reservations by restaurant id: $e');
+      rethrow;
+    }
+  }
+
+  //hourly reservations by restaurant id - list of int
+  Future<List<int>> getHourlyReservationsByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['HOURLY_RESERVATIONS_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> hourlyReservations = jsonDecode(resp.body);
+      return hourlyReservations.map((hourlyReservation) => hourlyReservation as int).toList();
+    }catch(e){
+      Logger().e('Error getting hourly reservations by restaurant id: $e');
+      rethrow;
+    }
+  }
+
+  //monthly resrvaions by restaurant id - list of int
+  Future<List<int>> getMonthlyReservationsByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['MONTHLY_RESERVATIONS_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> monthlyReservations = jsonDecode(resp.body);
+      return monthlyReservations.map((monthlyReservation) => monthlyReservation as int).toList();
+    }catch(e){
+      Logger().e('Error getting monthly reservations by restaurant id: $e');
+      rethrow;
+    }
+  }
+
+  //orders per reservations by restaurant id - list of int
+  Future<List<int>> getOrdersPerReservationsByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl + dotenv.env['ORDERS_PER_RESERVATIONS_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> ordersPerReservations = jsonDecode(resp.body);
+      return ordersPerReservations.map((ordersPerReservation) => ordersPerReservation as int).toList();
+    }catch(e){
+      Logger().e('Error getting orders per reservations by restaurant id: $e');
+      rethrow;
+    }
+  }
+
+  //eventnumber by restaurant id - list of int
+  Future<List<int>> getEventNumberByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['EVENT_NUMBER_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> eventNumber = jsonDecode(resp.body);
+      return eventNumber.map((eventNumber) => eventNumber as int).toList();
+    }catch(e){
+      Logger().e('Error getting event number by restaurant id: $e');
+      rethrow;
+    }
+  }
+
+  //daily meetings by restaurant id - list of int
+  Future<List<int>> getDailyMeetingsByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['DAILY_MEETINGS_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> dailyMeetings = jsonDecode(resp.body);
+      return dailyMeetings.map((dailyMeeting) => dailyMeeting as int).toList();
+    }catch(e){
+      Logger().e('Error getting daily meetings by restaurant id: $e');
+      rethrow;
+    }
+  }
+
+  //hourly meetings by restaurant id - list of int
+  Future<List<int>> getHourlyMeetingsByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['HOURLY_MEETINGS_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> hourlyMeetings = jsonDecode(resp.body);
+      return hourlyMeetings.map((hourlyMeeting) => hourlyMeeting as int).toList();
+    }catch(e){
+      Logger().e('Error getting hourly meetings by restaurant id: $e');
+      rethrow;
+    }
+  }
+
+  //monthly meetings by restaurant id - list of int
+
+  Future<List<int>> getMonthlyMeetingsByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['MONTHLY_MEETINGS_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> monthlyMeetings = jsonDecode(resp.body);
+      return monthlyMeetings.map((monthlyMeeting) => monthlyMeeting as int).toList();
+    }catch(e){
+      Logger().e('Error getting monthly meetings by restaurant id: $e');
+      rethrow;
+    }
+  }
+
 }

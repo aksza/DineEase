@@ -92,6 +92,51 @@ namespace DineEaseApp.Controllers
             return Ok(acceptedMeetings);
         }
 
+        [HttpGet("dailyMeetings/{restaurantId}")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetDailyMeetingsByRestaurantId(int restaurantId)
+        {
+            try
+            {
+                var dailyReservations = await _meetingRepository.AverageDailyMeetingsByRestaurantId(restaurantId);
+                return Ok(dailyReservations);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("hourMeetings/{restaurantId}")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetHourMeetingsByRestaurantId(int restaurantId)
+        {
+            try
+            {
+                var dailyReservations = await _meetingRepository.AverageMeetingsPerHoursByRestaurantId(restaurantId);
+                return Ok(dailyReservations);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("lastmonthMeetings/{restaurantId}")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> GetLastMonthMeetingsByRestaurantId(int restaurantId)
+        {
+            try
+            {
+                var dailyReservations = await _meetingRepository.AverageMeetingsLastMonthByRestaurantId(restaurantId);
+                return Ok(dailyReservations);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpGet("waitingRes/{restaurantId}")]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Meeting>))]
         public async Task<IActionResult> GetWaitingMeetingsByRestaurantId(int restaurantId)
