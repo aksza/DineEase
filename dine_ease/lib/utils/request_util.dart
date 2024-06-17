@@ -1860,4 +1860,49 @@ class RequestUtil {
     }
   }
 
+  //meeting waitinglist by restaurant id
+  Future<List<Meeting>> getMeetingWaitingListByRestaurantId(int restaurantId) async {
+    try{
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['MEETING_WAITING_GET_BY_RES_ID']! + restaurantId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> meetingWaitingList = jsonDecode(resp.body);
+      return meetingWaitingList.map((meetingWaiting) => Meeting.fromJson(meetingWaiting)).toList();
+    }catch(e){
+      Logger().e('Error getting meeting waiting list by restaurant id: $e');
+      rethrow;
+    }
+  }
+
+  //put function updating meetings
+  Future<void> putUpdateMeeting(int meetingId,Meeting meeting) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['MEETING_UPDATE']!);
+      Logger().i(url);
+      resp = await http.put(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(meeting.toMap())
+      );
+      Logger().i(resp.body);
+    }catch(e){
+      Logger().e('Error updating meeting: $e');
+      rethrow;
+    }    
+  }
+
 }

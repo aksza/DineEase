@@ -92,6 +92,40 @@ namespace DineEaseApp.Controllers
             return Ok(acceptedMeetings);
         }
 
+        [HttpPut("respond")]
+        [ProducesResponseType(200)]
+        public async Task<IActionResult> RespondToMeeting(MeetingDto meetingDto)
+        {
+            try
+            {
+                if(meetingDto == null)
+                {
+                    return BadRequest();
+                }
+
+                var meet = await _meetingRepository.GetMeetingByRestaurantId(meetingDto.Id);
+                if(meet == null)
+                {
+                    ModelState.AddModelError("", "Meeting does not exist");
+                    return BadRequest(ModelState);
+                }
+
+                var meetingMap = _mapper.Map<Meeting>(meetingDto);
+
+                if (!await _meetingRepository.UpdateMeeting(meetingMap))
+                {
+                    ModelState.AddModelError("", "Something went wrong while savind");
+                    return StatusCode(500, ModelState);
+                }
+                return Ok(meetingMap.Id);
+
+            }
+            catch(Exception e)
+            {
+                return StatusCode(500,e.Message);
+            }
+        }
+
         [HttpGet("dailyMeetings/{restaurantId}")]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetDailyMeetingsByRestaurantId(int restaurantId)

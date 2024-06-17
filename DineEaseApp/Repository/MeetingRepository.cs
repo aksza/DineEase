@@ -97,5 +97,12 @@ namespace DineEaseApp.Repository
             var saved = await _context.SaveChangesAsync();
             return saved > 0;
         }
+
+        public async Task<bool> UpdateMeeting(Meeting meeting)
+        {
+            _context.Update(meeting);
+
+            return await Save();
+        }
     }
 }

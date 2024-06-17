@@ -10,5 +10,6 @@ namespace DineEaseApp.Interfaces
         Task<ICollection<int>> AverageMeetingsPerHoursByRestaurantId(int restaurantId);
         Task<ICollection<int>> AverageMeetingsLastMonthByRestaurantId(int restaurantId);
         Task<bool> PostMeeting(Meeting meeting);
+        Task<bool> UpdateMeeting(Meeting meeting);
     }
 }
