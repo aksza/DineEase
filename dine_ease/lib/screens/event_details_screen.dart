@@ -60,10 +60,7 @@ class _EventDetailsState extends State<EventDetails> {
               CustomCarouselSlider(images: 
                 // widget.selectedEvent!.images
                 [
-                  'assets/test_images/kfc.jpeg',
-                  'assets/test_images/mcdonalds.jpg',
-                  'assets/test_images/pizzahut.jpg',
-                  'assets/test_images/subway.png',
+                  'assets/test_images/calendar4.png'
                 ]
               ),
               //event name

@@ -96,7 +96,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
     return Consumer<DineEase>(
       builder: (context, value, child) => SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(5.0),
+          padding: const EdgeInsets.fromLTRB(25.0,8,25,25),
           child: Column(
             children: [
               Row(

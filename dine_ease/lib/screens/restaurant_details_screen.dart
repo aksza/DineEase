@@ -205,9 +205,10 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
         await _requestUtil.postAddRating(rating1);
         initRating();
       }
+      // initSelectedRestaurant();
       setState(() {
         rating = rating1;
-        showRatingButtons = false; // Hide the rating buttons after submission
+        showRatingButtons = false;
       });
       Logger().i('Rating added: $r');
     } catch (e) {

@@ -14,7 +14,8 @@ class RestaurantView extends StatefulWidget {
 }
 
 class _RestaurantViewState extends State<RestaurantView> {
-  late Restaurant selectedRestaurant;
+  Restaurant? selectedRestaurant;
+
   final RequestUtil _requestUtil = RequestUtil();
 
   @override
@@ -34,12 +35,14 @@ class _RestaurantViewState extends State<RestaurantView> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => RestaurantDetails(selectedRestaurant: selectedRestaurant),
-          ),
-        );
+        if (selectedRestaurant != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RestaurantDetails(selectedRestaurant: selectedRestaurant!),
+            ),
+          );
+        }
       },
       child: Container(
         decoration: BoxDecoration(
@@ -84,15 +87,17 @@ class _RestaurantViewState extends State<RestaurantView> {
                   //favorite icon button
                   IconButton(
                     icon: Icon(
-                      widget.restaurant.isFavorite! ? Icons.favorite : Icons.favorite_border,
+                      widget.restaurant.isFavorite ?? false ? Icons.favorite : Icons.favorite_border,
                       color: Colors.orange[700],
                     ),
-                    onPressed: () {
-                      widget.onPressed!();
-                      setState(() {
-                        widget.restaurant.isFavorite = !widget.restaurant.isFavorite!;
-                      });
-                    },
+                    onPressed: widget.onPressed != null
+                        ? () {
+                            widget.onPressed!();
+                            setState(() {
+                              widget.restaurant.isFavorite = !(widget.restaurant.isFavorite ?? false);
+                            });
+                          }
+                        : null,
                   ),
                 ],
               ),

@@ -1,6 +1,7 @@
 import 'package:dine_ease/models/dine_ease.dart';
 import 'package:dine_ease/models/event_post_model.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
+import 'package:dine_ease/models/upload_restaurant_image.dart';
 import 'package:dine_ease/utils/request_util.dart';
 import 'package:dine_ease/widgets/event_view.dart';
 import 'package:dine_ease/widgets/restaurant_view.dart';
@@ -65,6 +66,10 @@ class _SearchPageState extends State<SearchPage> {
   Future<void> searchRestaurants() async {
     var resp = await _requestUtil.searchRestaurants(widget.query!);
     if (resp != null) {
+      for(var restaurant in resp){
+        List<UploadImages>? images = await _requestUtil.getPhotosByRestaurantId(restaurant.id);
+        restaurant.imagePath = images;
+      }
       setState(() {
         restaurants = resp;
       });

@@ -71,7 +71,7 @@ namespace DineEaseApp.Controllers
                      
                     if (res2 == null)
                     {
-                        BadRequest("Restaurant not found");
+                        return BadRequest("Restaurant not found");
                     }
 
                     if (!await _restaurantRepository.UpdateRestaurantRating(res2))
@@ -98,7 +98,7 @@ namespace DineEaseApp.Controllers
                 var res = await _restaurantRepository.GetRestaurantById(ratingDto.RestaurantId);
                 if (res == null)
                 {
-                    BadRequest("Restaurant not found");
+                    return BadRequest("Restaurant not found");
                 }
 
                 if (!await _restaurantRepository.UpdateRestaurantRating(res))

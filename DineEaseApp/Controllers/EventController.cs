@@ -69,22 +69,18 @@ namespace DineEaseApp.Controllers
         {
             var results = _mapper.Map<List<EventDto>>(await _eventRepository.SearchEvents(someText));
 
-            var eventDtos = results
-                .Select(async e =>
-                {
-                    var eventDto = e;
-                    RestaurantDto res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(eventDto.RestaurantId));
-                    eventDto.RestaurantName = res.Name;
-                    return eventDto;
-                }
-                );
-            var eventDtoList = await Task.WhenAll(eventDtos);
+            foreach (var eventDto in results)
+            {
+                RestaurantDto res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(eventDto.RestaurantId));
+                eventDto.RestaurantName = res.Name;
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            return Ok(eventDtoList);
+            return Ok(results);
         }
 
         [HttpGet]
