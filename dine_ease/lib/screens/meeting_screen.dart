@@ -1,5 +1,4 @@
 import 'package:dine_ease/models/meeting_create.dart';
-// import 'package:dine_ease/models/reservation_create.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:dine_ease/utils/request_util.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +59,6 @@ class _MeetingScreenState extends State<MeetingScreen>{
         meetingDate: formattedMeetingDateTime,
         phoneNum: phoneNumController.text,
         guestSize: guestSizeController.text.isNotEmpty ? int.parse(guestSizeController.text) : 0,
-        //comment if not null else null
         comment: commentController.text.isNotEmpty ? commentController.text : null,
       );
       //kiirjuk az osszes adatot
@@ -81,52 +79,53 @@ class _MeetingScreenState extends State<MeetingScreen>{
   );
   if (picked != null && picked != DateTime.now()) {
     setState(() {
-      eventDateController.text = DateFormat('yyyy-MM-dd').format(picked); // A kiválasztott dátum formázása
+      eventDateController.text = DateFormat('yyyy-MM-dd').format(picked);
     });
   }
 }
 
-Future<void> _selectTime(BuildContext context) async {
-  final TimeOfDay? picked = await showTimePicker(
-    context: context,
-    initialTime: TimeOfDay.now(),
-  );
-  if (picked != null) {
-    setState(() {
-      final DateTime now = DateTime.now();
-      final DateTime selectedTime = DateTime(now.year, now.month, now.day, picked.hour, picked.minute);
-      eventTimeController.text = DateFormat('HH:mm').format(selectedTime); // A kiválasztott időpont formázása
-    });
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        final DateTime now = DateTime.now();
+        final DateTime selectedTime = DateTime(now.year, now.month, now.day, picked.hour, picked.minute);
+        eventTimeController.text = DateFormat('HH:mm').format(selectedTime);
+      });
+    }
   }
-}
 
-  Future<void> _selectDate2(BuildContext context) async {
-  final DateTime? picked = await showDatePicker(
-    context: context,
-    initialDate: DateTime.now(),
-    firstDate: DateTime.now(),
-    lastDate: DateTime(DateTime.now().year + 1),
-  );
-  if (picked != null && picked != DateTime.now()) {
-    setState(() {
-      meetingDateController.text = DateFormat('yyyy-MM-dd').format(picked); // A kiválasztott dátum formázása
-    });
+    Future<void> _selectDate2(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(DateTime.now().year + 1),
+    );
+    if (picked != null && picked != DateTime.now()) {
+      setState(() {
+        meetingDateController.text = DateFormat('yyyy-MM-dd').format(picked);
+      });
+    }
   }
-}
 
-Future<void> _selectTime2(BuildContext context) async {
-  final TimeOfDay? picked = await showTimePicker(
-    context: context,
-    initialTime: TimeOfDay.now(),
-  );
-  if (picked != null) {
-    setState(() {
-      final DateTime now = DateTime.now();
-      final DateTime selectedTime = DateTime(now.year, now.month, now.day, picked.hour, picked.minute);
-      meetingTimeController.text = DateFormat('HH:mm').format(selectedTime); // A kiválasztott időpont formázása
-    });
+  Future<void> _selectTime2(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        final DateTime now = DateTime.now();
+        final DateTime selectedTime = DateTime(now.year, now.month, now.day, picked.hour, picked.minute);
+        meetingTimeController.text = DateFormat('HH:mm').format(selectedTime);
+      });
+    }
   }
-}
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -143,93 +142,100 @@ Future<void> _selectTime2(BuildContext context) async {
       body: SafeArea(child: 
         Column(children: [
           //implementing all fields
-          //event date
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              readOnly: true,
-              controller: eventDateController,
-              onTap: () => _selectDate(context),
-              decoration: const InputDecoration(
-                labelText: 'Event Date',
-                hintText: 'Select event date',
-              ),
-              
-            ),
-          ),
-          //event time
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              readOnly: true,
-              controller: eventTimeController,
-              onTap: () => _selectTime(context),
-              decoration: const InputDecoration(
-                labelText: 'Event Time',
-                hintText: 'Select event time',
-              ),
-             
-            ),
-          ),
-          //guest size
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: guestSizeController,
-              decoration: const InputDecoration(
-                labelText: 'Guest Size',
-                hintText: 'Enter guest size',
-              ),
-            ),
-          ),
-          //meeting date
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              readOnly: true,
-              controller: meetingDateController,
-              onTap: () => _selectDate2(context),
-              decoration: const InputDecoration(
-                labelText: 'Meeting Date',
-                hintText: 'Select meeting date',
-              ),
-             
-            ),
-          ),
-          //meeting time
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              readOnly: true,
-              controller: meetingTimeController,
-              decoration: const InputDecoration(
-                labelText: 'Meeting Time',
-                hintText: 'Select meeting time',
-              ),
-              onTap: () => _selectTime2(context),
-            ),
-          ),
-          //phone number
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: TextField(
-              controller: phoneNumController,
-              decoration: const InputDecoration(
-                labelText: 'Phone Number',
-                hintText: 'Enter phone number',
-              ),
-            ),
-          ),
-          //comment
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: commentController,
-              decoration: const InputDecoration(
-                labelText: 'Comment',
-                hintText: 'Enter comment',
-              ),
-            ),
+          Expanded(child: 
+            SingleChildScrollView(child: 
+              Column(children: [
+                //event date
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      readOnly: true,
+                      controller: eventDateController,
+                      onTap: () => _selectDate(context),
+                      decoration: const InputDecoration(
+                        labelText: 'Event Date',
+                        hintText: 'Select event date',
+                      ),
+                      
+                    ),
+                  ),
+                  //event time
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      readOnly: true,
+                      controller: eventTimeController,
+                      onTap: () => _selectTime(context),
+                      decoration: const InputDecoration(
+                        labelText: 'Event Time',
+                        hintText: 'Select event time',
+                      ),
+                    
+                    ),
+                  ),
+                  //guest size
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: guestSizeController,
+                      decoration: const InputDecoration(
+                        labelText: 'Guest Size',
+                        hintText: 'Enter guest size',
+                      ),
+                    ),
+                  ),
+                  //meeting date
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      readOnly: true,
+                      controller: meetingDateController,
+                      onTap: () => _selectDate2(context),
+                      decoration: const InputDecoration(
+                        labelText: 'Meeting Date',
+                        hintText: 'Select meeting date',
+                      ),
+                    
+                    ),
+                  ),
+                  //meeting time
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      readOnly: true,
+                      controller: meetingTimeController,
+                      decoration: const InputDecoration(
+                        labelText: 'Meeting Time',
+                        hintText: 'Select meeting time',
+                      ),
+                      onTap: () => _selectTime2(context),
+                    ),
+                  ),
+                  //phone number
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: phoneNumController,
+                      decoration: const InputDecoration(
+                        labelText: 'Phone Number',
+                        hintText: 'Enter phone number',
+                      ),
+                    ),
+                  ),
+                  //comment
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      controller: commentController,
+                      decoration: const InputDecoration(
+                        labelText: 'Comment',
+                        hintText: 'Enter comment',
+                      ),
+                    ),
+                  )
+                ]
+              )
+            )
           ),
           //reserve button
           ElevatedButton(

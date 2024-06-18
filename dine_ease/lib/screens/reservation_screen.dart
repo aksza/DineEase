@@ -76,7 +76,6 @@ class _ReservationScreenState extends State<ReservationScreen> {
       Logger().i('Reservation: ${rescreate.toMap()}');
       var resid = await requestUtil.postReserveATable(rescreate);
 
-      // Orders küldése
       for (var order in orderProvider.orders) {
         order.reservationId = resid;
         await requestUtil.postOrder(order);
@@ -143,119 +142,140 @@ class _ReservationScreenState extends State<ReservationScreen> {
             double totalPrice = calculateTotalPrice(orderProvider.orders);
             return Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: partySizeController,
-                    decoration: const InputDecoration(
-                      labelText: 'Party Size',
-                      hintText: 'Enter party size',
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    readOnly: true,
-                    controller: dateController,
-                    onTap: () => _selectDate(context),
-                    decoration: const InputDecoration(
-                      labelText: 'Date',
-                      hintText: 'Select date',
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    readOnly: true,
-                    controller: timeController,
-                    onTap: () => _selectTime(context),
-                    decoration: const InputDecoration(
-                      labelText: 'Time',
-                      hintText: 'Select time',
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: phoneNumController,
-                    decoration: InputDecoration(
-                      labelText: 'Phone Number',
-                      hintText: 'Enter phone number',
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: commentController,
-                    decoration: const InputDecoration(
-                      labelText: 'Comment',
-                      hintText: 'Enter comment',
-                    ),
-                  ),
-                ),
-                if (orderProvider.orders.isNotEmpty) 
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('Your orders: $totalPrice RON', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                ),
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: orderProvider.orders.length,
-                    itemBuilder: (context, index) {
-                      final order = orderProvider.orders[index];
-                      return ListTile(
-                        title: Text(' ${order.menuName!}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                        subtitle: Text('  ${order.price} RON'),
-                        trailing: GestureDetector(
-                          onTap: () {
-                            orderProvider.removeOrder(index);
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: partySizeController,
+                            decoration: const InputDecoration(
+                              labelText: 'Party Size',
+                              hintText: 'Enter party size',
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            readOnly: true,
+                            controller: dateController,
+                            onTap: () => _selectDate(context),
+                            decoration: const InputDecoration(
+                              labelText: 'Date',
+                              hintText: 'Select date',
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            readOnly: true,
+                            controller: timeController,
+                            onTap: () => _selectTime(context),
+                            decoration: const InputDecoration(
+                              labelText: 'Time',
+                              hintText: 'Select time',
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: phoneNumController,
+                            decoration: const InputDecoration(
+                              labelText: 'Phone Number',
+                              hintText: 'Enter phone number',
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: commentController,
+                            decoration: const InputDecoration(
+                              labelText: 'Comment',
+                              hintText: 'Enter comment',
+                            ),
+                          ),
+                        ),
+                        if (orderProvider.orders.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Your orders: $totalPrice RON',
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: orderProvider.orders.length,
+                          itemBuilder: (context, index) {
+                            final order = orderProvider.orders[index];
+                            return ListTile(
+                              title: Text(
+                                ' ${order.menuName!}',
+                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Text('  ${order.price} RON'),
+                              trailing: GestureDetector(
+                                onTap: () {
+                                  orderProvider.removeOrder(index);
+                                },
+                                child: const Icon(Icons.cancel),
+                              ),
+                            );
                           },
-                          child: Icon(Icons.cancel),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MenuScreen(
+                            restaurantId: widget.selectedRestaurant!.id,
+                            reservationId: 1,
+                          ),
                         ),
                       );
                     },
+                    child: const Text('Menu'),
                   ),
                 ),
-                
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MenuScreen(
-                          restaurantId: widget.selectedRestaurant!.id,
-                          reservationId: 1,
-                        ),
-                      ),
-                    );
-                  },
-                  child: const Text('Menu'),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (partySizeController.text.isEmpty ||
+                          dateController.text.isEmpty ||
+                          timeController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Please fill in all fields'),
+                          ),
+                        );
+                      } else {
+                        reserve(orderProvider);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: const Text('Table reserved successfully!'),
+                          ),
+                        );
+                        orderProvider.clearOrders();
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: const Text('Reserve'),
+                  ),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (partySizeController.text.isEmpty || dateController.text.isEmpty || timeController.text.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Please fill in all fields'),
-                        ),
-                      );
-                    } else {
-                      reserve(orderProvider);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Table reserved successfully!'),
-                        ),
-                      );
-                      orderProvider.clearOrders();
-                      Navigator.pop(context);
-                    }
-                  },
-                  child: const Text('Reserve'),
-                ),
+                const SizedBox(height: 16), 
               ],
             );
           },
@@ -263,4 +283,5 @@ class _ReservationScreenState extends State<ReservationScreen> {
       ),
     );
   }
+
 }
