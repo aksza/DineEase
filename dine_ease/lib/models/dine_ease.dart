@@ -1,9 +1,13 @@
 import 'package:dine_ease/auth/db_service.dart';
+import 'package:dine_ease/models/cuisine_model.dart';
 import 'package:dine_ease/models/e_category.dart';
 import 'package:dine_ease/models/event_post_model.dart';
 import 'package:dine_ease/models/eventt_model.dart';
+import 'package:dine_ease/models/price_model.dart';
+import 'package:dine_ease/models/r_category.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:dine_ease/models/restaurant_post.dart';
+import 'package:dine_ease/models/seating_model.dart';
 import 'package:dine_ease/utils/request_util.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
@@ -25,6 +29,12 @@ class DineEase extends ChangeNotifier{
   late List<Restaurant> restaurantsMostRated = [];
   late List<Restaurant> restaurantsLastReservations = [];
 
+  
+  List<Cuisine> _allCuisine = [];
+  List<RCategory> _allCategories = [];
+  List<Seating> _allSeatings = [];
+  List<Price> _allPrices = [];
+
   bool isLoading = true;
 
   DineEase() : _restaurantList = [], _restaurantForEventList= [], _userFavorits = [], email = '', role = '',userId = 0, _eventList = []{
@@ -45,6 +55,12 @@ void initApp() async {
     await getFavoritRestaurantsByUserId();
     await getEvents();
     await getEventsByFavoritRestaurant();
+
+    _allCuisine = await _requestUtil.getCuisines();
+    _allCategories = await _requestUtil.getRcategories();
+    _allSeatings = await _requestUtil.getSeatings();
+    _allPrices = await _requestUtil.getPrices();
+
     isLoading = false;
     notifyListeners();
   }
@@ -130,19 +146,30 @@ void initApp() async {
     for(var restaurant in restaurants){
       if(restaurant.forEvent == false){
         Logger().i("false kene: $restaurant.forEvent");
-
-      restaurant.isFavorite = false;
-      restaurant.imagePath = 'assets/test_images/kfc.jpeg';
-      _restaurantList.add(restaurant);
+        var categories = await _requestUtil.getRCategoriesByRestaurantId(restaurant.id);
+        var cuisines = await _requestUtil.getCuisinesByRestaurantId(restaurant.id);
+        var seatings = await _requestUtil.getSeatingsByRestaurantId(restaurant.id);
+        restaurant.isFavorite = false;
+        restaurant.imagePath = 'assets/test_images/kfc.jpeg';
+        restaurant.categories = categories;
+        restaurant.cuisines = cuisines;
+        restaurant.seatings = seatings;
+        Logger().i("cuisines: $cuisines");
+        _restaurantList.add(restaurant);
 
       }
       else{
         Logger().i("true kene: $restaurant.forEvent");
 
-      restaurant.isFavorite = false;
-      restaurant.imagePath = 'assets/test_images/kfc.jpeg';
-      _restaurantForEventList.add(restaurant);
-
+        var categories = await _requestUtil.getRCategoriesByRestaurantId(restaurant.id);
+        var cuisines = await _requestUtil.getCuisinesByRestaurantId(restaurant.id);
+        var seatings = await _requestUtil.getSeatingsByRestaurantId(restaurant.id);
+        restaurant.isFavorite = false;
+        restaurant.imagePath = 'assets/test_images/kfc.jpeg';
+        restaurant.categories = categories;
+        restaurant.cuisines = cuisines;
+        restaurant.seatings = seatings;
+        _restaurantForEventList.add(restaurant);
       }
       notifyListeners();
     }   
@@ -237,6 +264,18 @@ void initApp() async {
 
   //get restaurant for event list
   List<Restaurant> get restaurantForEventList => _restaurantForEventList;
+
+  //get all cuisine
+  List<Cuisine> get allCuisines => _allCuisine;
+
+  //get all categories
+  List<RCategory> get allRCategories => _allCategories;
+
+  //get all seatings
+  List<Seating> get allSeatings => _allSeatings;
+
+  //get all prices
+  List<Price> get allPrices => _allPrices;
   
   //add to favorit
   void addToFavorits(Restaurant restaurant) async{

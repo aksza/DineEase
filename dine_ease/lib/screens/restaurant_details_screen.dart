@@ -1,6 +1,5 @@
 import 'package:dine_ease/models/rating_model.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
-import 'package:dine_ease/models/restaurant_post.dart';
 import 'package:dine_ease/models/dine_ease.dart';
 import 'package:dine_ease/models/review_models.dart';
 import 'package:dine_ease/screens/meeting_screen.dart';

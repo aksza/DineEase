@@ -1,9 +1,13 @@
-import 'package:dine_ease/models/dine_ease.dart';
-import 'package:dine_ease/models/restaurant_model.dart';
-import 'package:dine_ease/models/restaurant_post.dart';
-import 'package:dine_ease/widgets/restaurant_view.dart';
+import 'package:dine_ease/models/cuisine_model.dart';
+import 'package:dine_ease/models/price_model.dart';
+import 'package:dine_ease/models/r_category.dart';
+import 'package:dine_ease/models/seating_model.dart';
+import 'package:dine_ease/widgets/filter_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:dine_ease/models/dine_ease.dart';
+import 'package:dine_ease/models/restaurant_model.dart';
+import 'package:dine_ease/widgets/restaurant_view.dart';
 
 class RestaurantPage extends StatefulWidget {
   const RestaurantPage({super.key});
@@ -13,58 +17,117 @@ class RestaurantPage extends StatefulWidget {
 }
 
 class _RestaurantPageState extends State<RestaurantPage> {
+  List<Restaurant> _filteredRestaurants = [];
+  List<Cuisine> _filterByCuisine = [];
+  List<RCategory> _filterByCategory = [];
+  List<Price> _filterByPrice = [];
+  List<Seating> _filterBySeating = [];
 
-  //a function that checks whether a restaurant is in the favorites list and depending on that it adds or removes it
-  void toggleFavorite(Restaurant restaurant){
-    if(Provider.of<DineEase>(context, listen: false).isFavorite(restaurant)){
+  @override
+  void initState() {
+    super.initState();
+    _filteredRestaurants = Provider.of<DineEase>(context, listen: false).restaurants;
+  }
+
+  void _showFilterDialog() async {
+    final result = await showDialog(
+      context: context,
+      builder: (context) {
+        return FilterDialog(
+          selectedCuisines: _filterByCuisine,
+          selectedCategories: _filterByCategory,
+          selectedPrices: _filterByPrice,
+          selectedSeatings: _filterBySeating,
+        );
+      },
+    );
+
+    if (result != null) {
+      setState(() {
+        _filterByCuisine = result['cuisines'];
+        _filterByCategory = result['categories'];
+        _filterByPrice = result['prices'];
+        _filterBySeating = result['seatings'];
+        _applyFilters();
+      });
+    }
+  }
+
+  void _applyFilters() {
+  final dineEase = Provider.of<DineEase>(context, listen: false);
+  setState(() {
+    _filteredRestaurants = dineEase.restaurants.where((restaurant) {
+      final cuisineMatch = _filterByCuisine.isEmpty ||
+          (restaurant.cuisines != null &&
+              restaurant.cuisines!.any((cuisine) => _filterByCuisine.any((filterCuisine) => filterCuisine.id == cuisine.id)));
+      final categoryMatch = _filterByCategory.isEmpty ||
+          (restaurant.categories != null &&
+              restaurant.categories!.any((category) => _filterByCategory.any((filterCategory) => filterCategory.id == category.id)));
+      final priceMatch = _filterByPrice.isEmpty ||
+          _filterByPrice.any((price) => price.priceName == restaurant.price);
+      final seatingMatch = _filterBySeating.isEmpty ||
+          (restaurant.seatings != null &&
+              restaurant.seatings!.any((seating) => _filterBySeating.any((filterSeating) => filterSeating.id == seating.id)));
+      return cuisineMatch && categoryMatch && priceMatch && seatingMatch;
+    }).toList();
+  });
+}
+
+
+
+  void toggleFavorite(Restaurant restaurant) {
+    if (Provider.of<DineEase>(context, listen: false).isFavorite(restaurant)) {
       removeFromFavorits(restaurant);
-    }else{
+    } else {
       addToFavorits(restaurant);
     }
   }
-  //add to favorites
-  void addToFavorits(Restaurant restaurant){
+
+  void addToFavorits(Restaurant restaurant) {
     Provider.of<DineEase>(context, listen: false).addToFavorits(restaurant);
-    // showDialog(context: context, builder: 
-    //   (context) => AlertDialog(title: Text('Added to favorites')
-    //   ));
   }
-  //remove from favorites
-  void removeFromFavorits(Restaurant restaurant){
+
+  void removeFromFavorits(Restaurant restaurant) {
     Provider.of<DineEase>(context, listen: false).removeFromFavorits(restaurant);
-    // showDialog(context: context, builder: 
-    //   (context) => AlertDialog(title: Text('Removed from favorites')
-    //   ));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DineEase>(builder: (context,value,child) =>
-      SafeArea(child: 
-        Padding(
-          padding: const EdgeInsets.all(25.0),
+    return Consumer<DineEase>(
+      builder: (context, value, child) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
           child: Column(
             children: [
-              //list of restaurants
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.filter_alt_sharp),
+                    onPressed: _showFilterDialog,
+                  ),
+                ],
+              ),
+              // List of restaurants
               Expanded(
                 child: ListView.builder(
-                  itemCount: value.restaurants.length,
-                  itemBuilder: (context,index){
-                  //get restaurant
-                  Restaurant restaurant = value.restaurants[index];
+                  itemCount: _filteredRestaurants.length,
+                  itemBuilder: (context, index) {
+                    // Get restaurant
+                    Restaurant restaurant = _filteredRestaurants[index];
 
-                  //return the tile for this restaurant
-                  return RestaurantView(
-                    restaurant: restaurant,
-                    onPressed: () => toggleFavorite(restaurant)
+                    // Return the tile for this restaurant
+                    return RestaurantView(
+                      restaurant: restaurant,
+                      onPressed: () => toggleFavorite(restaurant),
                     );
-
-                }),
-              )
+                  },
+                ),
+              ),
             ],
           ),
-        )
-      )
+        ),
+      ),
     );
   }
 }
