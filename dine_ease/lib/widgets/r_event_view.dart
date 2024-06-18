@@ -8,8 +8,9 @@ import 'package:logger/logger.dart';
 class REventViewScreen extends StatefulWidget {
   final Eventt event;
   final VoidCallback onUpdate;
+  bool canEdit;
 
-  REventViewScreen({required this.event, required this.onUpdate});
+  REventViewScreen({required this.event, required this.onUpdate,required this.canEdit});
 
   @override
   State<REventViewScreen> createState() => _REventViewScreenState();
@@ -292,6 +293,7 @@ class _REventViewScreenState extends State<REventViewScreen> {
               ),
             ),
             actions: [
+              if(widget.canEdit)
               TextButton(
                 onPressed: () {
                   setState(() {

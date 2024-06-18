@@ -317,6 +317,7 @@ class _REventsScreenState extends State<REventsScreen> {
                           return REventViewScreen(
                             event: event,
                             onUpdate: updateEvent,
+                            canEdit: true,
                           );
                         }
                       },
@@ -343,6 +344,7 @@ class _REventsScreenState extends State<REventsScreen> {
                         return REventViewScreen(
                           event: event,
                           onUpdate: updateEvent,
+                          canEdit: false,
                         );
                       },
                     ),
