@@ -38,7 +38,7 @@ class _ForYouPageState extends State<ForYouPage> {
   }
 
   //a function that checks whether a restaurant is in the favorites list and depending on that it adds or removes it
-  void toggleFavorite(RestaurantPost restaurant){
+  void toggleFavorite(Restaurant restaurant){
     if(Provider.of<DineEase>(context, listen: false).isFavorite(restaurant)){
       removeFromFavorits(restaurant);
     }else{
@@ -46,11 +46,11 @@ class _ForYouPageState extends State<ForYouPage> {
     }
   }
   //add to favorites
-  void addToFavorits(RestaurantPost restaurant){
+  void addToFavorits(Restaurant restaurant){
     Provider.of<DineEase>(context, listen: false).addToFavorits(restaurant);
   }
   //remove from favorites
-  void removeFromFavorits(RestaurantPost restaurant){
+  void removeFromFavorits(Restaurant restaurant){
     Provider.of<DineEase>(context, listen: false).removeFromFavorits(restaurant);
   }
 
@@ -86,7 +86,7 @@ Widget build(BuildContext context) {
                         shrinkWrap: true,
                         itemCount: dineEase.restaurantsWithMostReservations.length <= 3 ? dineEase.restaurantsWithMostReservations.length : 3,
                         itemBuilder: (context, index) {
-                          RestaurantPost restaurant = dineEase.restaurantsWithMostReservations[index];
+                          Restaurant restaurant = dineEase.restaurantsWithMostReservations[index];
                           return RestaurantView(restaurant: restaurant, onPressed: () => toggleFavorite(restaurant),);
                         },
                       ),
@@ -110,7 +110,7 @@ Widget build(BuildContext context) {
                         shrinkWrap: true,
                         itemCount: dineEase.restaurantsMostRated.length <= 3 ? dineEase.restaurantsMostRated.length : 3,
                         itemBuilder: (context, index) {
-                          RestaurantPost restaurant = dineEase.restaurantsMostRated[index];
+                          Restaurant restaurant = dineEase.restaurantsMostRated[index];
                           return RestaurantView(restaurant: restaurant, onPressed: () => toggleFavorite(restaurant),);
                         },
                       ),
@@ -159,7 +159,7 @@ Widget build(BuildContext context) {
                           shrinkWrap: true,
                           itemCount: dineEase.restaurantsLastReservations.length <= 3 ? dineEase.restaurantsLastReservations.length : 3,
                           itemBuilder: (context, index) {
-                            RestaurantPost restaurant = dineEase.restaurantsLastReservations[index];
+                            Restaurant restaurant = dineEase.restaurantsLastReservations[index];
                             return RestaurantView(restaurant: restaurant, onPressed: () => toggleFavorite(restaurant),);
                           },
                         ),

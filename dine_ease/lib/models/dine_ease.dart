@@ -11,9 +11,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class DineEase extends ChangeNotifier{
   final RequestUtil _requestUtil = RequestUtil();
-  List<RestaurantPost> _restaurantList;
-  List<RestaurantPost> _restaurantForEventList;
-  List<RestaurantPost> _userFavorits;
+  List<Restaurant> _restaurantList;
+  List<Restaurant> _restaurantForEventList;
+  List<Restaurant> _userFavorits;
   List<EventPost> _eventList;
   late int userId;
   late String email;
@@ -21,9 +21,9 @@ class DineEase extends ChangeNotifier{
   late SharedPreferences prefs;
 
   late List<EventPost> eventFy = [];
-  late List<RestaurantPost> restaurantsWithMostReservations = [];
-  late List<RestaurantPost> restaurantsMostRated = [];
-  late List<RestaurantPost> restaurantsLastReservations = [];
+  late List<Restaurant> restaurantsWithMostReservations = [];
+  late List<Restaurant> restaurantsMostRated = [];
+  late List<Restaurant> restaurantsLastReservations = [];
 
   bool isLoading = true;
 
@@ -51,9 +51,6 @@ void initApp() async {
 
   Future<void> initSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
-    // userId = prefs.getInt('userId') ?? 0;    
-    // email = prefs.getString('email') ?? '';
-    // role = prefs.getString('role') ?? '';
     userId = await DataBaseProvider().getUserId();
     email = await DataBaseProvider().getEmail();
     role = await DataBaseProvider().getRole();
@@ -64,17 +61,12 @@ void initApp() async {
   //get restaurants with most reservations
   Future<void> getRestaurantsWithMostReservations() async {
     List<Restaurant> restaurants = await _requestUtil.getRestaurantsWithMostReservations();
-    // setState(() {
     for(var restaurant in restaurants){
       Logger().i("false kene: $restaurant.forEvent");
-      restaurantsWithMostReservations.add(RestaurantPost(
-        id: restaurant.id,
-        name: restaurant.name,
-        rating: restaurant.rating,
-        // rating: 4.0,
-        isFavorite: false,
-        imagePath: 'assets/test_images/kfc.jpeg'
-      ));
+    
+      restaurant.isFavorite = false;
+      restaurant.imagePath = 'assets/test_images/kfc.jpeg';
+      restaurantsWithMostReservations.add(restaurant);
       
       notifyListeners();
     }  
@@ -86,15 +78,11 @@ void initApp() async {
     List<Restaurant> restaurants = await _requestUtil.getMostRatedRestaurants();
      for(var restaurant in restaurants){
       Logger().i("false kene: $restaurant.forEvent");
-      restaurantsMostRated.add(RestaurantPost(
-        id: restaurant.id,
-        name: restaurant.name,
-        rating: restaurant.rating,
-        // rating: 4.0,
-        isFavorite: false,
-        imagePath: 'assets/test_images/kfc.jpeg'
-      ));
-      
+
+      restaurant.isFavorite = false;
+      restaurant.imagePath = 'assets/test_images/kfc.jpeg';
+      restaurantsMostRated.add(restaurant);
+
       notifyListeners();
     }  
   }
@@ -105,14 +93,11 @@ void initApp() async {
     List<Restaurant> restaurants = await _requestUtil.getRestaurantsByLastFiveReservations(userId);
      for(var restaurant in restaurants){
       Logger().i("false kene: $restaurant.forEvent");
-      restaurantsLastReservations.add(RestaurantPost(
-        id: restaurant.id,
-        name: restaurant.name,
-        rating: restaurant.rating,
-        // rating: 4.0,
-        isFavorite: false,
-        imagePath: 'assets/test_images/kfc.jpeg'
-      ));
+
+      restaurant.isFavorite = false;
+      restaurant.imagePath = 'assets/test_images/kfc.jpeg';
+      restaurantsLastReservations.add(restaurant);
+
       
       notifyListeners();
     }  
@@ -133,8 +118,6 @@ void initApp() async {
         startingDate: e.startingDate,
         endingDate: e.endingDate,
         eCategories: categories
-        // rating: 4.0,
-        // imagePath: 'assets/test_images/kfc.jpeg'
       ));
       notifyListeners();
     }   
@@ -147,25 +130,19 @@ void initApp() async {
     for(var restaurant in restaurants){
       if(restaurant.forEvent == false){
         Logger().i("false kene: $restaurant.forEvent");
-      _restaurantList.add(RestaurantPost(
-        id: restaurant.id,
-        name: restaurant.name,
-        rating: restaurant.rating,
-        // rating: 4.0,
-        isFavorite: false,
-        imagePath: 'assets/test_images/kfc.jpeg'
-      ));
+
+      restaurant.isFavorite = false;
+      restaurant.imagePath = 'assets/test_images/kfc.jpeg';
+      _restaurantList.add(restaurant);
+
       }
       else{
         Logger().i("true kene: $restaurant.forEvent");
-        _restaurantForEventList.add(RestaurantPost(
-        id: restaurant.id,
-        name: restaurant.name,
-        rating: restaurant.rating,
-        // rating: 4.0,
-        isFavorite: false,
-        imagePath: 'assets/test_images/kfc.jpeg'
-      ));
+
+      restaurant.isFavorite = false;
+      restaurant.imagePath = 'assets/test_images/kfc.jpeg';
+      _restaurantForEventList.add(restaurant);
+
       }
       notifyListeners();
     }   
@@ -176,14 +153,11 @@ void initApp() async {
     List<Restaurant> restaurants = await _requestUtil.getFavoritRestaurantsByUserId(userId);
     // List<RestaurantPost> restaurantList = [];
     for(var restaurant in restaurants){
-      _userFavorits.add(RestaurantPost(
-        id: restaurant.id,
-        name: restaurant.name,
-        rating: restaurant.rating,
-        // rating: 4.0,
-        isFavorite: true,
-        imagePath: 'assets/test_images/kfc.jpeg'
-      ));
+
+      restaurant.isFavorite = false;
+      restaurant.imagePath = 'assets/test_images/kfc.jpeg';
+      _userFavorits.add(restaurant);
+
       //az adott id-ju restaurantot megkeresni a restaurantList-ben és az isFavorite értékét true-ra állítani
       for(var rest in _restaurantList){
         if(rest.id == restaurant.id){
@@ -220,7 +194,6 @@ void initApp() async {
 
   Future<void> getEvents() async{
     List<Eventt> events = await _requestUtil.getEvents();
-    // List<RestaurantPost> restaurantList = [];
     for(var event in events){
       List<ECategory> categories = await _requestUtil.getECategoriesByEvent(event.id);
       _eventList.add(EventPost(
@@ -232,15 +205,13 @@ void initApp() async {
         startingDate: event.startingDate,
         endingDate: event.endingDate,
         eCategories: categories
-        // rating: 4.0,
-        // imagePath: 'assets/test_images/kfc.jpeg'
       ));
       notifyListeners();
     }   
   }
   
   //get restaurant by id
-  RestaurantPost? getRestaurantById(int id){
+  Restaurant? getRestaurantById(int id){
     //ha a restaurantlistben nem talalja meg az adott idju restaurantot akkor a restaurantforeventlistben keresi
     for(var restaurant in _restaurantList){
       if(restaurant.id == id){
@@ -256,19 +227,19 @@ void initApp() async {
   }
 
   //get restaurant list
-  List<RestaurantPost> get restaurants => _restaurantList;
+  List<Restaurant> get restaurants => _restaurantList;
 
   //get user favorit list
-  List<RestaurantPost> get userFavorits => _userFavorits;
+  List<Restaurant> get userFavorits => _userFavorits;
 
   //get event list
   List<EventPost> get events => _eventList;
 
   //get restaurant for event list
-  List<RestaurantPost> get restaurantForEventList => _restaurantForEventList;
+  List<Restaurant> get restaurantForEventList => _restaurantForEventList;
   
   //add to favorit
-  void addToFavorits(RestaurantPost restaurant) async{
+  void addToFavorits(Restaurant restaurant) async{
     // add by using the request util
     Logger().i("userid"+userId.toString()+email+role);
     await _requestUtil.postAddFavoritRestaurant(userId, restaurant.id);
@@ -304,7 +275,7 @@ void initApp() async {
   }
 
   //remove from favorit
-  void removeFromFavorits(RestaurantPost restaurant) async{
+  void removeFromFavorits(Restaurant restaurant) async{
     // remove by using the request util
     _userFavorits.remove(restaurant);
     //az adott id-ju restaurantot megkeresni a restaurantList-ben és az isFavorite értékét false-ra állítani
@@ -337,7 +308,7 @@ void initApp() async {
     notifyListeners();
   }
 
-  bool isFavorite(RestaurantPost restaurant){
+  bool isFavorite(Restaurant restaurant){
     return _userFavorits.contains(restaurant);
   }
 

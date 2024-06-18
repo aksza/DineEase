@@ -1,11 +1,10 @@
 import 'package:dine_ease/models/restaurant_model.dart';
-import 'package:dine_ease/models/restaurant_post.dart';
 import 'package:dine_ease/screens/restaurant_details_screen.dart';
 import 'package:dine_ease/utils/request_util.dart';
 import 'package:flutter/material.dart';
 
 class RestaurantView extends StatefulWidget {
-  final RestaurantPost restaurant;
+  final Restaurant restaurant;
   void Function()? onPressed;
 
   RestaurantView({super.key, required this.restaurant, required this.onPressed});
@@ -61,13 +60,13 @@ class _RestaurantViewState extends State<RestaurantView> {
         child: ListTile(
           title: Text(widget.restaurant.name),
           subtitle: Text((widget.restaurant.rating != null ? widget.restaurant.rating.toString() : '0') + ' ⭐'),
-          leading: Image.asset(widget.restaurant.imagePath, width: isPhone ? 50 : 100, height: isPhone ? 50 : 100, fit: BoxFit.cover,),
+          leading: Image.asset(widget.restaurant.imagePath!, width: isPhone ? 50 : 100, height: isPhone ? 50 : 100, fit: BoxFit.cover,),
           trailing: IconButton(
-            icon: Icon(widget.restaurant.isFavorite ? Icons.favorite : Icons.favorite_border, color: Colors.orange[700]),
+            icon: Icon(widget.restaurant.isFavorite! ? Icons.favorite : Icons.favorite_border, color: Colors.orange[700]),
             onPressed: (){
               widget.onPressed!();
               setState(() {
-                widget.restaurant.isFavorite = !widget.restaurant.isFavorite;
+                widget.restaurant.isFavorite = !widget.restaurant.isFavorite!;
               });
             },
           )

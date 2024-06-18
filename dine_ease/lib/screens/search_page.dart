@@ -1,12 +1,10 @@
 import 'package:dine_ease/models/dine_ease.dart';
 import 'package:dine_ease/models/event_post_model.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
-import 'package:dine_ease/models/restaurant_post.dart';
 import 'package:dine_ease/utils/request_util.dart';
 import 'package:dine_ease/widgets/event_view.dart';
 import 'package:dine_ease/widgets/restaurant_view.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class SearchPage extends StatefulWidget {
@@ -25,7 +23,7 @@ class _SearchPageState extends State<SearchPage> {
   late int userId;
   final RequestUtil _requestUtil = RequestUtil();
   bool isLoading = true;
-  late List<RestaurantPost> restaurants;
+  late List<Restaurant> restaurants;
   late List<EventPost> events;
 
   @override
@@ -68,12 +66,7 @@ class _SearchPageState extends State<SearchPage> {
     var resp = await _requestUtil.searchRestaurants(widget.query!);
     if (resp != null) {
       setState(() {
-        restaurants = resp.map((restaurant) => RestaurantPost(
-          id: restaurant.id,
-          name: restaurant.name,
-          isFavorite: false,
-          imagePath: 'assets/test_images/kfc.jpeg',
-        )).toList();
+        restaurants = resp;
       });
       await getFavoriteRestaurantsByUserId();
     }
@@ -97,7 +90,7 @@ class _SearchPageState extends State<SearchPage> {
 
   
   
-  void toggleFavorite(RestaurantPost restaurant){
+  void toggleFavorite(Restaurant restaurant){
     if(Provider.of<DineEase>(context, listen: false).isFavorite(restaurant)){
       removeFromFavorits(restaurant);
     }else{
@@ -105,12 +98,12 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
   //add to favorites
-  void addToFavorits(RestaurantPost restaurant){
+  void addToFavorits(Restaurant restaurant){
     Provider.of<DineEase>(context, listen: false).addToFavorits(restaurant);
     
   }
   //remove from favorites
-  void removeFromFavorits(RestaurantPost restaurant){
+  void removeFromFavorits(Restaurant restaurant){
     Provider.of<DineEase>(context, listen: false).removeFromFavorits(restaurant);
     
   }

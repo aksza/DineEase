@@ -1,4 +1,5 @@
 import 'package:dine_ease/models/dine_ease.dart';
+import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:dine_ease/models/restaurant_post.dart';
 import 'package:dine_ease/widgets/restaurant_view.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class FavoritsPage extends StatefulWidget {
 
 class _FavoritsPageState extends State<FavoritsPage> {
   //a function that checks whether a restaurant is in the favorites list and depending on that it adds or removes it
-  void toggleFavorite(RestaurantPost restaurant){
+  void toggleFavorite(Restaurant restaurant){
     if(Provider.of<DineEase>(context, listen: false).isFavorite(restaurant)){
       removeFromFavorits(restaurant);
     }else{
@@ -22,7 +23,7 @@ class _FavoritsPageState extends State<FavoritsPage> {
     }
   }
   //add to favorites
-  void addToFavorits(RestaurantPost restaurant){
+  void addToFavorits(Restaurant restaurant){
     Provider.of<DineEase>(context, listen: false).addToFavorits(restaurant);
     // showDialog(context: context, builder: (context)
     //   => AlertDialog(title: Text('Added to favorites')
@@ -30,7 +31,7 @@ class _FavoritsPageState extends State<FavoritsPage> {
   }
 
   //remove from favorites
-  void removeFromFavorits(RestaurantPost restaurant){
+  void removeFromFavorits(Restaurant restaurant){
     Provider.of<DineEase>(context, listen: false).removeFromFavorits(restaurant);
     // showDialog(context: context, builder: (context)
     //   => AlertDialog(title: Text('Removed from favorites')
@@ -61,7 +62,7 @@ class _FavoritsPageState extends State<FavoritsPage> {
                   itemCount: value.userFavorits.length,
                   itemBuilder: (context,index){
                   //get restaurant
-                  RestaurantPost restaurant = value.userFavorits[index];
+                  Restaurant restaurant = value.userFavorits[index];
 
                   //return the tile for this restaurant
                   return RestaurantView(

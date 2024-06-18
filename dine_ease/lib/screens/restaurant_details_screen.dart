@@ -26,7 +26,7 @@ class RestaurantDetails extends StatefulWidget {
 }
 
 class _RestaurantDetailsState extends State<RestaurantDetails> {
-  late RestaurantPost sr;
+  late Restaurant sr;
   final RequestUtil _requestUtil = RequestUtil();
   bool isLoading = true;  
   final reviewTextController = TextEditingController();  
@@ -140,9 +140,9 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
   }
 
   // Function to toggle favorite status
-  void toggleFavorite(RestaurantPost restaurant) {
+  void toggleFavorite(Restaurant restaurant) {
     Logger().i(sr.isFavorite);
-    if (restaurant.isFavorite) {
+    if (restaurant.isFavorite!) {
       removeFromFavorits(restaurant);
       setState(() {
         sr.isFavorite = false;
@@ -178,13 +178,13 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
   }
 
   // Add to favorites
-  void addToFavorits(RestaurantPost restaurant) {
+  void addToFavorits(Restaurant restaurant) {
     Provider.of<DineEase>(context, listen: false).addToFavorits(restaurant);
     Logger().i('Added to favorites: ${sr.isFavorite}');
   }
 
   // Remove from favorites
-  void removeFromFavorits(RestaurantPost restaurant) {
+  void removeFromFavorits(Restaurant restaurant) {
     Provider.of<DineEase>(context, listen: false).removeFromFavorits(restaurant);
     Logger().i('Removed from favorites: ${sr.isFavorite}');
   }
@@ -298,7 +298,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                           ),
                           SizedBox(width: 10),
                           IconButton(
-                            icon: Icon(sr.isFavorite ? Icons.favorite : Icons.favorite_border,
+                            icon: Icon(sr.isFavorite! ? Icons.favorite : Icons.favorite_border,
                             color: Colors.orange[700],
                             ),
                             onPressed: () {

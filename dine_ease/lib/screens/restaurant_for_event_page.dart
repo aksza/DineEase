@@ -1,4 +1,5 @@
 import 'package:dine_ease/models/dine_ease.dart';
+import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:dine_ease/models/restaurant_post.dart';
 import 'package:dine_ease/widgets/restaurant_view.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class RestaurantForEventPage extends StatefulWidget {
 class _RestaurantForEventPageState extends State<RestaurantForEventPage> {
 
   //a function that checks whether a restaurant is in the favorites list and depending on that it adds or removes it
-  void toggleFavorite(RestaurantPost restaurant){
+  void toggleFavorite(Restaurant restaurant){
     if(Provider.of<DineEase>(context, listen: false).isFavorite(restaurant)){
       removeFromFavorits(restaurant);
     }else{
@@ -22,14 +23,14 @@ class _RestaurantForEventPageState extends State<RestaurantForEventPage> {
     }
   }
   //add to favorites
-  void addToFavorits(RestaurantPost restaurant){
+  void addToFavorits(Restaurant restaurant){
     Provider.of<DineEase>(context, listen: false).addToFavorits(restaurant);
     // showDialog(context: context, builder: 
     //   (context) => AlertDialog(title: Text('Added to favorites')
     //   ));
   }
   //remove from favorites
-  void removeFromFavorits(RestaurantPost restaurant){
+  void removeFromFavorits(Restaurant restaurant){
     Provider.of<DineEase>(context, listen: false).removeFromFavorits(restaurant);
     // showDialog(context: context, builder: 
     //   (context) => AlertDialog(title: Text('Removed from favorites')
@@ -50,7 +51,7 @@ class _RestaurantForEventPageState extends State<RestaurantForEventPage> {
                   itemCount: value.restaurantForEventList.length,
                   itemBuilder: (context,index){
                   //get restaurant
-                  RestaurantPost restaurant = value.restaurantForEventList[index];
+                  Restaurant restaurant = value.restaurantForEventList[index];
 
                   //return the tile for this restaurant
                   return RestaurantView(
