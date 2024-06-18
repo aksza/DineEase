@@ -44,7 +44,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
     super.initState();
     initPrefs();
     initSelectedRestaurant();
-    sr = Provider.of<DineEase>(context, listen: false).getRestaurantById(widget.selectedRestaurant!.id);
+    sr = Provider.of<DineEase>(context, listen: false).getRestaurantById(widget.selectedRestaurant!.id)!;
   }
 
   //init shared preferences

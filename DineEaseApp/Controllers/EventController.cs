@@ -230,9 +230,14 @@ namespace DineEaseApp.Controllers
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetCategoriesByEventId(int eventId)
         {
+            var e = await _eventRepository.GetEventById(eventId);
+            if(e == null)
+            {
+                return NotFound();
+            }
             var categories = _mapper.Map<List<CategoriesEventDto>>(await _categoriesEventRepository.GetCategoriesEventsByEventId(eventId));
-
-            if (categories == null || categories.Count == 0)
+            
+            if (categories == null)
             {
                 return NotFound();
             }

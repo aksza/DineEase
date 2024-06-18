@@ -20,17 +20,34 @@ class DineEase extends ChangeNotifier{
   late String role;
   late SharedPreferences prefs;
 
+  late List<EventPost> eventFy = [];
+  late List<RestaurantPost> restaurantsWithMostReservations = [];
+  late List<RestaurantPost> restaurantsMostRated = [];
+  late List<RestaurantPost> restaurantsLastReservations = [];
+
+  bool isLoading = true;
+
   DineEase() : _restaurantList = [], _restaurantForEventList= [], _userFavorits = [], email = '', role = '',userId = 0, _eventList = []{
   initApp();
   Logger().i('initialized, $_userFavorits');
 }
 
 void initApp() async {
-  await getRestaurants();
-  await initSharedPrefs();
-  await getFavoritRestaurantsByUserId();
-  await getEvents();
+  loadData();
 }
+
+  void loadData() async{
+    await initSharedPrefs();
+    await getRestaurants();
+    await getRestaurantsMostRated();
+    await getRestaurantsWithMostReservations();
+    await getRestaurantsLastReservations();
+    await getFavoritRestaurantsByUserId();
+    await getEvents();
+    await getEventsByFavoritRestaurant();
+    isLoading = false;
+    notifyListeners();
+  }
 
   Future<void> initSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
@@ -43,6 +60,86 @@ void initApp() async {
     notifyListeners();
     Logger().i('Shared prefs initialized: $userId, $email, $role');
   }
+
+  //get restaurants with most reservations
+  Future<void> getRestaurantsWithMostReservations() async {
+    List<Restaurant> restaurants = await _requestUtil.getRestaurantsWithMostReservations();
+    // setState(() {
+    for(var restaurant in restaurants){
+      Logger().i("false kene: $restaurant.forEvent");
+      restaurantsWithMostReservations.add(RestaurantPost(
+        id: restaurant.id,
+        name: restaurant.name,
+        rating: restaurant.rating,
+        // rating: 4.0,
+        isFavorite: false,
+        imagePath: 'assets/test_images/kfc.jpeg'
+      ));
+      
+      notifyListeners();
+    }  
+    // });
+  }
+
+  //get restaurants most rated
+  Future<void> getRestaurantsMostRated() async {
+    List<Restaurant> restaurants = await _requestUtil.getMostRatedRestaurants();
+     for(var restaurant in restaurants){
+      Logger().i("false kene: $restaurant.forEvent");
+      restaurantsMostRated.add(RestaurantPost(
+        id: restaurant.id,
+        name: restaurant.name,
+        rating: restaurant.rating,
+        // rating: 4.0,
+        isFavorite: false,
+        imagePath: 'assets/test_images/kfc.jpeg'
+      ));
+      
+      notifyListeners();
+    }  
+  }
+
+  //get restaurants last reservations
+  Future<void> getRestaurantsLastReservations() async {
+    int userId = await DataBaseProvider().getUserId();
+    List<Restaurant> restaurants = await _requestUtil.getRestaurantsByLastFiveReservations(userId);
+     for(var restaurant in restaurants){
+      Logger().i("false kene: $restaurant.forEvent");
+      restaurantsLastReservations.add(RestaurantPost(
+        id: restaurant.id,
+        name: restaurant.name,
+        rating: restaurant.rating,
+        // rating: 4.0,
+        isFavorite: false,
+        imagePath: 'assets/test_images/kfc.jpeg'
+      ));
+      
+      notifyListeners();
+    }  
+  }
+
+  //getEventsByFavoritRestaurant
+  Future<void> getEventsByFavoritRestaurant() async {
+    var userId = await DataBaseProvider().getUserId();
+    List<Eventt> event = await _requestUtil.getEventsByFavoritRestaurant(userId);
+    for(var e in event){
+      List<ECategory> categories = await _requestUtil.getECategoriesByEvent(e.id);
+      eventFy.add(EventPost(
+        id: e.id,
+        eventName: e.eventName,
+        restaurantId: e.restaurantId,
+        restaurantName: e.restaurantName,
+        description: e.description,
+        startingDate: e.startingDate,
+        endingDate: e.endingDate,
+        eCategories: categories
+        // rating: 4.0,
+        // imagePath: 'assets/test_images/kfc.jpeg'
+      ));
+      notifyListeners();
+    }   
+  }
+
 
   Future<void> getRestaurants() async{
     List<Restaurant> restaurants = await _requestUtil.getRestaurants();
@@ -93,6 +190,25 @@ void initApp() async {
           rest.isFavorite = true;
         }
       }
+
+      for(var rest in restaurantsWithMostReservations){
+        if(rest.id == restaurant.id){
+          rest.isFavorite = true;
+        }
+      }
+
+      for(var rest in restaurantsMostRated){
+        if(rest.id == restaurant.id){
+          rest.isFavorite = true;
+        }
+      }
+
+      for(var rest in restaurantsLastReservations){
+        if(rest.id == restaurant.id){
+          rest.isFavorite = true;
+        }
+      }
+
       for(var rest in _restaurantForEventList){
         if(rest.id == restaurant.id){
           rest.isFavorite = true;
@@ -124,7 +240,7 @@ void initApp() async {
   }
   
   //get restaurant by id
-  RestaurantPost getRestaurantById(int id){
+  RestaurantPost? getRestaurantById(int id){
     //ha a restaurantlistben nem talalja meg az adott idju restaurantot akkor a restaurantforeventlistben keresi
     for(var restaurant in _restaurantList){
       if(restaurant.id == id){
@@ -136,7 +252,7 @@ void initApp() async {
         return restaurant;
       }
     }
-    return RestaurantPost(id: 0, name: '', rating: 0.0, isFavorite: false, imagePath: '');
+    return null;
   }
 
   //get restaurant list
@@ -163,7 +279,22 @@ void initApp() async {
         rest.isFavorite = true;
       }
     }
-
+    for(var rest in restaurantsWithMostReservations){
+      if(rest.id == restaurant.id){
+        rest.isFavorite = true;
+      }
+    }
+    for(var rest in restaurantsMostRated){
+      if(rest.id == restaurant.id){
+        rest.isFavorite = true;
+      }
+    }
+    for(var rest in restaurantsLastReservations){
+      if(rest.id == restaurant.id){
+        rest.isFavorite = true;
+      }
+    }
+    
     for(var rest in _restaurantForEventList){
       if(rest.id == restaurant.id){
         rest.isFavorite = true;
@@ -178,6 +309,21 @@ void initApp() async {
     _userFavorits.remove(restaurant);
     //az adott id-ju restaurantot megkeresni a restaurantList-ben és az isFavorite értékét false-ra állítani
     for(var rest in _restaurantList){
+      if(rest.id == restaurant.id){
+        rest.isFavorite = false;
+      }
+    }
+    for(var rest in restaurantsWithMostReservations){
+      if(rest.id == restaurant.id){
+        rest.isFavorite = false;
+      }
+    }
+    for(var rest in restaurantsMostRated){
+      if(rest.id == restaurant.id){
+        rest.isFavorite = false;
+      }
+    }
+    for(var rest in restaurantsLastReservations){
       if(rest.id == restaurant.id){
         rest.isFavorite = false;
       }
