@@ -8,6 +8,7 @@ import 'package:dine_ease/models/r_category.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:dine_ease/models/restaurant_post.dart';
 import 'package:dine_ease/models/seating_model.dart';
+import 'package:dine_ease/models/upload_restaurant_image.dart';
 import 'package:dine_ease/utils/request_util.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
@@ -81,7 +82,8 @@ void initApp() async {
       Logger().i("false kene: $restaurant.forEvent");
     
       restaurant.isFavorite = false;
-      restaurant.imagePath = 'assets/test_images/kfc.jpeg';
+      List<UploadImages>? imagePaths = await _requestUtil.getPhotosByRestaurantId(restaurant.id);
+      restaurant.imagePath = imagePaths;
       restaurantsWithMostReservations.add(restaurant);
       
       notifyListeners();
@@ -96,7 +98,8 @@ void initApp() async {
       Logger().i("false kene: $restaurant.forEvent");
 
       restaurant.isFavorite = false;
-      restaurant.imagePath = 'assets/test_images/kfc.jpeg';
+      List<UploadImages>? imagePaths = await _requestUtil.getPhotosByRestaurantId(restaurant.id);
+      restaurant.imagePath = imagePaths;
       restaurantsMostRated.add(restaurant);
 
       notifyListeners();
@@ -111,7 +114,8 @@ void initApp() async {
       Logger().i("false kene: $restaurant.forEvent");
 
       restaurant.isFavorite = false;
-      restaurant.imagePath = 'assets/test_images/kfc.jpeg';
+      List<UploadImages>? imagePaths = await _requestUtil.getPhotosByRestaurantId(restaurant.id);
+      restaurant.imagePath = imagePaths;
       restaurantsLastReservations.add(restaurant);
 
       
@@ -150,7 +154,8 @@ void initApp() async {
         var cuisines = await _requestUtil.getCuisinesByRestaurantId(restaurant.id);
         var seatings = await _requestUtil.getSeatingsByRestaurantId(restaurant.id);
         restaurant.isFavorite = false;
-        restaurant.imagePath = 'assets/test_images/kfc.jpeg';
+        List<UploadImages>? imagePaths = await _requestUtil.getPhotosByRestaurantId(restaurant.id);
+      restaurant.imagePath = imagePaths;
         restaurant.categories = categories;
         restaurant.cuisines = cuisines;
         restaurant.seatings = seatings;
@@ -165,7 +170,8 @@ void initApp() async {
         var cuisines = await _requestUtil.getCuisinesByRestaurantId(restaurant.id);
         var seatings = await _requestUtil.getSeatingsByRestaurantId(restaurant.id);
         restaurant.isFavorite = false;
-        restaurant.imagePath = 'assets/test_images/kfc.jpeg';
+        List<UploadImages>? imagePaths = await _requestUtil.getPhotosByRestaurantId(restaurant.id);
+      restaurant.imagePath = imagePaths;
         restaurant.categories = categories;
         restaurant.cuisines = cuisines;
         restaurant.seatings = seatings;
@@ -182,7 +188,8 @@ void initApp() async {
     for(var restaurant in restaurants){
 
       restaurant.isFavorite = false;
-      restaurant.imagePath = 'assets/test_images/kfc.jpeg';
+      List<UploadImages>? imagePaths = await _requestUtil.getPhotosByRestaurantId(restaurant.id);
+      restaurant.imagePath = imagePaths;
       _userFavorits.add(restaurant);
 
       //az adott id-ju restaurantot megkeresni a restaurantList-ben és az isFavorite értékét true-ra állítani

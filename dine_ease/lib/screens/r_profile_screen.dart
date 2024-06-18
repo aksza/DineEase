@@ -89,7 +89,9 @@ class _RProfileScreenState extends State<RProfileScreen> {
         allCategories = allCategories;
         allSeatings = allSeatings;
         allPrices = allPrices;
-        images = image;
+        if(image != null) {
+          images = image;
+        }
         isLoading = false;
       });
     } catch (error) {

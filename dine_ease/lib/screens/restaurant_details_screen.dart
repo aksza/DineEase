@@ -258,6 +258,12 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> imagePaths = sr.imagePath?.map((image) => 'assets/test_images/${image.image ?? ''}').toList() ?? [];
+    // If imagePaths is empty, add default image path
+    if (imagePaths.isEmpty) {
+      imagePaths.add('assets/test_images/restaurant.png');
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.orange[700],
@@ -277,12 +283,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomCarouselSlider(
-                      images: [
-                        'assets/test_images/kfc.jpeg',
-                        'assets/test_images/mcdonalds.jpg',
-                        'assets/test_images/pizzahut.jpg',
-                        'assets/test_images/subway.png',
-                      ],
+                      images: imagePaths
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(15.0, 0, 15, 5),

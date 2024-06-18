@@ -3,6 +3,7 @@ import 'package:dine_ease/models/opening_model.dart';
 import 'package:dine_ease/models/r_category.dart';
 import 'package:dine_ease/models/review_models.dart';
 import 'package:dine_ease/models/seating_model.dart';
+import 'package:dine_ease/models/upload_restaurant_image.dart';
 
 class Restaurant {
   int id;
@@ -18,7 +19,7 @@ class Restaurant {
   bool forEvent;
   int maxTableCapacity;
   bool? isFavorite;
-  String? imagePath;
+  List<UploadImages>? imagePath;
   List<Cuisine>? cuisines;
   List<RCategory>? categories;
   List<Opening>? openings;

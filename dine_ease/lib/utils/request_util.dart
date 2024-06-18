@@ -1568,7 +1568,7 @@ class RequestUtil {
     }    
   }
   //get photos by restaurant id
-  Future<List<UploadImages>> getPhotosByRestaurantId(int restaurantId) async {
+  Future<List<UploadImages>?> getPhotosByRestaurantId(int restaurantId) async {
     try{
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");

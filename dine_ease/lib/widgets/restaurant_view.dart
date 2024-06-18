@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class RestaurantView extends StatefulWidget {
   final Restaurant restaurant;
-  void Function()? onPressed;
+  final void Function()? onPressed;
 
   RestaurantView({super.key, required this.restaurant, required this.onPressed});
 
@@ -14,7 +14,6 @@ class RestaurantView extends StatefulWidget {
 }
 
 class _RestaurantViewState extends State<RestaurantView> {
-
   late Restaurant selectedRestaurant;
   final RequestUtil _requestUtil = RequestUtil();
 
@@ -24,54 +23,101 @@ class _RestaurantViewState extends State<RestaurantView> {
     getRestaurantByIdNew(widget.restaurant.id);
   }
 
-  Future<Restaurant> getRestaurantById(int id) async{
+  Future<void> getRestaurantByIdNew(int id) async {
     var srestaurant = await _requestUtil.getRestaurantById(id);
-    return srestaurant;
-  }
-
-  Future<void> getRestaurantByIdNew(int id) async{
-    var srestaurant = await getRestaurantById(id);
     setState(() {
       selectedRestaurant = srestaurant;
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
-    final bool isPhone = MediaQuery.of(context).size.shortestSide < 600;
-
-    return 
-    GestureDetector(
-      onTap: (){
+    return GestureDetector(
+      onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => RestaurantDetails(selectedRestaurant: selectedRestaurant,)),
+          MaterialPageRoute(
+            builder: (context) => RestaurantDetails(selectedRestaurant: selectedRestaurant),
+          ),
         );
       },
-      child:
-      Container(
+      child: Container(
         decoration: BoxDecoration(
           color: Colors.grey[100],
           borderRadius: BorderRadius.circular(10),
         ),
         margin: const EdgeInsets.only(bottom: 10),
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 25),
-        child: ListTile(
-          title: Text(widget.restaurant.name),
-          subtitle: Text((widget.restaurant.rating != null ? widget.restaurant.rating.toString() : '0') + ' ⭐'),
-          leading: Image.asset(widget.restaurant.imagePath!, width: isPhone ? 50 : 100, height: isPhone ? 50 : 100, fit: BoxFit.cover,),
-          trailing: IconButton(
-            icon: Icon(widget.restaurant.isFavorite! ? Icons.favorite : Icons.favorite_border, color: Colors.orange[700]),
-            onPressed: (){
-              widget.onPressed!();
-              setState(() {
-                widget.restaurant.isFavorite = !widget.restaurant.isFavorite!;
-              });
-            },
-          )
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //photo
+            ClipRRect(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
+              child: _buildRestaurantImage(),
+            ),
+            //information
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  //restaurant name and rating
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.restaurant.name,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        (widget.restaurant.rating != null ? widget.restaurant.rating.toString() : '0') + ' ⭐',
+                      ),
+                    ],
+                  ),
+                  //favorite icon button
+                  IconButton(
+                    icon: Icon(
+                      widget.restaurant.isFavorite! ? Icons.favorite : Icons.favorite_border,
+                      color: Colors.orange[700],
+                    ),
+                    onPressed: () {
+                      widget.onPressed!();
+                      setState(() {
+                        widget.restaurant.isFavorite = !widget.restaurant.isFavorite!;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-      )
+      ),
     );
+  }
+
+  Widget _buildRestaurantImage() {
+    if (widget.restaurant.imagePath != null && widget.restaurant.imagePath!.isNotEmpty) {
+      return Image.asset(
+        'assets/test_images/${widget.restaurant.imagePath![0].image!}',
+        width: double.infinity,
+        height: 150,
+        fit: BoxFit.cover,
+      );
+    } else {
+      return Image.asset(
+        'assets/test_images/restaurant.png',
+        width: double.infinity,
+        height: 150,
+        fit: BoxFit.cover,
+      );
+    }
   }
 }
