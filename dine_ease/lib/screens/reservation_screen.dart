@@ -44,8 +44,11 @@ class _ReservationScreenState extends State<ReservationScreen> {
   void initSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt('userId')!;
+    //openings _requstutilbol
+    var openings = await requestUtil.getOpeningsByRestaurantId(widget.selectedRestaurant!.id);
     setState(() {
       userId = userId;
+      widget.selectedRestaurant?.openings = openings;
     });
   }
 
@@ -154,6 +157,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
                               labelText: 'Party Size',
                               hintText: 'Enter party size',
                             ),
+                            keyboardType: const TextInputType.numberWithOptions(decimal: false, signed: false)
                           ),
                         ),
                         Padding(
@@ -188,6 +192,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
                               labelText: 'Phone Number',
                               hintText: 'Enter phone number',
                             ),
+                            keyboardType: TextInputType.phone
                           ),
                         ),
                         Padding(
@@ -262,10 +267,46 @@ class _ReservationScreenState extends State<ReservationScreen> {
                           ),
                         );
                       } else {
+                        //ha a party betu vagy kisebb mint 1 akkor hiba
+                        if (int.parse(partySizeController.text) < 1) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Party size must be at least 1'),
+                            ),
+                          );
+                          return;
+                        }
+                        //ha a date kisebb mint a mai nap akkor hiba
+                        else if (DateTime.parse('${dateController.text}T${timeController.text}:00.000').isBefore(DateTime.now())) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Date must be in the future'),
+                            ),
+                          );
+                          return;
+                        }
+                        //ha a phone number nem 10 karakter hosszu vagy 12nel tobb akkor hiba
+                        else if (phoneNumController.text.length < 10 && phoneNumController.text.length > 12 || phoneNumController.text.contains(RegExp(r'[a-zA-Z]'))) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Phone number must be between 10 and 12 characters long and no letters allowed'),
+                            ),
+                          );
+                          return;
+                        }
+                        //ha a party size nagyobb mint a restaurant kapacitasa akkor hiba
+                        else if (int.parse(partySizeController.text) > widget.selectedRestaurant!.maxTableCapacity) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Party size must be less than or equal to ${widget.selectedRestaurant!.maxTableCapacity}'),
+                            ),
+                          );
+                          return;
+                        }
                         reserve(orderProvider);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: const Text('Table reserved successfully!'),
+                            content: Text('Table reserved successfully!'),
                           ),
                         );
                         orderProvider.clearOrders();

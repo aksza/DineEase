@@ -182,6 +182,7 @@ class _MeetingScreenState extends State<MeetingScreen>{
                         labelText: 'Guest Size',
                         hintText: 'Enter guest size',
                       ),
+                      keyboardType: TextInputType.number,
                     ),
                   ),
                   //meeting date
@@ -220,6 +221,7 @@ class _MeetingScreenState extends State<MeetingScreen>{
                         labelText: 'Phone Number',
                         hintText: 'Enter phone number',
                       ),
+                      keyboardType: TextInputType.phone,
                     ),
                   ),
                   //comment
@@ -251,6 +253,24 @@ class _MeetingScreenState extends State<MeetingScreen>{
                 );
               }
               else{
+                //ha a guest size kisebb mint 1
+                if(int.parse(guestSizeController.text) < 1){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Guest size must be at least 1!'),
+                    ),
+                  );
+                  return;
+                }
+                //ha a phone number nem 10 es 12 kozott van
+                else if(phoneNumController.text.length < 10 || phoneNumController.text.length > 12){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Phone number must be between 10 and 12 characters!'),
+                    ),
+                  );
+                  return;
+                }
                 schedule();
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(

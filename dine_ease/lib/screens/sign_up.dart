@@ -173,6 +173,33 @@ class _SignUpScreenState extends State<SignUpScreen>{
                                 )
                               );
                             }
+                            // ha az email nem tartalmaz @-ot es .-ot akkor hibat dob
+                            else if(!uemailTextController.text.contains('@') || !uemailTextController.text.contains('.')){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Invalid email'),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
+                            //phone number ha nem 10 es 12 kozotti szam akkor hibat dob, es ha tartalmaz betut
+                            else if(uphoneTextController.text.length < 10 || uphoneTextController.text.length > 12 || uphoneTextController.text.contains(RegExp(r'[a-zA-Z]'))){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Invalid phone number'),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
+                            //ha a password minimum 6 karakter hosszu
+                            else if(upasswordTextController.text.length < 6){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Password must be at least 6 characters long'),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
                             else{
                               createUser();
                               Navigator.of(context).pushNamed(LoginScreen.routeName);
@@ -203,7 +230,7 @@ class _SignUpScreenState extends State<SignUpScreen>{
                       //space between
                       const SizedBox(height: 10),
                       //phone input
-                      MyTextField(controller: rphoneTextController, hintText: 'Phone', obscureText: false),
+                      MyTextField(controller: rphoneTextController, hintText: 'Phone', obscureText: false,),
                       //space between
                       const SizedBox(height: 10),
                       //description input
@@ -290,15 +317,6 @@ class _SignUpScreenState extends State<SignUpScreen>{
                         ]
                       ),             
                       //space between
-                      const SizedBox(height: 10),
-                      //text that says Upload a phot
-                      const Text(
-                        'Upload a photo',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold
-                        )
-                      ),
                       //space between
                       const SizedBox(height: 10),                      
                       //owner input
@@ -346,6 +364,60 @@ class _SignUpScreenState extends State<SignUpScreen>{
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Passwords do not match'),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
+                            // ha az email nem tartalmaz @-ot es .-ot akkor hibat dob
+                            else if(!remailTextController.text.contains('@') || !remailTextController.text.contains('.')){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Invalid email'),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
+                            //phone number ha nem 10 es 12 kozotti szam akkor hibat dob, es ha tartalmaz betut
+                            else if(rphoneTextController.text.length < 10 || rphoneTextController.text.length > 12 || rphoneTextController.text.contains(RegExp(r'[a-zA-Z]'))){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Invalid phone number'),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
+                            //ha a max table capacity nem szam es kisebb mint 0 akkor hibat dob
+                            else if(rmaxTableCap.text.contains(RegExp(r'[a-zA-Z]')) || int.parse(rmaxTableCap.text) < 0){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Invalid max table capacity'),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
+                            //ha a taxid nem szam
+                            else if(rtaxIdNum.text.contains(RegExp(r'[a-zA-Z]'))){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Invalid tax id number'),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
+                            //ha a password minimum 6 karakter hosszu
+                            else if(rpasswordTextController.text.length < 6){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Password must be at least 6 characters long'),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
+                            //owner phone number ha nem 10 es 12 kozotti szam akkor hibat dob, es ha tartalmaz betut
+                            else if(rownerPhoneNum.text.length < 10 || rownerPhoneNum.text.length > 12 || rownerPhoneNum.text.contains(RegExp(r'[a-zA-Z]'))){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Invalid owner phone number'),
                                   backgroundColor: Colors.red,
                                 )
                               );
