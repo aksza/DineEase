@@ -54,41 +54,47 @@ class _RestaurantPageState extends State<RestaurantPage> {
   }
 
   void _applyFilters() {
-  final dineEase = Provider.of<DineEase>(context, listen: false);
-  setState(() {
-    _filteredRestaurants = dineEase.restaurants.where((restaurant) {
-      final cuisineMatch = _filterByCuisine.isEmpty ||
-          (restaurant.cuisines != null &&
-              restaurant.cuisines!.any((cuisine) => _filterByCuisine.any((filterCuisine) => filterCuisine.id == cuisine.id)));
-      final categoryMatch = _filterByCategory.isEmpty ||
-          (restaurant.categories != null &&
-              restaurant.categories!.any((category) => _filterByCategory.any((filterCategory) => filterCategory.id == category.id)));
-      final priceMatch = _filterByPrice.isEmpty ||
-          _filterByPrice.any((price) => price.priceName == restaurant.price);
-      final seatingMatch = _filterBySeating.isEmpty ||
-          (restaurant.seatings != null &&
-              restaurant.seatings!.any((seating) => _filterBySeating.any((filterSeating) => filterSeating.id == seating.id)));
-      return cuisineMatch && categoryMatch && priceMatch && seatingMatch;
-    }).toList();
-  });
-}
-
-
+    final dineEase = Provider.of<DineEase>(context, listen: false);
+    setState(() {
+      _filteredRestaurants = dineEase.restaurants.where((restaurant) {
+        final cuisineMatch = _filterByCuisine.isEmpty ||
+            (restaurant.cuisines != null &&
+                restaurant.cuisines!.any((cuisine) => _filterByCuisine.any((filterCuisine) => filterCuisine.id == cuisine.id)));
+        final categoryMatch = _filterByCategory.isEmpty ||
+            (restaurant.categories != null &&
+                restaurant.categories!.any((category) => _filterByCategory.any((filterCategory) => filterCategory.id == category.id)));
+        final priceMatch = _filterByPrice.isEmpty ||
+            _filterByPrice.any((price) => price.priceName == restaurant.price);
+        final seatingMatch = _filterBySeating.isEmpty ||
+            (restaurant.seatings != null &&
+                restaurant.seatings!.any((seating) => _filterBySeating.any((filterSeating) => filterSeating.id == seating.id)));
+        return cuisineMatch && categoryMatch && priceMatch && seatingMatch;
+      }).toList();
+    });
+  }
 
   void toggleFavorite(Restaurant restaurant) {
-    if (Provider.of<DineEase>(context, listen: false).isFavorite(restaurant)) {
-      removeFromFavorits(restaurant);
-    } else {
-      addToFavorits(restaurant);
-    }
+    setState(() {
+      if (restaurant.isFavorite!) {
+        removeFromFavorits(restaurant);
+      } else {
+        addToFavorits(restaurant);
+      }
+    });
   }
 
   void addToFavorits(Restaurant restaurant) {
     Provider.of<DineEase>(context, listen: false).addToFavorits(restaurant);
+    setState(() {
+      restaurant.isFavorite = true;
+    });
   }
 
   void removeFromFavorits(Restaurant restaurant) {
     Provider.of<DineEase>(context, listen: false).removeFromFavorits(restaurant);
+    setState(() {
+      restaurant.isFavorite = false;
+    });
   }
 
   @override

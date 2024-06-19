@@ -185,13 +185,18 @@ void initApp() async {
     //a userId-t a providerből kell lekérni
     List<Restaurant> restaurants = await _requestUtil.getFavoritRestaurantsByUserId(userId);
     // List<RestaurantPost> restaurantList = [];
+
     for(var restaurant in restaurants){
 
-      restaurant.isFavorite = false;
+      Set<int> addedRestaurantIds = _userFavorits.map((restaurant) => restaurant.id).toSet();
+
+      restaurant.isFavorite = true;
       List<UploadImages>? imagePaths = await _requestUtil.getPhotosByRestaurantId(restaurant.id);
       restaurant.imagePath = imagePaths;
-      _userFavorits.add(restaurant);
 
+      if(!addedRestaurantIds.contains(restaurant.id)){
+        _userFavorits.add(restaurant);
+      }
       //az adott id-ju restaurantot megkeresni a restaurantList-ben és az isFavorite értékét true-ra állítani
       for(var rest in _restaurantList){
         if(rest.id == restaurant.id){
@@ -289,7 +294,13 @@ void initApp() async {
     // add by using the request util
     Logger().i("userid"+userId.toString()+email+role);
     await _requestUtil.postAddFavoritRestaurant(userId, restaurant.id);
-    _userFavorits.add(restaurant);
+    //added restaurant to userFavorits
+    var addedRestaurantIds = _userFavorits.map((restaurant) => restaurant.id).toSet();
+    if(!addedRestaurantIds.contains(restaurant.id)) {
+      restaurant.isFavorite = true;
+      _userFavorits.add(restaurant);
+    }
+  
     //az adott id-ju restaurantot megkeresni a restaurantList-ben és az isFavorite értékét true-ra állítani
     for(var rest in _restaurantList){
       if(rest.id == restaurant.id){
