@@ -58,6 +58,12 @@ class _SearchPageState extends State<SearchPage> {
             fav.isFavorite = true;
           });
         }
+        else{
+          setState(() {
+            fav.isFavorite = false;
+          });
+        
+        }
       }
     }
     

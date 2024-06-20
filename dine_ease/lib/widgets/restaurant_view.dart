@@ -79,6 +79,7 @@ class _RestaurantViewState extends State<RestaurantView> {
                     ],
                   ),
                   //favorite icon button
+                  if(widget.restaurant.isFavorite != null)
                   IconButton(
                     icon: Icon(
                       widget.restaurant.isFavorite! ? Icons.favorite : Icons.favorite_border,
