@@ -731,7 +731,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
       ));
       return null;
       //  final _directory =
-      // await getTemporaryDirectory();
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Failed to add photo'),
@@ -927,11 +926,10 @@ class _RProfileScreenState extends State<RProfileScreen> {
                           itemBuilder: (BuildContext context, int index, int realIndex) {
                             return Stack(
                               children: [
-                                Image.asset(
-                                  "assets/test_images/${images[index].image!}",
+                                Image.network(
+                                  images[index].image!,
                                   fit: BoxFit.cover,
-                                ),
-                                
+                                ),                                
                                 Positioned(
                                   top: 0,
                                   right: 0,

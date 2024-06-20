@@ -259,7 +259,7 @@ class _RestaurantDetailsState extends State<RestaurantDetails> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> imagePaths = sr.imagePath?.map((image) => 'assets/test_images/${image.image ?? ''}').toList() ?? [];
+    List<String> imagePaths = sr.imagePath?.map((image) => image.image ?? '').toList() ?? [];
     // If imagePaths is empty, add default image path
     if (imagePaths.isEmpty) {
       imagePaths.add('assets/test_images/restaurant.png');

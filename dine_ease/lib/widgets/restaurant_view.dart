@@ -100,8 +100,8 @@ class _RestaurantViewState extends State<RestaurantView> {
 
   Widget _buildRestaurantImage() {
     if (widget.restaurant.imagePath != null && widget.restaurant.imagePath!.isNotEmpty) {
-      return Image.asset(
-        'assets/test_images/${widget.restaurant.imagePath![0].image!}',
+      return Image.network(
+        widget.restaurant.imagePath![0].image!,
         width: double.infinity,
         height: 150,
         fit: BoxFit.cover,
