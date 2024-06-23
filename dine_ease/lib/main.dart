@@ -75,6 +75,7 @@ class MyApp extends StatelessWidget {
         child: 
           MaterialApp(
           title: 'DineEase',
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(230, 81, 0, 1)),
             useMaterial3: true,

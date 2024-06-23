@@ -111,7 +111,7 @@ namespace DineEaseApp.Repository
 
         public async Task<ICollection<int>> EventsPerWeekByRestaurantId(int restaurantId)
         {
-            DateTime fiveweeks = DateTime.Today.AddYears(-35);
+            DateTime fiveweeks = DateTime.Today.AddDays(-35);
 
             var events = await _context.Events
                 .Where(e => e.RestaurantId == restaurantId && e.StartingDate >= fiveweeks)
@@ -119,12 +119,14 @@ namespace DineEaseApp.Repository
 
             var eventsPerWeek = new List<int>();
 
+            int count; 
             for ( int i = 0; i < 5; i++ )
             {
+                count = 0;
                 DateTime start = DateTime.Today.AddDays(-i * 7).Date;
                 DateTime end = start.AddDays(7).Date;
 
-                int count = events.Count(e => start >= e.StartingDate && e.StartingDate < end);
+                count = events.Count(e => start <= e.StartingDate && e.StartingDate < end);
 
                 eventsPerWeek.Add(count);
             }
