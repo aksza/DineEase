@@ -12,7 +12,7 @@ class FilterDialog extends StatefulWidget {
   final List<Price> selectedPrices;
   final List<Seating> selectedSeatings;
 
-  FilterDialog({
+  const FilterDialog({super.key, 
     required this.selectedCuisines,
     required this.selectedCategories,
     required this.selectedPrices,
@@ -43,11 +43,11 @@ class _FilterDialogState extends State<FilterDialog> {
     final dineEase = Provider.of<DineEase>(context);
 
     return AlertDialog(
-      title: Text('Filter Restaurants'),
+      title: const Text('Filter Restaurants'),
       content: SingleChildScrollView(
         child: Column(
           children: [
-            Text(
+            const Text(
               'Cuisines',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -69,7 +69,7 @@ class _FilterDialogState extends State<FilterDialog> {
                 },
               );
             }).toList(),
-            Text(
+            const Text(
               'Categories',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -91,7 +91,7 @@ class _FilterDialogState extends State<FilterDialog> {
                 },
               );
             }).toList(),
-            Text(
+            const Text(
               'Prices',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -113,7 +113,7 @@ class _FilterDialogState extends State<FilterDialog> {
                 },
               );
             }).toList(),
-            Text(
+            const Text(
               'Seatings',
               style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -142,7 +142,7 @@ class _FilterDialogState extends State<FilterDialog> {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
         ),
         TextButton(
           onPressed: () {
@@ -153,7 +153,7 @@ class _FilterDialogState extends State<FilterDialog> {
               'seatings': _selectedSeatings,
             });
           },
-          child: Text('Search'),
+          child: const Text('Search'),
         ),
       ],
     );

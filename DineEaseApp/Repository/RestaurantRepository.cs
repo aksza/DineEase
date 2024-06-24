@@ -112,11 +112,6 @@ namespace DineEaseApp.Repository
             return await _context.Restaurants.Where(r => r.Email == email).FirstOrDefaultAsync();
         }
 
-        //public int GetRestaurantTaxNum(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
         public bool RestaurantExists(int id)
         {
             return _context.Restaurants.Any(r => r.Id == id);

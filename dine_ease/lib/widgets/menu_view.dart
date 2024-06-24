@@ -14,7 +14,7 @@ class MenuView extends StatefulWidget {
   final int? reservationId;
   VoidCallback? onDelete;
 
-  MenuView({
+  MenuView({super.key, 
     required this.menu,
     this.reservationId,
     this.onDelete,
@@ -131,9 +131,7 @@ class _MenuViewState extends State<MenuView> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextField(
-                    //initial value
                     controller: nameController..text = widget.menu.name,
-                    // controller: nameController,
                     decoration: const InputDecoration(labelText: 'Name'),
                   ),
                   TextField(
@@ -221,14 +219,14 @@ class _MenuViewState extends State<MenuView> {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(false); // Cancel
+                Navigator.of(context).pop(false);
               },
               child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 Logger().i({'Menu id': widget.menu.id, 'Menu name': widget.menu.name, 'Menu price': widget.menu.price});
-                Navigator.of(context).pop(true); // Confirm
+                Navigator.of(context).pop(true);
               },
               child: const Text('Delete'),
             ),

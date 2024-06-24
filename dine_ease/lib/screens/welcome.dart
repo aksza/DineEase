@@ -27,39 +27,30 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                //logo
                 Image.asset(
                   'assets/images/logo.png',
                   alignment: Alignment.center,
                   width: 100,
                   height: 100
                 ),
-                //space between
                 const SizedBox(height: 50),
-                //welcome message
                 Text(
                   "Welcome to DineEase!",
                   style: TextStyle(
                     color: Colors.grey[700],
                   ),
                 ),
-                //space between
                 const SizedBox(height: 25),
-                //login button
                 MyButton(
                   text: 'Login',
                   onTap: () {
-                    //megjeleniti a login screen-t
                     Navigator.of(context).pushNamed(LoginScreen.routeName);
                   },
                 ),
-                //space between
                 const SizedBox(height: 10),
-                //register button
                 MyButton(
                   text: 'Sign Up',
                   onTap: () {
-                    //eloszor a user sign up-ra iranyit
                     Navigator.of(context).pushNamed(SignUpScreen.routeName);
                   },
                 ),

@@ -13,7 +13,7 @@ class EventDetails extends StatefulWidget {
   EventDetails({super.key, this.selectedEvent});
 
   @override
-  _EventDetailsState createState() => _EventDetailsState();
+  State<EventDetails> createState() => _EventDetailsState();
 }
 
 class _EventDetailsState extends State<EventDetails> {
@@ -28,7 +28,6 @@ class _EventDetailsState extends State<EventDetails> {
   }
 
   Future<void> getRestaurant() async {
-    //restaurant lekerese a kivalasztott event alapjan
     restaurant = await requestUtil.getRestaurantById(widget.selectedEvent!.restaurantId);
     setState(() {
       restaurant = restaurant;
@@ -38,7 +37,6 @@ class _EventDetailsState extends State<EventDetails> {
   
   @override
   Widget build(BuildContext context) {
-    //appbar egy vissza gombbal, es a kivalasztott event 
     return 
       Scaffold(
         appBar: AppBar(
@@ -58,7 +56,6 @@ class _EventDetailsState extends State<EventDetails> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
               CustomCarouselSlider(images: 
-                // widget.selectedEvent!.images
                 [
                   'assets/test_images/calendar4.png'
                 ]
@@ -66,67 +63,60 @@ class _EventDetailsState extends State<EventDetails> {
               //event name
               Padding(
                 padding: const EdgeInsets.fromLTRB(15.0,15,15,5),
-                child: Text(widget.selectedEvent!.eventName, style: TextStyle(fontSize: 25),),
+                child: Text(widget.selectedEvent!.eventName, style: const TextStyle(fontSize: 25),),
               ),
-              //restaurant name with different text style
               Padding(
                 padding: const EdgeInsets.fromLTRB(15.0, 0, 15, 5),
                 child: Text('Location: ${widget.selectedEvent!.restaurantName}',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 17,
                   color: Color.fromARGB(255, 102, 102, 102),
-                  //dolt betukkel irja
                   fontStyle: FontStyle.italic
                   ),),
                 ),
-                //event starting date in a suitable format (e.g. 2021.12.31 12:00)
                 Padding(padding: 
                   const EdgeInsets.fromLTRB(15.0, 0, 15, 5),
                   child: Text('Starts: ${DateFormat.MMMMEEEEd().format(widget.selectedEvent!.startingDate).toString() + ', ' + DateFormat.Hm().format(widget.selectedEvent!.startingDate).toString()}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 17,
                     color: Color.fromARGB(255, 102, 102, 102),
                     ),
                 ),
                 )
-                //event ending date in a suitable format (e.g. 2021.12.31 12:00)
                 ,Padding(padding: 
                   const EdgeInsets.fromLTRB(15.0, 0, 15, 5),
                   child: Text('Ends: ${DateFormat.MMMMEEEEd().format(widget.selectedEvent!.endingDate).toString() + ', ' + DateFormat.Hm().format(widget.selectedEvent!.endingDate).toString()}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 17,
                     color: Color.fromARGB(255, 102, 102, 102),
                     ),
                 ),
                 ),
 
-                //if the event has categories, display them
                 if(widget.selectedEvent!.eCategories != null)
                 ...[
-                  Padding(padding: 
-                    const EdgeInsets.fromLTRB(15.0, 15, 15, 5),
+                  const Padding(padding: 
+                    EdgeInsets.fromLTRB(15.0, 15, 15, 5),
                     child: Text('Categories:', style: TextStyle(fontSize: 20),),
                   ),
                   Padding(padding: 
                     const EdgeInsets.fromLTRB(15.0, 0, 15, 5),
                     child: Text('${widget.selectedEvent!.eCategories!.map((e) => e.eCategoryName).join(', ')}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 17,
                       color: Color.fromARGB(255, 102, 102, 102),
                       ),
                   ),
                   ),
                 ],
-                //description title
-                Padding(padding: 
-                  const EdgeInsets.fromLTRB(15.0, 15, 15, 5),
+                const Padding(padding: 
+                  EdgeInsets.fromLTRB(15.0, 15, 15, 5),
                   child: Text('Description:', style: TextStyle(fontSize: 20),),
                 ),
-                //event description
                 Padding(padding: 
                   const EdgeInsets.fromLTRB(15.0, 0, 15, 5),
                   child: Text('${widget.selectedEvent!.description}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 17,
                     color: Color.fromARGB(255, 102, 102, 102),
                     ),
@@ -144,13 +134,13 @@ class _EventDetailsState extends State<EventDetails> {
                   context,
                   MaterialPageRoute(builder: (context) => ReservationScreen(selectedRestaurant: restaurant,startingDate: widget.selectedEvent!.startingDate,endingDate: widget.selectedEvent!.endingDate,)),
                 );
-              }, 
-              child: Text('Reserve a table'),
+              },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.orange[700]),
-                padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 50, vertical: 15)),
-                textStyle: MaterialStateProperty.all(TextStyle(fontSize: 20, color: Colors.black))
-              ),
+                padding: MaterialStateProperty.all(const EdgeInsets.symmetric(horizontal: 50, vertical: 15)),
+                textStyle: MaterialStateProperty.all(const TextStyle(fontSize: 20, color: Colors.black))
+              ), 
+              child: const Text('Reserve a table'),
             ),
           ),
     );

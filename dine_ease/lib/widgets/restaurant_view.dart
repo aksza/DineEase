@@ -7,7 +7,7 @@ class RestaurantView extends StatefulWidget {
   final Restaurant restaurant;
   final void Function()? onPressed;
 
-  RestaurantView({super.key, required this.restaurant, required this.onPressed});
+  const RestaurantView({super.key, required this.restaurant, required this.onPressed});
 
   @override
   State<RestaurantView> createState() => _RestaurantViewState();
@@ -47,38 +47,34 @@ class _RestaurantViewState extends State<RestaurantView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            //photo
             ClipRRect(
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(10),
                 topRight: Radius.circular(10),
               ),
               child: _buildRestaurantImage(),
             ),
-            //information
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  //restaurant name and rating
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         widget.restaurant.name,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
-                        (widget.restaurant.rating != null ? widget.restaurant.rating.toString() : '0') + ' ⭐',
+                        '${widget.restaurant.rating != null ? widget.restaurant.rating.toString() : '0'} ⭐',
                       ),
                     ],
                   ),
-                  //favorite icon button
                   if(widget.restaurant.isFavorite != null)
                   IconButton(
                     icon: Icon(

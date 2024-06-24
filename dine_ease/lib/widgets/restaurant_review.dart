@@ -9,7 +9,7 @@ class RestaurantReview extends StatefulWidget {
   final Function(String)? onEdit;
   final VoidCallback? onDelete;
 
-  RestaurantReview({
+  const RestaurantReview({super.key, 
     required this.review,
     this.onEdit,
     this.onDelete,
@@ -53,7 +53,6 @@ class _RestaurantReviewState extends State<RestaurantReview> {
   }
 
   void initPrefs() async {
-    // prefs = await SharedPreferences.getInstance();
     String email1 = await DataBaseProvider().getEmail();
     String role1 = await DataBaseProvider().getRole();
 
@@ -76,17 +75,17 @@ class _RestaurantReviewState extends State<RestaurantReview> {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Delete Review'),
-        content: Text('Do you want to delete your review?'),
+        title: const Text('Delete Review'),
+        content: const Text('Do you want to delete your review?'),
         actions: <Widget>[
           TextButton(
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
             onPressed: () {
               Navigator.of(context).pop(); 
             },
           ),
           TextButton(
-            child: Text('Delete'),
+            child: const Text('Delete'),
             onPressed: () {
               widget.onDelete?.call();
               Navigator.of(context).pop(); 
@@ -102,34 +101,34 @@ class _RestaurantReviewState extends State<RestaurantReview> {
   @override
   Widget build(BuildContext context) {
     return isLoading
-        ? Center(child: CircularProgressIndicator())
+        ? const Center(child: CircularProgressIndicator())
         : Card(
-            margin: EdgeInsets.all(8.0),
+            margin: const EdgeInsets.all(8.0),
             child: Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.account_circle, size: 48.0),
-                  SizedBox(width: 12.0),
+                  const Icon(Icons.account_circle, size: 48.0),
+                  const SizedBox(width: 12.0),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           widget.review.userName ?? 'Unknown',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16.0,
                           ),
                         ),
-                        SizedBox(height: 8.0),
+                        const SizedBox(height: 8.0),
                         if (isEditing) 
                           TextField(
                             controller: _editingController,
                             autofocus: true,
                             maxLines: null,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                             ),
                           )
@@ -146,7 +145,7 @@ class _RestaurantReviewState extends State<RestaurantReview> {
                     Column(
                       children: [
                         IconButton(
-                          icon: Icon(Icons.more_vert),
+                          icon: const Icon(Icons.more_vert),
                           onPressed: () {
                             setState(() {
                               isExpanded = !isExpanded;
@@ -162,19 +161,18 @@ class _RestaurantReviewState extends State<RestaurantReview> {
                                 Row(
                                   children: [
                                     IconButton(
-                                      icon: Icon(Icons.save),
+                                      icon: const Icon(Icons.save),
                                       onPressed: _saveChanges,
-                                      // },
                                     ),
                                     IconButton(
-                                      icon: Icon(Icons.cancel),
+                                      icon: const Icon(Icons.cancel),
                                       onPressed: _cancelChanges,
                                     ),
                                   ],
                                 )
                               else
                                 IconButton(
-                                  icon: Icon(Icons.edit),
+                                  icon: const Icon(Icons.edit),
                                   onPressed: () {
                                     setState(() {
                                       isEditing = true;
@@ -182,7 +180,7 @@ class _RestaurantReviewState extends State<RestaurantReview> {
                                   },
                                 ),
                               IconButton(
-                                icon: Icon(Icons.delete),
+                                icon: const Icon(Icons.delete),
                                 onPressed: () {
                                   _showDeleteConfirmationDialog();
                                 },

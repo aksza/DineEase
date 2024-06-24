@@ -57,27 +57,27 @@ class _RatingViewState extends State<RatingView> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Delete Rating"),
-          content: Text("Are you sure you want to delete your rating?"),
+          title: const Text("Delete Rating"),
+          content: const Text("Are you sure you want to delete your rating?"),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Close the dialog
+                Navigator.pop(context);
               },
-              child: Text("Cancel"),
+              child: const Text("Cancel"),
             ),
             TextButton(
               onPressed: () async {
                 try {
                   await requestUtil.deleteRemoveRating(widget.rating.id!);
-                  Navigator.pop(context); // Close the dialog
-                  widget.onDelete(); // Call the onDelete callback
+                  Navigator.pop(context);
+                  widget.onDelete();
                 } catch (e) {
                   print('Error deleting rating: $e');
-                  Navigator.pop(context); // Close the dialog
+                  Navigator.pop(context);
                 }
               },
-              child: Text("Delete"),
+              child: const Text("Delete"),
             ),
           ],
         );
@@ -103,18 +103,18 @@ class _RatingViewState extends State<RatingView> {
               children: [
                 Text(
                   widget.rating.restaurantName!,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.delete, color: Colors.red),
+                  icon: const Icon(Icons.delete, color: Colors.red),
                   onPressed: () => _showDeleteConfirmationDialog(context),
                 ),
               ],
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Row(
               children: List.generate(5, (index) {
                 return GestureDetector(
@@ -136,12 +136,12 @@ class _RatingViewState extends State<RatingView> {
                 children: [
                   TextButton(
                     onPressed: _cancelRating,
-                    child: Text('Cancel'),
+                    child: const Text('Cancel'),
                   ),
-                  SizedBox(width: 8.0),
+                  const SizedBox(width: 8.0),
                   ElevatedButton(
                     onPressed: _sendRating,
-                    child: Text('Save'),
+                    child: const Text('Save'),
                   ),
                 ],
               ),

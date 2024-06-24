@@ -4,6 +4,7 @@ using DineEaseApp.Interfaces;
 using DineEaseApp.Models;
 using DineEaseApp.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DineEaseApp.Controllers
 {
@@ -28,7 +29,7 @@ namespace DineEaseApp.Controllers
             _restaurantRepository = restaurantRepository;
         }
 
-        [HttpGet("eventTypes")]
+        [HttpGet("eventTypes"), Authorize]
         public async Task<IActionResult> GetEventTypes()
         {
             var eventtypes = _mapper.Map<List<EventTypeDto>>(await _eventTypeRepository.GetAllAsync());
@@ -41,7 +42,7 @@ namespace DineEaseApp.Controllers
             return Ok(eventtypes);
         }
 
-        [HttpGet("acceptedRes/{restaurantId}")]
+        [HttpGet("acceptedRes/{restaurantId}"), Authorize]
         public async Task<IActionResult> GetAcceptedMeetingsByRestaurantId(int restaurantId)
         {
             var meetings = _mapper.Map<List<MeetingDto>>(await _meetingRepository.GetMeetingByRestaurantId(restaurantId));
@@ -50,7 +51,6 @@ namespace DineEaseApp.Controllers
             {
                 if (meeting.Accepted == true)
                 {
-                    //meeting.Event = _mapper.Map<EventTypeDto>(await _eventTypeRepository.GetByIdAsync(meeting.EventId));
                     var ev = _mapper.Map<EventTypeDto>(await _eventTypeRepository.GetByIdAsync(meeting.EventId));
                     var restaurant = _mapper.Map<Restaurant>(await _restaurantRepository.GetRestaurantById(meeting.RestaurantId));
                     meeting.EventName = ev.EventName;
@@ -66,7 +66,7 @@ namespace DineEaseApp.Controllers
             return Ok(acceptedMeetings);
         }
 
-        [HttpGet("accepted/{userId}")]
+        [HttpGet("accepted/{userId}"), Authorize]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Meeting>))]
         public async Task<IActionResult> GetAcceptedMeetingsByUserId(int userId)
         {
@@ -76,7 +76,6 @@ namespace DineEaseApp.Controllers
             {
                 if(meeting.Accepted == true)
                 {
-                    //meeting.Event = _mapper.Map<EventTypeDto>(await _eventTypeRepository.GetByIdAsync(meeting.EventId));
                     var ev = _mapper.Map<EventTypeDto>(await _eventTypeRepository.GetByIdAsync(meeting.EventId));
                     var restaurant = _mapper.Map<Restaurant>(await _restaurantRepository.GetRestaurantById(meeting.RestaurantId));
                     meeting.EventName = ev.EventName;
@@ -92,7 +91,7 @@ namespace DineEaseApp.Controllers
             return Ok(acceptedMeetings);
         }
 
-        [HttpPut("respond")]
+        [HttpPut("respond"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> RespondToMeeting(MeetingDto meetingDto)
         {
@@ -126,7 +125,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpGet("dailyMeetings/{restaurantId}")]
+        [HttpGet("dailyMeetings/{restaurantId}"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetDailyMeetingsByRestaurantId(int restaurantId)
         {
@@ -141,7 +140,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpGet("hourMeetings/{restaurantId}")]
+        [HttpGet("hourMeetings/{restaurantId}"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetHourMeetingsByRestaurantId(int restaurantId)
         {
@@ -156,7 +155,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpGet("lastmonthMeetings/{restaurantId}")]
+        [HttpGet("lastmonthMeetings/{restaurantId}"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetLastMonthMeetingsByRestaurantId(int restaurantId)
         {
@@ -171,7 +170,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpGet("waitingRes/{restaurantId}")]
+        [HttpGet("waitingRes/{restaurantId}"), Authorize]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Meeting>))]
         public async Task<IActionResult> GetWaitingMeetingsByRestaurantId(int restaurantId)
         {
@@ -181,7 +180,6 @@ namespace DineEaseApp.Controllers
             {
                 if (meeting.Accepted == null)
                 {
-                    //meeting.Event = _mapper.Map<EventTypeDto>(await _eventTypeRepository.GetByIdAsync(meeting.EventId));
                     var ev = _mapper.Map<EventTypeDto>(await _eventTypeRepository.GetByIdAsync(meeting.EventId));
                     var restaurant = _mapper.Map<Restaurant>(await _restaurantRepository.GetRestaurantById(meeting.RestaurantId));
                     meeting.EventName = ev.EventName;
@@ -197,7 +195,7 @@ namespace DineEaseApp.Controllers
             return Ok(res);
         }
 
-        [HttpGet("waiting/{userId}")]
+        [HttpGet("waiting/{userId}"), Authorize]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Meeting>))]
         public async Task<IActionResult> GetWaitingMeetingsByUserId(int userId)
         {
@@ -207,7 +205,6 @@ namespace DineEaseApp.Controllers
             {
                 if (meeting.Accepted == null)
                 {
-                    //meeting.Event = _mapper.Map<EventTypeDto>(await _eventTypeRepository.GetByIdAsync(meeting.EventId));
                     var ev = _mapper.Map<EventTypeDto>(await _eventTypeRepository.GetByIdAsync(meeting.EventId));
                     var restaurant = _mapper.Map<Restaurant>(await _restaurantRepository.GetRestaurantById(meeting.RestaurantId));
                     meeting.EventName = ev.EventName;
@@ -223,7 +220,7 @@ namespace DineEaseApp.Controllers
             return Ok(res);
         }
 
-        [HttpPost("schedule")]
+        [HttpPost("schedule"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> ScheduleAMeeting(MeetingCreateDto meetingDto)
         {

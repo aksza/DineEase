@@ -12,7 +12,6 @@ namespace DineEaseApp.Models
         [ForeignKey("Reservation")]
         public int ReservationId { get; set; }
         public Reservation Reservation { get; set; }
-        //public ICollection<Reservation> Reservations { get; set; }
         
     }
 }

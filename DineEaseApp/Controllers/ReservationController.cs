@@ -3,6 +3,8 @@ using DineEaseApp.Dto;
 using DineEaseApp.Interfaces;
 using DineEaseApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace DineEaseApp.Controllers
 {
@@ -25,7 +27,7 @@ namespace DineEaseApp.Controllers
             _restaurantRepository = restaurantRepository;
         }
 
-        [HttpGet("accepted/{userId}")]
+        [HttpGet("accepted/{userId}"),Authorize]
         [ProducesResponseType(200, Type = typeof(IEnumerable<ReservationDto>))]
         public async Task<IActionResult> GetAcceptedReservationsByUserId(int userId)
         {
@@ -49,7 +51,7 @@ namespace DineEaseApp.Controllers
             return Ok(acceptedRes);
         }
 
-        [HttpGet("waiting/{userId}")]
+        [HttpGet("waiting/{userId}"), Authorize]
         public async Task<IActionResult> GetWaitingReservationsByUserId(int userId)
         {
             var reservations = _mapper.Map<List<ReservationDto>>(await _reservationRepository.GetReservationsByUserId(userId));
@@ -72,7 +74,7 @@ namespace DineEaseApp.Controllers
             return Ok(acceptedRes);
         }
 
-        [HttpGet("acceptedRes/{restaurantId}")]
+        [HttpGet("acceptedRes/{restaurantId}"), Authorize]
         public async Task<IActionResult> GetAcceptedReservationsByRestaurantId(int restaurantId)
         {
             var reservations = _mapper.Map<List<ReservationDto>>(await _reservationRepository.GetReservationsByRestaurantId(restaurantId));
@@ -95,7 +97,7 @@ namespace DineEaseApp.Controllers
             return Ok(acceptedRes);
         }
 
-        [HttpGet("waitingRes/{restaurantId}")]
+        [HttpGet("waitingRes/{restaurantId}"), Authorize]
         public async Task<IActionResult> GetWaitingListByRestaurantId(int restaurantId)
         {
             var reservations = _mapper.Map<List<ReservationDto>>(await _reservationRepository.GetReservationsByRestaurantId(restaurantId));
@@ -118,7 +120,7 @@ namespace DineEaseApp.Controllers
             return Ok(acceptedRes);
         }
 
-        [HttpPost("reserve")]
+        [HttpPost("reserve"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> ReserveATable(ReservationCreateDto reservationDto)
         {
@@ -162,7 +164,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpPut("respond")]
+        [HttpPut("respond"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> RespondToReservation(ReservationDto reservationDto)
         {
@@ -197,7 +199,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpGet("dailyReservations/{restaurantId}")]
+        [HttpGet("dailyReservations/{restaurantId}"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetDailyReservationsByRestaurantId(int restaurantId)
         {
@@ -212,7 +214,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpGet("hourReservations/{restaurantId}")]
+        [HttpGet("hourReservations/{restaurantId}"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetReservationsPerHourByRestaurantId(int restaurantId)
         {
@@ -227,7 +229,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpGet("lastMonthReservation/{restaurantId}")]
+        [HttpGet("lastMonthReservation/{restaurantId}"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetLastMonthReservationsByRestaurantId(int restaurantId)
         {
@@ -242,7 +244,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpGet("ordersPerReservation/{restaurantId}")]
+        [HttpGet("ordersPerReservation/{restaurantId}"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetOrdersPerReservationsByRestaurantId(int restaurantId)
         {

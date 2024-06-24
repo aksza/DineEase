@@ -30,6 +30,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
   final TextEditingController timeController = TextEditingController();
   final TextEditingController commentController = TextEditingController();
   final TextEditingController phoneNumController = TextEditingController();
+  List<Order> orders = [];
 
   late SharedPreferences prefs;
   late int userId;
@@ -44,7 +45,6 @@ class _ReservationScreenState extends State<ReservationScreen> {
   void initSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
     userId = prefs.getInt('userId')!;
-    //openings _requstutilbol
     var openings = await requestUtil.getOpeningsByRestaurantId(widget.selectedRestaurant!.id);
     setState(() {
       userId = userId;
@@ -52,16 +52,16 @@ class _ReservationScreenState extends State<ReservationScreen> {
     });
   }
 
-  void initDate(){
-    if(widget.startingDate != null){
+  void initDate() {
+    if (widget.startingDate != null) {
       dateController.text = DateFormat('yyyy-MM-dd').format(widget.startingDate!);
     }
-    if(widget.endingDate != null){
+    if (widget.endingDate != null) {
       timeController.text = DateFormat('HH:mm').format(widget.startingDate!);
     }
   }
 
-  Future<void> reserve(OrderProvider orderProvider) async {
+  Future<void> reserve() async {
     final String dateTimeString = '${dateController.text}T${timeController.text}:00.000';
     final DateTime formattedDateTime = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse(dateTimeString);
     try {
@@ -73,17 +73,23 @@ class _ReservationScreenState extends State<ReservationScreen> {
         phoneNum: phoneNumController.text,
         comment: commentController.text.isNotEmpty ? commentController.text : null,
       );
-      if(orderProvider.orders.isNotEmpty){
+
+      if (orders.isNotEmpty) {
         rescreate.ordered = true;
       }
+
       Logger().i('Reservation: ${rescreate.toMap()}');
       var resid = await requestUtil.postReserveATable(rescreate);
 
-      for (var order in orderProvider.orders) {
-        order.reservationId = resid;
-        await requestUtil.postOrder(order);
-      }
-      
+      await Future.wait(orders.map((order) async {
+        try {
+          order.reservationId = resid;
+          await requestUtil.postOrder(order);
+        } catch (orderError) {
+          Logger().e('Error posting order: ${order.toMap()} - $orderError');
+        }
+      }));
+
     } catch (e) {
       Logger().e('Error reserving table: $e');
     }
@@ -117,7 +123,6 @@ class _ReservationScreenState extends State<ReservationScreen> {
     }
   }
 
-  
   double calculateTotalPrice(List<Order> orders) {
     double total = 0.0;
     for (var order in orders) {
@@ -267,7 +272,6 @@ class _ReservationScreenState extends State<ReservationScreen> {
                           ),
                         );
                       } else {
-                        //ha a party betu vagy kisebb mint 1 akkor hiba
                         if (int.parse(partySizeController.text) < 1) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -275,27 +279,21 @@ class _ReservationScreenState extends State<ReservationScreen> {
                             ),
                           );
                           return;
-                        }
-                        //ha a date kisebb mint a mai nap akkor hiba
-                        else if (DateTime.parse('${dateController.text}T${timeController.text}:00.000').isBefore(DateTime.now())) {
+                        } else if (DateTime.parse('${dateController.text}T${timeController.text}:00.000').isBefore(DateTime.now())) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text('Date must be in the future'),
                             ),
                           );
                           return;
-                        }
-                        //ha a phone number nem 10 karakter hosszu vagy 12nel tobb akkor hiba
-                        else if (phoneNumController.text.length < 10 && phoneNumController.text.length > 12 || phoneNumController.text.contains(RegExp(r'[a-zA-Z]'))) {
+                        } else if (phoneNumController.text.length < 10 || phoneNumController.text.length > 12 || phoneNumController.text.contains(RegExp(r'[a-zA-Z]'))) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text('Phone number must be between 10 and 12 characters long and no letters allowed'),
                             ),
                           );
                           return;
-                        }
-                        //ha a party size nagyobb mint a restaurant kapacitasa akkor hiba
-                        else if (int.parse(partySizeController.text) > widget.selectedRestaurant!.maxTableCapacity) {
+                        } else if (int.parse(partySizeController.text) > widget.selectedRestaurant!.maxTableCapacity) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text('Party size must be less than or equal to ${widget.selectedRestaurant!.maxTableCapacity}'),
@@ -303,7 +301,10 @@ class _ReservationScreenState extends State<ReservationScreen> {
                           );
                           return;
                         }
-                        reserve(orderProvider);
+                        setState(() {
+                          orders = List<Order>.from(orderProvider.orders);
+                        });
+                        reserve();
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Table reserved successfully!'),
@@ -316,7 +317,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
                     child: const Text('Reserve'),
                   ),
                 ),
-                const SizedBox(height: 16), 
+                const SizedBox(height: 16),
               ],
             );
           },
@@ -324,5 +325,4 @@ class _ReservationScreenState extends State<ReservationScreen> {
       ),
     );
   }
-
 }

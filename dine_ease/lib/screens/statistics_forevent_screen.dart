@@ -32,7 +32,6 @@ class _StatisticsForEventScreenState extends State<StatisticsForEventScreen> {
     _loadData();
   }
 
-   //get event number by restaurant id
   Future<void> getEventNumber(int restaurantId) async {
     List<int> eventNumber = await _requestUtil.getEventNumberByRestaurantId(restaurantId);
     Logger().i('Event number: $eventNumber');
@@ -41,7 +40,6 @@ class _StatisticsForEventScreenState extends State<StatisticsForEventScreen> {
     });
   }
 
-  //get daily meetings by restaurant id
   Future<void> getDailyMeetings(int restaurantId) async {
     List<int> dailyMeetings = await _requestUtil.getDailyMeetingsByRestaurantId(restaurantId);
     Logger().i('Daily meetings: $dailyMeetings');
@@ -50,7 +48,6 @@ class _StatisticsForEventScreenState extends State<StatisticsForEventScreen> {
     });
   }
 
-  //get last month meetings by restaurant id
   Future<void> getLastMonthMeetings(int restaurantId) async {
     List<int> lastMonthMeetings = await _requestUtil.getMonthlyMeetingsByRestaurantId(restaurantId);
     Logger().i('Last month meetings: $lastMonthMeetings');
@@ -59,7 +56,6 @@ class _StatisticsForEventScreenState extends State<StatisticsForEventScreen> {
     });
   }
 
-  //get hourly meetings by restaurant id
   Future<void> getHourlyMeetings(int restaurantId) async {
     List<int> hourlyMeetings = await _requestUtil.getHourlyMeetingsByRestaurantId(restaurantId);
     Logger().i('Hourly meetings: $hourlyMeetings');
@@ -70,10 +66,8 @@ class _StatisticsForEventScreenState extends State<StatisticsForEventScreen> {
 
   void _loadData() async {
     int restaurantId = await DataBaseProvider().getUserId();
-    //get reviews by restaurant id
     List<Review>? reviews = await _requestUtil.getReviewsByRestaurantId(restaurantId);
 
-    //getrestaurantbyid
     Restaurant res = await _requestUtil.getRestaurantById(restaurantId);
     await getEventNumber(res.id);
     await getDailyMeetings(res.id);
@@ -86,15 +80,10 @@ class _StatisticsForEventScreenState extends State<StatisticsForEventScreen> {
     });
   }
 
-
-  //delete review
   Future<void> deleteReview(int reviewId) async {
     try {
 
       await _requestUtil.deleteRemoveReview(reviewId);
-      // setState(() {
-      //   _restaurant.reviews!.removeWhere((review) => review.id == reviewId);
-      // });
     } catch (e) {
       Logger().e('Error deleting review: $e');
     }
@@ -106,14 +95,14 @@ class _StatisticsForEventScreenState extends State<StatisticsForEventScreen> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Reviews'),
-            content: Text('No reviews yet'),
+            title: const Text('Reviews'),
+            content: const Text('No reviews yet'),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('Close'),
+                child: const Text('Close'),
               )
             ],
           );
@@ -131,14 +120,12 @@ class _StatisticsForEventScreenState extends State<StatisticsForEventScreen> {
             child: ListView.builder(
               itemCount: review.length,
               itemBuilder: (context, index) {
-                //in a box list tile
                 return RestaurantReview(review: review![index],
                            onDelete: () async{
                             await deleteReview(review[index].id!);
                             setState(() {
                               review.removeAt(index);
                             });
-                            //frissitjuk a dialogot
                             Navigator.pop(context);
                             _showReviews(review);
                            }
@@ -151,7 +138,7 @@ class _StatisticsForEventScreenState extends State<StatisticsForEventScreen> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             )
           ],
         );
@@ -166,7 +153,7 @@ class _StatisticsForEventScreenState extends State<StatisticsForEventScreen> {
     return SafeArea(
       child: Scaffold(
         
-        body: _isLoading ? Center(child: CircularProgressIndicator()) 
+        body: _isLoading ? const Center(child: CircularProgressIndicator()) 
           : SingleChildScrollView(
             child: 
           Column(
@@ -175,16 +162,16 @@ class _StatisticsForEventScreenState extends State<StatisticsForEventScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Container(
-                  margin: EdgeInsets.all(10),
-                  padding: EdgeInsets.all(10),
+                  margin: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: Colors.grey[200],
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Column(
                     children: [
-                      Text('Rating', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                      Text( _restaurant.rating == null ? '0⭐' : _restaurant.rating.toString() + '⭐', style: TextStyle(fontSize: 20),),
+                      const Text('Rating', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                      Text( _restaurant.rating == null ? '0⭐' : _restaurant.rating.toString() + '⭐', style: const TextStyle(fontSize: 20),),
                     ],
                   ),
                 ),
@@ -194,16 +181,16 @@ class _StatisticsForEventScreenState extends State<StatisticsForEventScreen> {
                     print('ok');
                   },
                   child: Container(
-                    margin: EdgeInsets.all(10),
-                    padding: EdgeInsets.all(10),
+                    margin: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: Colors.grey[200],
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Column(
                       children: [
-                        Text('Reviews', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                        Text(_restaurant.reviews == null ? 'No reviews yet' : _restaurant.reviews!.length.toString() + ' reviews', style: TextStyle(fontSize: 20),),
+                        const Text('Reviews', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                        Text(_restaurant.reviews == null ? 'No reviews yet' : _restaurant.reviews!.length.toString() + ' reviews', style: const TextStyle(fontSize: 20),),
                       ],
                     ),
                   ),
@@ -211,7 +198,7 @@ class _StatisticsForEventScreenState extends State<StatisticsForEventScreen> {
               ],
             ),
             
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Row(
@@ -221,7 +208,7 @@ class _StatisticsForEventScreenState extends State<StatisticsForEventScreen> {
                 ],
               ),
             ),
-             SizedBox(height: 20.0),
+             const SizedBox(height: 20.0),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Row(
@@ -231,7 +218,7 @@ class _StatisticsForEventScreenState extends State<StatisticsForEventScreen> {
                 ],
               ),
             ),
-             SizedBox(height: 20.0),
+             const SizedBox(height: 20.0),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Row(
@@ -241,7 +228,7 @@ class _StatisticsForEventScreenState extends State<StatisticsForEventScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Row(
@@ -262,7 +249,7 @@ class _StatisticsForEventScreenState extends State<StatisticsForEventScreen> {
   Widget _buildColumnChart(String title, List<int> data) {
  return Expanded(
     child: Container(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
         color: Colors.grey[200],
@@ -272,7 +259,7 @@ class _StatisticsForEventScreenState extends State<StatisticsForEventScreen> {
         children: [
           Text(
             title,
-            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10.0),
           AspectRatio(
@@ -396,7 +383,7 @@ class _StatisticsForEventScreenState extends State<StatisticsForEventScreen> {
   Widget _buildMonthlyChart(String title, List<int> data) {
   return Expanded(
     child: Container(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
         color: Colors.grey[200],

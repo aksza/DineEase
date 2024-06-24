@@ -7,6 +7,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace DineEaseApp.Controllers
 {
@@ -47,7 +49,7 @@ namespace DineEaseApp.Controllers
 
         }
 
-        [HttpGet("mostreservations")]
+        [HttpGet("mostreservations"), Authorize]
         public async Task<IActionResult> GetRestaurantsWithMostReservations()
         {
             var restaurants = _mapper.Map<List<RestaurantDto>>(await _restaurantRepository.GetRestaurantsWithMostReservation());
@@ -69,7 +71,7 @@ namespace DineEaseApp.Controllers
             return Ok(restaurantDtos);
         }
 
-        [HttpGet("lastReservations/{userId}")]
+        [HttpGet("lastReservations/{userId}"), Authorize]
         public async Task<IActionResult> GetLastReservationsByUserId(int userId)
         {
             var restaurants = _mapper.Map<List<RestaurantDto>>(await _restaurantRepository.LastFiveReservationByUserId(userId));
@@ -91,7 +93,7 @@ namespace DineEaseApp.Controllers
             return Ok(restaurantDtos);
         }
 
-        [HttpGet("mostRated")]
+        [HttpGet("mostRated"), Authorize]
         public async Task<IActionResult> GetMostRated()
         {
             var restaurants = _mapper.Map<List<RestaurantDto>>(await _restaurantRepository.FiveMostRated());
@@ -114,7 +116,7 @@ namespace DineEaseApp.Controllers
         }
 
 
-        [HttpGet("search/{someText}")]
+        [HttpGet("search/{someText}"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> Search(string someText)
         {
@@ -130,7 +132,6 @@ namespace DineEaseApp.Controllers
                     return restaurantDto;
                 });
 
-            //var restaurants = _restaurantRepository.GetRestaurants();
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -139,7 +140,7 @@ namespace DineEaseApp.Controllers
 
         }
 
-        [HttpGet("cuisines")]
+        [HttpGet("cuisines"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetCuisines()
         {
@@ -153,7 +154,7 @@ namespace DineEaseApp.Controllers
             return Ok(cuisines);
         }
 
-        [HttpGet("categories")]
+        [HttpGet("categories"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetRCategories()
         {
@@ -167,7 +168,7 @@ namespace DineEaseApp.Controllers
             return Ok(categories);
         }
 
-        [HttpGet("prices")]
+        [HttpGet("prices"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetPrices()
         {
@@ -179,7 +180,7 @@ namespace DineEaseApp.Controllers
             }
             return Ok(prices);
         }
-        [HttpGet("seatings")]
+        [HttpGet("seatings"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetSeatings()
         {
@@ -192,7 +193,7 @@ namespace DineEaseApp.Controllers
 
             return Ok(seatings);
         }
-        [HttpGet("{restaurantId}/cuisines")]
+        [HttpGet("{restaurantId}/cuisines"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetCuisinesByRestaurantId(int restaurantId)
         {
@@ -221,7 +222,7 @@ namespace DineEaseApp.Controllers
             return Ok(cuisines);
         }
 
-        [HttpGet("{restaurantId}/categories")]
+        [HttpGet("{restaurantId}/categories"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetCategoriesByRestaurantId(int restaurantId)
         {
@@ -252,7 +253,7 @@ namespace DineEaseApp.Controllers
         }
 
 
-        [HttpGet("{restaurantId}/openings")]
+        [HttpGet("{restaurantId}/openings"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetOpeningsByRestaurantId(int restaurantId)
         {
@@ -270,7 +271,7 @@ namespace DineEaseApp.Controllers
            return Ok(openings);
         }
 
-        [HttpPut("updateOpenings")]
+        [HttpPut("updateOpenings"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> UpdateOpening(List<OpeningDto> openingDtos)
         {
@@ -304,7 +305,7 @@ namespace DineEaseApp.Controllers
             return Ok("Successfully updated");
         }
 
-        [HttpPost("addOpenings")]
+        [HttpPost("addOpenings"), Authorize]
         public async Task<IActionResult> AddOpenings(List<OpeningCreateDto> openings) 
         {
             try
@@ -332,7 +333,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpGet("{restaurantId}/seatings")]
+        [HttpGet("{restaurantId}/seatings"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetSeatingsByRestaurantId(int restaurantId)
         {
@@ -361,7 +362,7 @@ namespace DineEaseApp.Controllers
             return Ok(seatings);
         }
 
-        [HttpPost("addCuisines")]
+        [HttpPost("addCuisines"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> AddCuisinesToRestaurant(List<CuisineRestaurantCreateDto> cuisinesRestaurantDto)
         {
@@ -409,7 +410,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpDelete("deleteCuisines")]
+        [HttpDelete("deleteCuisines"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> DeleteCuisine(List<CuisineRestaurantCreateDto> cuisineRestaurantCreateDtos)
         {
@@ -462,7 +463,7 @@ namespace DineEaseApp.Controllers
         }
 
 
-        [HttpPost("addCategories")]
+        [HttpPost("addCategories"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> AddCategoriesToRestaurant(List<CategoriesRestaurantCreateDto> categoriesRestaurantCreateDtos)
         {
@@ -510,7 +511,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpDelete("deleteCategories")]
+        [HttpDelete("deleteCategories"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> DeleteCategories(List<CategoriesRestaurantCreateDto> categoriesRestaurantCreateDtos)
         {
@@ -564,7 +565,7 @@ namespace DineEaseApp.Controllers
 
 
 
-        [HttpPost("addSeatings")]
+        [HttpPost("addSeatings"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> AddSeatingsToRestaurant(List<SeatingsRestaurantCreateDto> seatingsRestaurantCreateDtos)
         {
@@ -612,7 +613,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpDelete("deleteSeatings")]
+        [HttpDelete("deleteSeatings"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> DeleteSeatings(List<SeatingsRestaurantCreateDto> seatingsRestaurantCreateDtos)
         {
@@ -689,7 +690,7 @@ namespace DineEaseApp.Controllers
             return Ok(restaurantDtos);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         [ProducesResponseType(200,Type = typeof(Restaurant))]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetRestaurantById(int id)
@@ -707,7 +708,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpPut("update")]
+        [HttpPut("update"), Authorize]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -747,14 +748,10 @@ namespace DineEaseApp.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            //var price = _mapper.Map<Price>(await _priceRepository.GetByIdAsync(restaurantMap.Id));
-
-            //if (!await _priceRepository.UpdateAsync()
-
-                return NoContent();
+            return NoContent();
         }
 
-        [HttpGet("{id}/rating")]
+        [HttpGet("{id}/rating"), Authorize]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         public async Task<IActionResult> GetRestaurantRating(int id)
@@ -774,7 +771,7 @@ namespace DineEaseApp.Controllers
         }
 
 
-        [HttpGet("favorits/{userId}")]
+        [HttpGet("favorits/{userId}"), Authorize]
         public async Task<IActionResult> GetFavoritRastaurantsByUserId(int userId)
         {
             try

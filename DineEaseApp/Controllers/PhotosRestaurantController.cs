@@ -4,6 +4,8 @@ using DineEaseApp.Models;
 using DineEaseApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace DineEaseApp.Controllers
 {
@@ -63,7 +65,7 @@ namespace DineEaseApp.Controllers
             };
         }
 
-        [HttpPost("addPhoto")]
+        [HttpPost("addPhoto"), Authorize]
         [ProducesResponseType(200,Type = typeof(PhotosRestaurant))]
         public async Task<IActionResult> CreatePhotosRestaurant([FromForm] PhotosRestaurantDto photoToAdd)
         {
@@ -101,7 +103,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpGet("getPhoto/{restaurantId}")]
+        [HttpGet("getPhoto/{restaurantId}"), Authorize]
         public async Task<IActionResult> GetPhotosByRestaurantId(int restaurantId)
         {
             var photos = await _photosRestaurantRepository.GetPhotosByRestaurantId(restaurantId);
@@ -124,7 +126,7 @@ namespace DineEaseApp.Controllers
             return Ok(photoResponses);
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPut("update/{id}"), Authorize]
         [ProducesResponseType(200, Type = typeof(PhotosRestaurant))]
         public async Task<IActionResult> UpdatePhotosRestaurant(int id, [FromForm] PhotosRestaurantUpdateDto photoToUpdate)
         {
@@ -172,7 +174,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("delete/{id}"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> DeletePhoto(int id)
         {
@@ -194,7 +196,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpGet("get/{id}")]
+        [HttpGet("get/{id}"), Authorize]
         [ProducesResponseType(200, Type = typeof(PhotosRestaurant))]
         public async Task<IActionResult> GetPhoto(int id)
         {
@@ -206,7 +208,7 @@ namespace DineEaseApp.Controllers
             return Ok(photo);
         }
 
-        [HttpGet]
+        [HttpGet, Authorize]
         [ProducesResponseType(200, Type = typeof(PhotosRestaurant))]
         public async Task<IActionResult> GetPhotos()
         {

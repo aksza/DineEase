@@ -13,7 +13,6 @@ class RestaurantForEventPage extends StatefulWidget {
 
 class _RestaurantForEventPageState extends State<RestaurantForEventPage> {
 
-  //a function that checks whether a restaurant is in the favorites list and depending on that it adds or removes it
   void toggleFavorite(Restaurant restaurant) {
     setState(() {
       if (restaurant.isFavorite!) {
@@ -34,15 +33,12 @@ class _RestaurantForEventPageState extends State<RestaurantForEventPage> {
           padding: const EdgeInsets.all(25.0),
           child: Column(
             children: [
-              //list of restaurants
               Expanded(
                 child: ListView.builder(
                   itemCount: value.restaurantForEventList.length,
                   itemBuilder: (context,index){
-                  //get restaurant
                   Restaurant restaurant = value.restaurantForEventList[index];
 
-                  //return the tile for this restaurant
                   return RestaurantView(
                     restaurant: restaurant,
                     onPressed: () => toggleFavorite(restaurant)

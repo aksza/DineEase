@@ -21,12 +21,10 @@ class _RMWaitingViewState extends State<RMWaitingView> {
     super.initState();
   }
   
-  // Respond to reservation with request util
   Future<void> respondToMeeting(bool accepted) async {
     int? tableNumber;
     String? comment;
 
-    // Show alert dialog to get table number and comment
     await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -96,7 +94,7 @@ class _RMWaitingViewState extends State<RMWaitingView> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),                       
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         Text(
                           'with ${widget.meeting.guestSize} people',
                           style: const TextStyle(
@@ -111,19 +109,19 @@ class _RMWaitingViewState extends State<RMWaitingView> {
                             fontSize: 15,
                           ),
                         ),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         Text(
                           'Event at ${DateFormat('HH:mm dd/MM/yyyy').format(DateTime.parse(widget.meeting.eventDate))}',
                           style: const TextStyle(
                             fontSize: 15,
                           ),
                         ),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         Row(
                           children: [
-                            Text(
+                            const Text(
                               'Phone number: ',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -135,9 +133,9 @@ class _RMWaitingViewState extends State<RMWaitingView> {
                         if (widget.meeting.comment != '')
                           Row(
                             children: [
-                              Text(
+                              const Text(
                                 'Comment: ',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -148,7 +146,7 @@ class _RMWaitingViewState extends State<RMWaitingView> {
                           ),
                       ]
                     ),
-                    SizedBox(width: 5),
+                    const SizedBox(width: 5),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end, 
                       children: <Widget>[
@@ -156,9 +154,9 @@ class _RMWaitingViewState extends State<RMWaitingView> {
                           onPressed: () {
                             respondToMeeting(true);
                           },
-                          child: Text('Accept'),
+                          child: const Text('Accept'),
                         ),
-                        SizedBox(height: 10), 
+                        const SizedBox(height: 10), 
                         ElevatedButton(
                           onPressed: () {
                             respondToMeeting(false);

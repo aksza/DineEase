@@ -3,6 +3,7 @@ using DineEaseApp.Dto;
 using DineEaseApp.Interfaces;
 using DineEaseApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DineEaseApp.Controllers
 {
@@ -19,7 +20,7 @@ namespace DineEaseApp.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize]
         [ProducesResponseType(200,Type = typeof(IEnumerable<Owner>))]
         public IActionResult GetOwners()
         {
@@ -31,7 +32,7 @@ namespace DineEaseApp.Controllers
             return Ok(owners);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}"),Authorize]
         [ProducesResponseType(200,Type = typeof(Owner))]
         [ProducesResponseType(400)]
         public IActionResult GetOwner(int id)

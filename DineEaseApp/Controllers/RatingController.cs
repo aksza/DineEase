@@ -3,6 +3,8 @@ using DineEaseApp.Dto;
 using DineEaseApp.Interfaces;
 using DineEaseApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace DineEaseApp.Controllers
 {
@@ -23,7 +25,7 @@ namespace DineEaseApp.Controllers
             _restaurantRepository = restaurantRepository;
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("{userId}"),Authorize]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Rating>))]
         public async Task<IActionResult> GetRatingsByUserId(int userId)
         {
@@ -47,7 +49,7 @@ namespace DineEaseApp.Controllers
             return Ok(ratings);
         }
 
-        [HttpPost("addRating")]
+        [HttpPost("addRating"), Authorize]
         public async Task<IActionResult> AddRating(RatingCreateDto ratingDto)
         {
             try
@@ -79,7 +81,6 @@ namespace DineEaseApp.Controllers
                         BadRequest(ModelState);
                     }
                     return Ok("Rating already existed, updated");
-                    //return Ok(_mapper.Map<RestaurantDto>(res2));
                 }
 
                 if (!ModelState.IsValid)
@@ -114,7 +115,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPut("update/{id}"), Authorize]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -168,7 +169,7 @@ namespace DineEaseApp.Controllers
             return NoContent();
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("delete/{id}"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> DeleteRating(int id)
         {
@@ -210,7 +211,5 @@ namespace DineEaseApp.Controllers
                 return (StatusCode(500, ex.Message));
             }
         }
-
-
     }
 }

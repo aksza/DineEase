@@ -33,7 +33,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     _loadData();
   }
 
-  //get event number by restaurant id
   Future<void> getEventNumber(int restaurantId) async {
     List<int> eventNumber = await _requestUtil.getEventNumberByRestaurantId(restaurantId);
     Logger().i('Event number: $eventNumber');
@@ -42,7 +41,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     });
   }
 
-  //get daily reservations
   Future<void> getDailyReservations(int restaurantId) async {
     List<int> dailyReservations = await _requestUtil.getDailyReservationsByRestaurantId(restaurantId);
     Logger().i('Daily reservations: $dailyReservations');
@@ -51,7 +49,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     });
   } 
 
-  //get last month reservations
   Future<void> getLastMonthReservations(int restaurantId) async {
     List<int> lastMonthReservations = await _requestUtil.getMonthlyReservationsByRestaurantId(restaurantId);
     Logger().i('Last month reservations: $lastMonthReservations');
@@ -60,7 +57,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     });
   }
 
-  //get hourly reservations
   Future<void> getHourlyReservations(int restaurantId) async {
     List<int> hourlyReservations = await _requestUtil.getHourlyReservationsByRestaurantId(restaurantId);
     Logger().i('Hourly reservations: $hourlyReservations');
@@ -69,7 +65,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     });
   }
 
-  //get orders per reservation
   Future<void> getOrdersPerReservation(int restaurantId) async {
     List<int> ordersPerReservations = await _requestUtil.getOrdersPerReservationsByRestaurantId(restaurantId);
     Logger().i('Orders per reservation: $ordersPerReservations');
@@ -80,10 +75,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
   void _loadData() async {
     int restaurantId = await DataBaseProvider().getUserId();
-    //get reviews by restaurant id
     List<Review>? reviews = await _requestUtil.getReviewsByRestaurantId(restaurantId);
     
-    //getrestaurantbyid
     Restaurant res = await _requestUtil.getRestaurantById(restaurantId);
     await getDailyReservations(res.id);
     await getLastMonthReservations(res.id);
@@ -99,7 +92,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   }
 
 
-  //delete review
   Future<void> deleteReview(int reviewId) async {
     try {
 
@@ -115,14 +107,14 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Reviews'),
-            content: Text('No reviews yet'),
+            title: const Text('Reviews'),
+            content: const Text('No reviews yet'),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text('Close'),
+                child: const Text('Close'),
               )
             ],
           );
@@ -133,21 +125,19 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Reviews'),
+          title: const Text('Reviews'),
           content: Container(
             height: 300,
             width: 300,
             child: ListView.builder(
               itemCount: review.length,
               itemBuilder: (context, index) {
-                //in a box list tile
                 return RestaurantReview(review: review![index],
                            onDelete: () async{
                             await deleteReview(review[index].id!);
                             setState(() {
                               review.removeAt(index);
                             });
-                            //frissitjuk a dialogot
                             Navigator.pop(context);
                             _showReviews(review);
                            }
@@ -160,7 +150,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             )
           ],
         );
@@ -175,7 +165,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     return SafeArea(
       child: Scaffold(
         
-        body: _isLoading ? Center(child: CircularProgressIndicator()) 
+        body: _isLoading ? const Center(child: CircularProgressIndicator()) 
           : SingleChildScrollView(
             child:
           Column(
@@ -184,16 +174,16 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Container(
-                  margin: EdgeInsets.all(10),
-                  padding: EdgeInsets.all(10),
+                  margin: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: Colors.grey[200],
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Column(
                     children: [
-                      Text('Rating', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                      Text( _restaurant.rating == null ? '0⭐' : _restaurant.rating.toString() + '⭐', style: TextStyle(fontSize: 20),),
+                      const Text('Rating', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                      Text( _restaurant.rating == null ? '0⭐' : _restaurant.rating.toString() + '⭐', style: const TextStyle(fontSize: 20),),
                     ],
                   ),
                 ),
@@ -203,16 +193,16 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     print('ok');
                   },
                   child: Container(
-                    margin: EdgeInsets.all(10),
-                    padding: EdgeInsets.all(10),
+                    margin: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: Colors.grey[200],
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Column(
                       children: [
-                        Text('Reviews', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                        Text(_restaurant.reviews == null ? 'No reviews yet' : _restaurant.reviews!.length.toString() + ' reviews', style: TextStyle(fontSize: 20),),
+                        const Text('Reviews', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                        Text(_restaurant.reviews == null ? 'No reviews yet' : _restaurant.reviews!.length.toString() + ' reviews', style: const TextStyle(fontSize: 20),),
                       ],
                     ),
                   ),
@@ -220,7 +210,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               ],
             ),
             
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
 
             Padding(
               padding: const EdgeInsets.all(20.0),
@@ -231,7 +221,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Row(
@@ -241,7 +231,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Row(
@@ -252,7 +242,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               ),
             ),
 
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Row(
@@ -263,7 +253,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               ),
             ),
 
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Row(
@@ -283,7 +273,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   Widget _buildColumnChart(String title, List<int> data) {
  return Expanded(
     child: Container(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
         color: Colors.grey[200],
@@ -293,7 +283,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         children: [
           Text(
             title,
-            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 10.0),
           AspectRatio(
@@ -418,7 +408,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   Widget _buildMonthlyChart(String title, List<int> data) {
   return Expanded(
     child: Container(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
         color: Colors.grey[200],

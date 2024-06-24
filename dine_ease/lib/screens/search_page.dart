@@ -108,12 +108,10 @@ class _SearchPageState extends State<SearchPage> {
       addToFavorits(restaurant);
     }
   }
-  //add to favorites
   void addToFavorits(Restaurant restaurant){
     Provider.of<DineEase>(context, listen: false).addToFavorits(restaurant);
     
   }
-  //remove from favorites
   void removeFromFavorits(Restaurant restaurant){
     Provider.of<DineEase>(context, listen: false).removeFromFavorits(restaurant);
     
@@ -123,7 +121,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: isLoading
-        ? Center(child: CircularProgressIndicator())
+        ? const Center(child: CircularProgressIndicator())
         : SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -132,14 +130,14 @@ class _SearchPageState extends State<SearchPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   'Searching for: "${widget.query}"',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
                   'Restaurants',
                   style: TextStyle(
@@ -149,13 +147,13 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
               restaurants.isEmpty
-                ? Padding(
-                    padding: const EdgeInsets.all(8.0),
+                ? const Padding(
+                    padding: EdgeInsets.all(8.0),
                     child: Text('Restaurant not found'),
                   )
                 : ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: restaurants.length,
                     itemBuilder: (context, index) {
                       return RestaurantView(
@@ -164,8 +162,8 @@ class _SearchPageState extends State<SearchPage> {
                       );
                     },
                   ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
                   'Events',
                   style: TextStyle(
@@ -175,13 +173,13 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
               events.isEmpty
-                ? Padding(
-                    padding: const EdgeInsets.all(8.0),
+                ? const Padding(
+                    padding: EdgeInsets.all(8.0),
                     child: Text('Event not found'),
                   )
                 : ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: events.length,
                     itemBuilder: (context, index) {
                       return EventView(event: events[index]);

@@ -5,7 +5,7 @@ class RegisterRestaurant{
   String phoneNum;
   String email;
   String password;
-  int priceId; // priceid kellene
+  int priceId; 
   bool forEvent;
   String ownerName;
   String ownerPhoneNum;

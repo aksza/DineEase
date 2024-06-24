@@ -40,7 +40,6 @@ class _UserReservationScreenState extends State<UserReservationScreen> {
     fetchReservations();
   }
 
-  //fetching reservations by user id
   Future<void> fetchReservations() async {
     try {
       if (widget.isreservation == true) {
@@ -82,7 +81,6 @@ class _UserReservationScreenState extends State<UserReservationScreen> {
             Navigator.pop(context);
           },
         ),
-        //title is reservation or waiting
         title: Text(widget.isreservation ? 'Reservations' : 'Waiting List'),
       ),
       body: isLoading

@@ -6,7 +6,6 @@ import 'package:dine_ease/models/eventt_model.dart';
 import 'package:dine_ease/models/price_model.dart';
 import 'package:dine_ease/models/r_category.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
-import 'package:dine_ease/models/restaurant_post.dart';
 import 'package:dine_ease/models/seating_model.dart';
 import 'package:dine_ease/models/upload_restaurant_image.dart';
 import 'package:dine_ease/utils/request_util.dart';
@@ -88,7 +87,6 @@ void initApp() async {
       
       notifyListeners();
     }  
-    // });
   }
 
   //get restaurants most rated
@@ -146,7 +144,6 @@ void initApp() async {
 
   Future<void> getRestaurants() async{
     List<Restaurant> restaurants = await _requestUtil.getRestaurants();
-    // List<RestaurantPost> restaurantList = [];
     for(var restaurant in restaurants){
       if(restaurant.forEvent == false){
         Logger().i("false kene: $restaurant.forEvent");
@@ -182,9 +179,7 @@ void initApp() async {
   }
 
   Future<void> getFavoritRestaurantsByUserId() async{
-    //a userId-t a providerből kell lekérni
     List<Restaurant> restaurants = await _requestUtil.getFavoritRestaurantsByUserId(userId);
-    // List<RestaurantPost> restaurantList = [];
 
     for(var restaurant in restaurants){
 
@@ -197,7 +192,6 @@ void initApp() async {
       if(!addedRestaurantIds.contains(restaurant.id)){
         _userFavorits.add(restaurant);
       }
-      //az adott id-ju restaurantot megkeresni a restaurantList-ben és az isFavorite értékét true-ra állítani
       for(var rest in _restaurantList){
         if(rest.id == restaurant.id){
           rest.isFavorite = true;
@@ -251,7 +245,6 @@ void initApp() async {
   
   //get restaurant by id
   Restaurant? getRestaurantById(int id){
-    //ha a restaurantlistben nem talalja meg az adott idju restaurantot akkor a restaurantforeventlistben keresi
     for(var restaurant in _restaurantList){
       if(restaurant.id == id){
         return restaurant;
@@ -265,43 +258,31 @@ void initApp() async {
     return null;
   }
 
-  //get restaurant list
   List<Restaurant> get restaurants => _restaurantList;
 
-  //get user favorit list
   List<Restaurant> get userFavorits => _userFavorits;
 
-  //get event list
   List<EventPost> get events => _eventList;
 
-  //get restaurant for event list
   List<Restaurant> get restaurantForEventList => _restaurantForEventList;
 
-  //get all cuisine
   List<Cuisine> get allCuisines => _allCuisine;
 
-  //get all categories
   List<RCategory> get allRCategories => _allCategories;
 
-  //get all seatings
   List<Seating> get allSeatings => _allSeatings;
 
-  //get all prices
   List<Price> get allPrices => _allPrices;
   
-  //add to favorit
   void addToFavorits(Restaurant restaurant) async{
-    // add by using the request util
     Logger().i("userid"+userId.toString()+email+role);
     await _requestUtil.postAddFavoritRestaurant(userId, restaurant.id);
-    //added restaurant to userFavorits
     var addedRestaurantIds = _userFavorits.map((restaurant) => restaurant.id).toSet();
     if(!addedRestaurantIds.contains(restaurant.id)) {
       restaurant.isFavorite = true;
       _userFavorits.add(restaurant);
     }
   
-    //az adott id-ju restaurantot megkeresni a restaurantList-ben és az isFavorite értékét true-ra állítani
     for(var rest in _restaurantList){
       if(rest.id == restaurant.id){
         rest.isFavorite = true;
@@ -335,7 +316,6 @@ void initApp() async {
   void removeFromFavorits(Restaurant restaurant) async{
     // remove by using the request util
     _userFavorits.remove(restaurant);
-    //az adott id-ju restaurantot megkeresni a restaurantList-ben és az isFavorite értékét false-ra állítani
     for(var rest in _restaurantList){
       if(rest.id == restaurant.id){
         rest.isFavorite = false;

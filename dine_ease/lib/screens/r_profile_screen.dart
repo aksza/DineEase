@@ -35,7 +35,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
   late Restaurant restaurant;
   bool isLoading = true;
 
-  //textcontroller for the form
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _phoneNumController = TextEditingController();
@@ -57,13 +56,11 @@ class _RProfileScreenState extends State<RProfileScreen> {
     super.initState();
   }
 
-  //fetch restaurant data
   void fetchRestaurant() async {
     var resid = await DataBaseProvider().getUserId();
 
     try {
       Restaurant response = await _requestUtil.getRestaurantById(resid);
-      //fetch category, cuisine, opening, seating, reviews 
       List<RCategory>? categories = await _requestUtil.getRCategoriesByRestaurantId(resid);
       List<Cuisine>? cuisines = await _requestUtil.getCuisinesByRestaurantId(resid);
       List<Opening>? openings = await _requestUtil.getOpeningsByRestaurantId(resid);
@@ -99,7 +96,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
     }
   }
 
-  //update restaurant
   void updateRestaurant(Restaurant restaurant) async {
     try {
       await _requestUtil.putUpdateRestaurant(restaurant);
@@ -133,7 +129,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
     return null;
   }
 
-  //addcuisinerestaurant
   void addCuisineToRestaurant(List<Cuisine> cuisines) async {
     try {
       List<CuisineRestaurant> cuisineRestaurants = [];
@@ -158,7 +153,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
     }
   }
 
-  //removecuisinerestaurant
   void removeCuisineFromRestaurant(List<Cuisine> cuisines) async {
     try {
       List<CuisineRestaurant> cuisineRestaurants = [];
@@ -184,7 +178,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
     }
   }
 
-  //addseatingrestaurant
   void addSeatingToRestaurant(List<Seating> seatings) async {
     try {
       List<SeatingRestaurant> seatingRestaurants = [];
@@ -209,7 +202,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
     }
   }
 
-  //removeseatingrestaurant
   void removeSeatingFromRestaurant(List<Seating> seatings) async {
     try {
       List<SeatingRestaurant> seatingRestaurants = [];
@@ -235,7 +227,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
     }
   }
 
-  //addcategoryrestaurant
   void addCategoryToRestaurant(List<RCategory> categories) async {
     try {
       List<CategoriesRestaurant> categoryRestaurants = [];
@@ -260,7 +251,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
     }
   }
 
-  //removecategoryrestaurant
   void removeCategoryFromRestaurant(List<RCategory> categories) async {
     try {
       List<CategoriesRestaurant> categoryRestaurants = [];
@@ -286,7 +276,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
     }
   }
 
-  //update openings
   void updateOpenings(List<Opening> openings) async {
     try {
       await _requestUtil.putUpdateOpenings(openings);
@@ -303,7 +292,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
     }
   }
 
-  //add openings
   void addOpenings(List<Opening> openings) async {
     try {
       await _requestUtil.postAddOpenings(openings);
@@ -342,7 +330,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
     }
   }
 
-  //delete photo
   void deletePhoto(UploadImages photo) async {
     try {
       await _requestUtil.deleteRemovePhoto(photo.id);
@@ -357,21 +344,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
     }
   }
 
-  //add photo
-  // void addPhoto(File photo) async {
-  //   try {
-  //     await _requestUtil.postAddPhoto(UploadImages(restaurantId: restaurant.id, image: photo.path));
-  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //       content: Text('Photo added successfully'),
-  //     ));
-  //   } catch (error) {
-  //     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-  //       content: Text('Failed to add photo'),
-  //     ));
-  //   }
-  // }
-
-  //show alert dialog delete photo
   void _showDeletePhotoDialog(UploadImages photo) {
     showDialog(
       context: context,
@@ -471,7 +443,7 @@ class _RProfileScreenState extends State<RProfileScreen> {
                       content: Text('Items updated successfully'),
                     ));
                   },
-                  child: Text('OK'),
+                  child: const Text('OK'),
                 ),
               ],
             );
@@ -517,7 +489,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
     );
   }
 
-  // Show opening edit dialog
   void _showOpeningEditDialog() {
   showDialog(
     context: context,
@@ -715,10 +686,8 @@ class _RProfileScreenState extends State<RProfileScreen> {
     return formattedTime;
   }
 
-  //add photo
   Future<UploadImages?> addPhoto(Uint8List photo) async {
     try {
-      // Uint8List image = await photo.readAsBytes();
       var resp = await _requestUtil.postAddPhoto(restaurant.id, photo);
       if(resp != null){
         setState(() {
@@ -730,7 +699,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
         content: Text('Photo added successfully'),
       ));
       return null;
-      //  final _directory =
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text('Failed to add photo'),
@@ -742,7 +710,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
   void selectImage() async{
     Uint8List? image = await pickImage(ImageSource.gallery);
     if(image != null){
-      // addPhoto(File(image.toString()));
       await addPhoto(image);
       setState((){
         
@@ -764,7 +731,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      //text - edit restaurant profile
                       const Text(
                         'Edit Restaurant Profile',
                         style: TextStyle(
@@ -772,7 +738,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      // name
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: MyTextField(
@@ -781,7 +746,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
                           obscureText: false,
                         ),
                       ),
-                      // address
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: MyTextField(
@@ -790,7 +754,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
                           obscureText: false,
                         ),
                       ),
-                      // phone number
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: MyTextField(
@@ -800,7 +763,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
                           validator: validatePhoneNumber,
                         ),
                       ),
-                      // email
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: MyTextField(
@@ -809,7 +771,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
                           obscureText: false,
                         ),
                       ),
-                      // description
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: MyTextField(
@@ -818,7 +779,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
                           obscureText: false,
                         ),
                       ),
-                      // max table capacity
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: MyTextField(
@@ -832,7 +792,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
                       Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Row(
-                          // mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Text(
                               'Price category', 
@@ -841,7 +800,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
                                 fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.left
                               ),
-                              //space between
                               const SizedBox(width: 20),
                               DropdownButton(
                                 value: restaurant.priceId! - 1,
@@ -872,11 +830,9 @@ class _RProfileScreenState extends State<RProfileScreen> {
                           ]
                         ),
                       ),
-                      // submit button
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState?.validate() ?? false) {
-                            // update restaurant
                             Restaurant updatedRestaurant = Restaurant(
                               id: restaurant.id,
                               name: _nameController.text,
@@ -904,20 +860,16 @@ class _RProfileScreenState extends State<RProfileScreen> {
                         },
                         child: const Text('Update'),
                       ),
-                      //elvalaszto vonal
                       const Divider(
                         color: Colors.grey,
                         thickness: 1,
                       ),
-                      //text photos
                       const Text(
                         'Photos',
                         style: TextStyle(
                           fontSize: 20,
-                          // fontStyle: FontStyle.italic,
                         ),
                       ),
-                      //photos
                       if(images.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -936,7 +888,6 @@ class _RProfileScreenState extends State<RProfileScreen> {
                                   child: IconButton(
                                     icon: Icon(Icons.delete, color: Colors.red),
                                     onPressed: () {
-                                      // Itt írd meg a törlés logikáját
                                       _showDeletePhotoDialog(images[index]);
                                       
                                     },
@@ -958,19 +909,16 @@ class _RProfileScreenState extends State<RProfileScreen> {
                           ),
                         ),
                       ),
-                      //add photo button
                       ElevatedButton(
                         onPressed: () {
                           selectImage();
                         },
                         child: const Text('Add Photo'),
                       ),           
-                      //elvalaszto vonal
                       const Divider(
                         color: Colors.grey,
                         thickness: 1,
                       ),
-                      //text Edit Restaurant details
                       const Text(
                         'Edit Restaurant Details',
                         style: TextStyle(
@@ -978,19 +926,15 @@ class _RProfileScreenState extends State<RProfileScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      //text openings
                       const Text(
                         'Openings',
                         style: TextStyle(
                           fontSize: 20,
-                          // fontStyle: FontStyle.italic,
                         ),
                       ),
-                      //Openings listazas textkent, nem chipkent
                       Padding(
                       padding: const EdgeInsets.fromLTRB(80.0, 8.0, 80.0, 8.0),
                       child: Column(
-                        //center
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: List.generate(7, (index) {
                           final opening = restaurant.openings?.firstWhere(
@@ -1004,12 +948,10 @@ class _RProfileScreenState extends State<RProfileScreen> {
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              //day
                               Text(
                                 dayName,
                                 style: const TextStyle(fontSize: 16),
                               ),
-                              //time
                               Text(
                                 isClosed ? 'Closed' : '${opening!.openingHour} - ${opening.closingHour}',
                                 style: const TextStyle(fontSize: 16),
@@ -1019,22 +961,18 @@ class _RProfileScreenState extends State<RProfileScreen> {
                         }),
                       ),
                     ),
-                      //edit opening button that looks like update button
                       ElevatedButton(
                         onPressed: (){
                           _showOpeningEditDialog();
                         }, child: 
                         const Text('Edit Openings')
                       ),
-                      //text "Cuisines"
                       const Text(
                         'Cuisines',
                         style: TextStyle(
                           fontSize: 20,
-                          // fontStyle: FontStyle.italic,
                         ),
                       ),
-                      // Cuisines
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Wrap(
@@ -1054,15 +992,12 @@ class _RProfileScreenState extends State<RProfileScreen> {
                         child: Text('+ Add Cuisine'),
                       ),
 
-                      //text "Categories"
                       const Text(
                         'Categories',
                         style: TextStyle(
                           fontSize: 20,
-                          // fontStyle: FontStyle.italic,
                         ),
                       ),
-                      //Categories
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Wrap(
@@ -1081,15 +1016,12 @@ class _RProfileScreenState extends State<RProfileScreen> {
                         onPressed: _showCategorySelectionDialog,
                         child: Text('+ Add Category'),
                       ),
-                      //text "Seatings"
                       const Text(
                         'Seatings',
                         style: TextStyle(
                           fontSize: 20,
-                          // fontStyle: FontStyle.italic,
                         ),
                       ),
-                      //Seatings
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Wrap(

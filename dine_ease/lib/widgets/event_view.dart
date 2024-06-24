@@ -4,7 +4,6 @@ import 'package:dine_ease/screens/event_details_screen.dart';
 import 'package:dine_ease/utils/request_util.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:logger/logger.dart';
 
 class EventView extends StatefulWidget {
   final EventPost event;
@@ -41,7 +40,6 @@ class _EventViewState extends State<EventView> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // a kivalasztott eventre navigalas
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -58,7 +56,6 @@ class _EventViewState extends State<EventView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Photo section
             ClipRRect(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(10),
@@ -71,13 +68,11 @@ class _EventViewState extends State<EventView> {
                 fit: BoxFit.cover,
               ),
             ),
-            // Information section
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Event name and date
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -94,7 +89,6 @@ class _EventViewState extends State<EventView> {
                       ),
                     ],
                   ),
-                  // Add any other elements you need here
                 ],
               ),
             ),

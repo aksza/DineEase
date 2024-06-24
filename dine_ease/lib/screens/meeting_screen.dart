@@ -54,14 +54,13 @@ class _MeetingScreenState extends State<MeetingScreen>{
       MeetingCreate meetingCreate = MeetingCreate(
         restaurantId: widget.selectedRestaurant!.id,
         userId: userId,
-        eventId: 1,//TODO: event id-nal ki kell cserelni listazasra az eventtypebol
+        eventId: 1,
         eventDate: formattedEventDateTime,
         meetingDate: formattedMeetingDateTime,
         phoneNum: phoneNumController.text,
         guestSize: guestSizeController.text.isNotEmpty ? int.parse(guestSizeController.text) : 0,
         comment: commentController.text.isNotEmpty ? commentController.text : null,
       );
-      //kiirjuk az osszes adatot
       Logger().i('MeetingCreate: ${meetingCreate.toMap()}');
       await requestUtil.postScheduleAMeeting(meetingCreate);
     }
@@ -141,11 +140,9 @@ class _MeetingScreenState extends State<MeetingScreen>{
       ),
       body: SafeArea(child: 
         Column(children: [
-          //implementing all fields
           Expanded(child: 
             SingleChildScrollView(child: 
               Column(children: [
-                //event date
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
@@ -159,7 +156,6 @@ class _MeetingScreenState extends State<MeetingScreen>{
                       
                     ),
                   ),
-                  //event time
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
@@ -173,7 +169,6 @@ class _MeetingScreenState extends State<MeetingScreen>{
                     
                     ),
                   ),
-                  //guest size
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
@@ -185,7 +180,6 @@ class _MeetingScreenState extends State<MeetingScreen>{
                       keyboardType: TextInputType.number,
                     ),
                   ),
-                  //meeting date
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
@@ -199,7 +193,6 @@ class _MeetingScreenState extends State<MeetingScreen>{
                     
                     ),
                   ),
-                  //meeting time
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
@@ -212,7 +205,6 @@ class _MeetingScreenState extends State<MeetingScreen>{
                       onTap: () => _selectTime2(context),
                     ),
                   ),
-                  //phone number
                   Padding(
                     padding: EdgeInsets.all(8.0),
                     child: TextField(
@@ -224,7 +216,6 @@ class _MeetingScreenState extends State<MeetingScreen>{
                       keyboardType: TextInputType.phone,
                     ),
                   ),
-                  //comment
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
@@ -239,12 +230,9 @@ class _MeetingScreenState extends State<MeetingScreen>{
               )
             )
           ),
-          //reserve button
           ElevatedButton(
             onPressed: (){
-              //ha nem uresek a fieldek
               if(eventDateController.text.isEmpty || eventTimeController.text.isEmpty || guestSizeController.text.isEmpty || meetingDateController.text.isEmpty || meetingTimeController.text.isEmpty || phoneNumController.text.isEmpty){
-                //kiirjuk melyik mezok uresek
                 Logger().i("Empty fields: ${eventDateController.text.isEmpty}, ${eventTimeController.text.isEmpty}, ${guestSizeController.text.isEmpty}, ${meetingDateController.text.isEmpty}, ${meetingTimeController.text.isEmpty}, ${phoneNumController.text.isEmpty}");
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -253,7 +241,6 @@ class _MeetingScreenState extends State<MeetingScreen>{
                 );
               }
               else{
-                //ha a guest size kisebb mint 1
                 if(int.parse(guestSizeController.text) < 1){
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -262,7 +249,6 @@ class _MeetingScreenState extends State<MeetingScreen>{
                   );
                   return;
                 }
-                //ha a phone number nem 10 es 12 kozott van
                 else if(phoneNumController.text.length < 10 || phoneNumController.text.length > 12){
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -277,7 +263,6 @@ class _MeetingScreenState extends State<MeetingScreen>{
                     content: Text('Meeting scheduled successfully!'),
                   ),
                 );
-                //navigate back
                 Navigator.pop(context);
               }
             },

@@ -38,11 +38,9 @@ class _RWaitingListScreenState extends State<RWaitingListScreen> {
   fetchWaitingList();
 }
 
-  //listazas fuggveny
   void fetchWaitingList() async {
     var resid = await DataBaseProvider().getUserId();
 
-    //get restaurant by id
     Restaurant res = await _requestUtil.getRestaurantById(resid);
 
     setState(() {
@@ -83,35 +81,34 @@ Widget build(BuildContext context) {
             child: CircularProgressIndicator(),
           )
         : !isForEvent 
-            ? (waitingList.isEmpty
-                ? const Center(
-                    child: Text('The waiting list is empty'),
-                  )
-                : ListView.builder(
-                    itemCount: waitingList.length,
-                    itemBuilder: (context, index) {
-                      return RWaitingView(
-                        reservation: waitingList[index],
-                        refreshWaitingList: refreshWaitingList,
-                      );
-                    },
-                  )
+        ? (waitingList.isEmpty
+            ? const Center(
+                child: Text('The waiting list is empty'),
               )
-            : (mwaitingList.isEmpty
-                ? const Center(
-                    child: Text('The waiting list is empty'),
-                  )
-                : ListView.builder(
-                    itemCount: mwaitingList.length,
-                    itemBuilder: (context, index) {
-                      return RMWaitingView(
-                        meeting: mwaitingList[index],
-                        refreshWaitingList: refreshWaitingList,
-                      );
-                    },
-                  )
-              ),
-  );
-}
-
+            : ListView.builder(
+                itemCount: waitingList.length,
+                itemBuilder: (context, index) {
+                  return RWaitingView(
+                    reservation: waitingList[index],
+                    refreshWaitingList: refreshWaitingList,
+                  );
+                },
+              )
+          )
+        : (mwaitingList.isEmpty
+            ? const Center(
+                child: Text('The waiting list is empty'),
+              )
+            : ListView.builder(
+                itemCount: mwaitingList.length,
+                itemBuilder: (context, index) {
+                  return RMWaitingView(
+                    meeting: mwaitingList[index],
+                    refreshWaitingList: refreshWaitingList,
+                  );
+                },
+              )
+          ),
+    );
+  }
 }

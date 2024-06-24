@@ -55,17 +55,15 @@ class _RWaitingViewState extends State<RWaitingView> {
     });
   }
 
-  // Respond to reservation with request util
 Future<void> respondToReservation(bool accepted) async {
   int? tableNumber;
   String? comment;
 
-  // Show alert dialog to get table number and comment
   await showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Table Number'),
+        title: const Text('Table Number'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -74,14 +72,14 @@ Future<void> respondToReservation(bool accepted) async {
               onChanged: (value) {
                 tableNumber = int.tryParse(value);
               },
-              decoration: InputDecoration(labelText: 'Table number'),
+              decoration: const InputDecoration(labelText: 'Table number'),
               keyboardType: TextInputType.number,
             ),
             TextField(
               onChanged: (value) {
                 comment = value;
               },
-              decoration: InputDecoration(labelText: 'Comment (optional)'),
+              decoration: const InputDecoration(labelText: 'Comment (optional)'),
             ),
           ],
         ),
@@ -91,7 +89,7 @@ Future<void> respondToReservation(bool accepted) async {
               Navigator.of(context).pop();
               _sendResponse(accepted, tableNumber, comment);
             },
-            child: Text('Send'),
+            child: const Text('Send'),
           ),
         ],
       );
@@ -135,19 +133,19 @@ void _sendResponse(bool accepted, int? tableNumber, String? comment) async {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         Text(
                           'at ${DateFormat('HH:mm dd/MM/yyyy').format(DateTime.parse(widget.reservation.date))}',
                           style: const TextStyle(
                             fontSize: 15,
                           ),
                         ),
-                        SizedBox(height: 5),
+                        const SizedBox(height: 5),
                         Row(
                           children: [
-                            Text(
+                            const Text(
                               'Phone number: ',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -159,9 +157,9 @@ void _sendResponse(bool accepted, int? tableNumber, String? comment) async {
                         if (widget.reservation.comment != '')
                           Row(
                             children: [
-                              Text(
+                              const Text(
                                 'Comment: ',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -172,7 +170,7 @@ void _sendResponse(bool accepted, int? tableNumber, String? comment) async {
                           ),
                       ]
                     ),
-                    SizedBox(width: 5),
+                    const SizedBox(width: 5),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end, 
                       children: <Widget>[
@@ -180,14 +178,14 @@ void _sendResponse(bool accepted, int? tableNumber, String? comment) async {
                           onPressed: () {
                             respondToReservation(true);
                           },
-                          child: Text('Accept'),
+                          child: const Text('Accept'),
                         ),
-                        SizedBox(height: 10), 
+                        const SizedBox(height: 10), 
                         ElevatedButton(
                           onPressed: () {
                             respondToReservation(false);
                           },
-                          child: Text('Reject'),
+                          child: const Text('Reject'),
                         ),
                       ],
                     ),
@@ -196,7 +194,7 @@ void _sendResponse(bool accepted, int? tableNumber, String? comment) async {
                 ),
                 
                 
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[

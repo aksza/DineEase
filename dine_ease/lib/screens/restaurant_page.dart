@@ -109,20 +109,17 @@ class _RestaurantPageState extends State<RestaurantPage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   IconButton(
-                    icon: Icon(Icons.filter_alt_sharp),
+                    icon: const Icon(Icons.filter_alt_sharp),
                     onPressed: _showFilterDialog,
                   ),
                 ],
               ),
-              // List of restaurants
               Expanded(
                 child: ListView.builder(
                   itemCount: _filteredRestaurants.length,
                   itemBuilder: (context, index) {
-                    // Get restaurant
                     Restaurant restaurant = _filteredRestaurants[index];
 
-                    // Return the tile for this restaurant
                     return RestaurantView(
                       restaurant: restaurant,
                       onPressed: () => toggleFavorite(restaurant),

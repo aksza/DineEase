@@ -35,7 +35,6 @@ class _UserMeetingScreenState extends State<UserMeetingScreen> {
     fetchMeetings();
   }
 
-  //fetching meetings by user id
   Future<void> fetchMeetings() async {
     try {
       var meetingData = await requestUtil.getMeetingsByUserId(userId);

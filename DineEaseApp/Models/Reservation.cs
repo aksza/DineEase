@@ -13,11 +13,8 @@ namespace DineEaseApp.Models
         public User User { get; set; }
         public int PartySize { get; set; }
         public DateTime Date { get; set; }
-        //public TimeOnly Time { get; set; }
         public string PhoneNum { get; set; }
         public bool Ordered { get; set; }
-        //public int? OrderId { get; set; }
-        //public Order? Order { get; set; }
         public int TableNumber { get; set; }
         public string? Comment { get; set; }
         public bool? Accepted { get; set; }

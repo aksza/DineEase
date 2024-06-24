@@ -13,6 +13,5 @@
         public OwnerDto Owner { get; set; }
         public int MaxTableCap { get; set; }
         public int TaxIdNum { get; set; }
-        //public byte[]? BusinessLicense { get; set; }
     }
 }

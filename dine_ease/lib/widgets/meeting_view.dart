@@ -9,7 +9,6 @@ class MeetingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Formázza az event és meeting dátumot
     DateTime parsedEventDate = DateTime.parse(meeting.eventDate);
     DateTime parsedMeetingDate = DateTime.parse(meeting.meetingDate);
     String formattedEventDate = DateFormat('yyyy-MM-dd HH:mm').format(parsedEventDate);
@@ -28,24 +27,24 @@ class MeetingView extends StatelessWidget {
           children: [
             Text(
               meeting.eventName,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Text(
               'Restaurant: ${meeting.restaurantName}',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Event Date: ',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -54,11 +53,11 @@ class MeetingView extends StatelessWidget {
                 Text(formattedEventDate),
               ],
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Meeting Date: ',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -67,11 +66,11 @@ class MeetingView extends StatelessWidget {
                 Text(formattedMeetingDate),
               ],
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Guest Size: ',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -80,11 +79,11 @@ class MeetingView extends StatelessWidget {
                 Text('${meeting.guestSize}'),
               ],
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Phone: ',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -94,11 +93,11 @@ class MeetingView extends StatelessWidget {
               ],
             ),
             if (meeting.comment != null && meeting.comment!.isNotEmpty) ...[
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Comment: ',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -111,11 +110,11 @@ class MeetingView extends StatelessWidget {
               ),
             ],
             if (meeting.accepted != null) ...[
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Status: ',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
@@ -126,11 +125,11 @@ class MeetingView extends StatelessWidget {
               ),
             ],
             if (meeting.restaurantResponse != null && meeting.restaurantResponse!.isNotEmpty) ...[
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Response: ',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
