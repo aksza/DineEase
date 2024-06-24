@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class UserMeetingScreen extends StatefulWidget{
+class UserMeetingScreen extends StatefulWidget {
   static const routename = '/user-meeting';
 
   const UserMeetingScreen({super.key});
@@ -14,15 +14,14 @@ class UserMeetingScreen extends StatefulWidget{
   State<UserMeetingScreen> createState() => _UserMeetingScreenState();
 }
 
-class _UserMeetingScreenState extends State<UserMeetingScreen>{
-
+class _UserMeetingScreenState extends State<UserMeetingScreen> {
   final RequestUtil requestUtil = RequestUtil();
 
   late int userId;
   late SharedPreferences prefs;
   bool isLoading = true;
-  List<Meeting> meetings = [];
-
+  List<Meeting> futureMeetings = [];
+  List<Meeting> pastMeetings = [];
 
   @override
   void initState() {
@@ -36,24 +35,22 @@ class _UserMeetingScreenState extends State<UserMeetingScreen>{
     fetchMeetings();
   }
 
-  //fetching reservations by user id
   Future<void> fetchMeetings() async {
-      try {
-        
-        var meetingData = await requestUtil.getMeetingsByUserId(userId);
-        setState(() {
-          meetings = meetingData;
-          isLoading = false;
-        });
-        
-        
-      } catch (e) {
-        Logger().e('Error fetching meetings: $e');
-        setState(() {
-          isLoading = false;
-        });
-      }
+    try {
+      var meetingData = await requestUtil.getMeetingsByUserId(userId);
+      setState(() {
+        DateTime currentDate = DateTime.now();
+        futureMeetings = meetingData.where((meet) => DateTime.parse(meet.meetingDate).isAfter(currentDate)).toList();
+        pastMeetings = meetingData.where((meet) => DateTime.parse(meet.meetingDate).isBefore(currentDate)).toList();
+        isLoading = false;
+      });
+    } catch (e) {
+      Logger().e('Error fetching meetings: $e');
+      setState(() {
+        isLoading = false;
+      });
     }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,20 +63,53 @@ class _UserMeetingScreenState extends State<UserMeetingScreen>{
             Navigator.pop(context);
           },
         ),
-        //title is reservation or waiting
         title: const Text('Meetings'),
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : meetings.isEmpty
-              ? Center(child: Text('You do not have accepted meetings yet'))
-              : ListView.builder(
-                  itemCount: meetings.length,
-                  itemBuilder: (context, index) {
-                    final meeting = meetings[index];
-                    return MeetingView(meeting: meeting);
-                  },
-                ),
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (futureMeetings.isNotEmpty) ...[
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'Meetings',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: futureMeetings.length,
+                      itemBuilder: (context, index) {
+                        final meeting = futureMeetings[index];
+                        return MeetingView(meeting: meeting);
+                      },
+                    ),
+                  ),
+                ],
+                if (pastMeetings.isNotEmpty) ...[
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'Meeting History',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: pastMeetings.length,
+                      itemBuilder: (context, index) {
+                        final meeting = pastMeetings[index];
+                        return MeetingView(meeting: meeting);
+                      },
+                    ),
+                  ),
+                ],
+                if (futureMeetings.isEmpty && pastMeetings.isEmpty)
+                  const Center(child: Text('You do not have any meetings yet')),
+              ],
+            ),
     );
   }
 }

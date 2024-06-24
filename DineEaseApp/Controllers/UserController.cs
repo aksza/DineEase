@@ -17,31 +17,18 @@ namespace DineEaseApp.Controllers
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
-        //private readonly IFavoritRepository _favoritRepository;
-        //private readonly IMeetingRepository _meetingRepository;
-        //private readonly IRatingRepository _ratingRepository;
-        //private readonly IReservationRepository _reservationRepository;
-        //private readonly IReviewRepository _reviewRepository;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
 
         public UserController(IUserRepository userRepository,
-            //IFavoritRepository favoritRepository,
-            //IMeetingRepository meetingRepository,IRatingRepository ratingRepository,
-            //IReservationRepository reservationRepository, IReviewRepository reviewRepository,
             IMapper mapper, IConfiguration configuration)
         {
             _userRepository = userRepository;
-            //_favoritRepository = favoritRepository;
-            //_meetingRepository = meetingRepository;
-            //_ratingRepository = ratingRepository;
-            //_reservationRepository = reservationRepository;
-            //_reviewRepository = reviewRepository;
             _mapper = mapper;
             _configuration = configuration;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize]
         [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
 
         public async Task<IActionResult> GetUsers()
@@ -61,11 +48,6 @@ namespace DineEaseApp.Controllers
             try
             {
                 var user = _mapper.Map<UserDto>(await _userRepository.GetUserById(userId));
-                //user.Favorits = _mapper.Map<List<FavoritDto>>(await _favoritRepository.GetFavoritsByUserId(userId));
-                //user.Meetings = _mapper.Map<List<MeetingDto>>(await _meetingRepository.GetMeetingsByUserId(userId));
-                //user.Ratings = _mapper.Map<List<RatingDto>>(await _ratingRepository.GetRatingsByUserId(userId));
-                //user.Reservations = _mapper.Map<List<ReservationDto>>(await _reservationRepository.GetReservationsByUserId(userId));
-                //user.Reviews = _mapper.Map<List<ReviewDto>>(await _reviewRepository.GetReviewsByUserId(userId));
 
                 return Ok(user);
             }
@@ -75,7 +57,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpPut("update/{userId}")]
+        [HttpPut("update/{userId}"), Authorize]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -102,7 +84,6 @@ namespace DineEaseApp.Controllers
             }
 
             var userMap = _mapper.Map<User>(updatedUser);
-            //CreatePasswordHash(updatedUser.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
             userMap.PasswordSalt = user.PasswordSalt;
             userMap.PasswordHash = user.PasswordHash;
@@ -197,11 +178,9 @@ namespace DineEaseApp.Controllers
         {
             List<Claim> claims = new List<Claim>
             {
-                //username is lehetne
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Role, "User")
-                //new Claim(ClaimTypes.Uri, user.ProfilePicture)
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
@@ -223,11 +202,9 @@ namespace DineEaseApp.Controllers
         {
             List<Claim> claims = new List<Claim>
             {
-                //username is lehetne
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Role, "Admin")
-                //new Claim(ClaimTypes.Uri, user.ProfilePicture)
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(

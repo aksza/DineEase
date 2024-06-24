@@ -42,7 +42,6 @@ namespace DineEaseApp.Repository
 
         public async Task<bool> RemoveFavorits(Favorit favorit)
         {
-            //_context.Entry(favorit).State = EntityState.Deleted;
             _context.Favorits.Remove(favorit);
             return await Save();
         }

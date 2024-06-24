@@ -2,7 +2,7 @@ import 'package:dine_ease/models/meeting_model.dart';
 import 'package:dine_ease/models/reservation_model.dart';
 import 'package:dine_ease/utils/request_util.dart';
 import 'package:dine_ease/widgets/reservation_view.dart';
-import 'package:dine_ease/widgets/meeting_view.dart'; // Importáljuk a MeetingView widgetet
+import 'package:dine_ease/widgets/meeting_view.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,6 +25,8 @@ class _UserReservationScreenState extends State<UserReservationScreen> {
   bool isLoading = true;
   List<Reservation> reservations = [];
   List<Meeting> meetings = [];
+  List<Reservation> pastReservations = [];
+  List<Meeting> pastMeetings = [];
 
   @override
   void initState() {
@@ -38,21 +40,25 @@ class _UserReservationScreenState extends State<UserReservationScreen> {
     fetchReservations();
   }
 
-  //fetching reservations by user id
   Future<void> fetchReservations() async {
     try {
       if (widget.isreservation == true) {
         var reservationData = await requestUtil.getReservationsByUserId(userId);
         setState(() {
-          reservations = reservationData;
+          DateTime currentDate = DateTime.now();
+          reservations = reservationData.where((res) => DateTime.parse(res.date).isAfter(currentDate)).toList();
+          pastReservations = reservationData.where((res) => DateTime.parse(res.date).isBefore(currentDate)).toList();
           isLoading = false;
         });
       } else {
         var reservationData = await requestUtil.getWaitingsByUserId(userId);
         var meetingData = await requestUtil.getWaitingsMByUserId(userId);
         setState(() {
-          reservations = reservationData;
-          meetings = meetingData;
+          DateTime currentDate = DateTime.now();
+          reservations = reservationData.where((res) => DateTime.parse(res.date).isAfter(currentDate)).toList();
+          pastReservations = reservationData.where((res) => DateTime.parse(res.date).isBefore(currentDate)).toList();
+          meetings = meetingData.where((meet) => DateTime.parse(meet.meetingDate).isAfter(currentDate)).toList();
+          pastMeetings = meetingData.where((meet) => DateTime.parse(meet.meetingDate).isBefore(currentDate)).toList();
           isLoading = false;
         });
       }
@@ -75,26 +81,59 @@ class _UserReservationScreenState extends State<UserReservationScreen> {
             Navigator.pop(context);
           },
         ),
-        //title is reservation or waiting
         title: Text(widget.isreservation ? 'Reservations' : 'Waiting List'),
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : (widget.isreservation)
-              ? reservations.isEmpty
-                  ? Center(child: Text('You do not have accepted reservations yet'))
-                  : ListView.builder(
-                      itemCount: reservations.length,
-                      itemBuilder: (context, index) {
-                        final reservation = reservations[index];
-                        return ReservationView(reservation: reservation);
-                      },
-                    )
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (reservations.isNotEmpty) ...[
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'Reservations',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: reservations.length,
+                          itemBuilder: (context, index) {
+                            final reservation = reservations[index];
+                            return ReservationView(reservation: reservation);
+                          },
+                        ),
+                      ),
+                    ],
+                    if (pastReservations.isNotEmpty) ...[
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'History',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: pastReservations.length,
+                          itemBuilder: (context, index) {
+                            final reservation = pastReservations[index];
+                            return ReservationView(reservation: reservation);
+                          },
+                        ),
+                      ),
+                    ],
+                    if (reservations.isEmpty && pastReservations.isEmpty)
+                      const Center(child: Text('You do not have any reservations yet')),
+                  ],
+                )
               : ListView(
                   children: [
                     if (reservations.isNotEmpty) ...[
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
                         child: Text(
                           'Reservation Waiting List',
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -102,15 +141,35 @@ class _UserReservationScreenState extends State<UserReservationScreen> {
                       ),
                       ...reservations.map((reservation) => ReservationView(reservation: reservation)).toList(),
                     ],
+                    if (pastReservations.isNotEmpty) ...[
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'Reservation Waiting History',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      ...pastReservations.map((reservation) => ReservationView(reservation: reservation)).toList(),
+                    ],
                     if (meetings.isNotEmpty) ...[
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
                         child: Text(
                           'Meeting Waiting List',
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                       ),
                       ...meetings.map((meeting) => MeetingView(meeting: meeting)).toList(),
+                    ],
+                    if (pastMeetings.isNotEmpty) ...[
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          'Meeting Waiting History',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      ...pastMeetings.map((meeting) => MeetingView(meeting: meeting)).toList(),
                     ],
                   ],
                 ),

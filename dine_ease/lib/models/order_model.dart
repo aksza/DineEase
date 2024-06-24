@@ -17,7 +17,7 @@ class Order{
     return Order(
       menuId: json['menuId'] as int,
       menuName: json['menuName'] ?? '',
-      comment: json['comment'] as String,
+      comment: json['comment'],
       reservationId: json['reservationId'] as int,
     );
   }
@@ -30,5 +30,12 @@ class Order{
       'reservationId': reservationId,
     };
   }  
-  
+
+  Map<String, dynamic> toOMap(){
+    return {
+      'menuId': menuId,
+      'comment': comment,
+      'reservationId': reservationId,
+    };
+  }  
 }

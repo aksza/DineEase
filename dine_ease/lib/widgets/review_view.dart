@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 class ReviewView extends StatefulWidget {
   final Review review;
   final String email;
-  final VoidCallback onDelete; // Callback függvény a törléshez
-  final Function(String)? onUpdate; // Callback függvény a frissítéshez
+  final VoidCallback onDelete;
+  final Function(String)? onUpdate;
 
   const ReviewView({super.key, 
     required this.review,
@@ -21,7 +21,7 @@ class ReviewView extends StatefulWidget {
 class _ReviewViewState extends State<ReviewView> {
   final TextEditingController _editingController = TextEditingController();
   String _editedContent = "";
-  String _originalContent = ""; // Az eredeti tartalmat eltároló változó
+  String _originalContent = "";
   bool _isEditingEnabled = false;
 
   @override
@@ -29,7 +29,7 @@ class _ReviewViewState extends State<ReviewView> {
     super.initState();
     _editingController.text = widget.review.content;
     _editedContent = widget.review.content;
-    _originalContent = widget.review.content; // Eredeti tartalom inicializálása
+    _originalContent = widget.review.content;
   }
 
   @override
@@ -66,11 +66,11 @@ class _ReviewViewState extends State<ReviewView> {
                 if(widget.onUpdate != null)
                 IconButton(
                   icon: const Icon(Icons.edit),
-                  onPressed: () => _enableEditing(true), // Szerkesztés engedélyezése
+                  onPressed: () => _enableEditing(true),
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete),
-                  onPressed: () => _showDeleteConfirmationDialog(context), // Törlés esemény kezelése
+                  onPressed: () => _showDeleteConfirmationDialog(context),
                 ),
               ],
             ),
@@ -102,12 +102,12 @@ class _ReviewViewState extends State<ReviewView> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ElevatedButton(
-                    onPressed: _saveChanges, // Módosítások mentése
+                    onPressed: _saveChanges,
                     child: const Text('Save'),
                   ),
-                  const SizedBox(width: 8.0), // Szünet a gombok között
+                  const SizedBox(width: 8.0),
                   TextButton(
-                    onPressed: _cancelChanges, // Módosítások visszavonása
+                    onPressed: _cancelChanges,
                     child: const Text('Cancel'),
                   ),
                 ],
@@ -125,16 +125,16 @@ class _ReviewViewState extends State<ReviewView> {
   }
 
   void _saveChanges() {
-    widget.onUpdate!(_editedContent); // Módosítások mentése
-    _enableEditing(false); // Szerkesztés kikapcsolása
+    widget.onUpdate!(_editedContent);
+    _enableEditing(false);
   }
 
   void _cancelChanges() {
     setState(() {
-      _editedContent = _originalContent; // Visszaállítjuk az eredeti tartalmat
-      _editingController.text = _originalContent; // TextController tartalmának visszaállítása
+      _editedContent = _originalContent;
+      _editingController.text = _originalContent;
     });
-    _enableEditing(false); // Szerkesztés kikapcsolása
+    _enableEditing(false);
   }
 
   void _showDeleteConfirmationDialog(BuildContext context) {
@@ -147,12 +147,12 @@ class _ReviewViewState extends State<ReviewView> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Close dialog
+                Navigator.pop(context);
               },
               child: const Text("Cancel"),
             ),
             TextButton(
-              onPressed: widget.onDelete, // Execute delete callback
+              onPressed: widget.onDelete,
               child: const Text("Delete"),
             ),
           ],

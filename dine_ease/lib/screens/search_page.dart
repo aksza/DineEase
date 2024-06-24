@@ -1,12 +1,11 @@
 import 'package:dine_ease/models/dine_ease.dart';
 import 'package:dine_ease/models/event_post_model.dart';
 import 'package:dine_ease/models/restaurant_model.dart';
-import 'package:dine_ease/models/restaurant_post.dart';
+import 'package:dine_ease/models/upload_restaurant_image.dart';
 import 'package:dine_ease/utils/request_util.dart';
 import 'package:dine_ease/widgets/event_view.dart';
 import 'package:dine_ease/widgets/restaurant_view.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class SearchPage extends StatefulWidget {
@@ -25,7 +24,7 @@ class _SearchPageState extends State<SearchPage> {
   late int userId;
   final RequestUtil _requestUtil = RequestUtil();
   bool isLoading = true;
-  late List<RestaurantPost> restaurants;
+  late List<Restaurant> restaurants;
   late List<EventPost> events;
 
   @override
@@ -39,26 +38,52 @@ class _SearchPageState extends State<SearchPage> {
     setState(() {
       userId = prefs.getInt('userId')!;
     });
-    searchRestaurants();
-    searchEvents();
+    _loadData();
   }
 
-  void searchRestaurants() async {
+  void _loadData() async {
+    await searchRestaurants();
+    await searchEvents();
+    setState(() {
+      isLoading = false;
+    });
+  }
+    
+  Future<void> getFavoriteRestaurantsByUserId() async {
+    var resp = await _requestUtil.getFavoritRestaurantsByUserId(userId);
+    for (var restaurant in resp) {
+      for (var fav in restaurants) {
+        if (fav.id == restaurant.id) {
+          setState(() {
+            fav.isFavorite = true;
+          });
+        }
+        else{
+          setState(() {
+            fav.isFavorite = false;
+          });
+        
+        }
+      }
+    }
+    
+  }
+
+  Future<void> searchRestaurants() async {
     var resp = await _requestUtil.searchRestaurants(widget.query!);
     if (resp != null) {
+      for(var restaurant in resp){
+        List<UploadImages>? images = await _requestUtil.getPhotosByRestaurantId(restaurant.id);
+        restaurant.imagePath = images;
+      }
       setState(() {
-        restaurants = resp.map((restaurant) => RestaurantPost(
-          id: restaurant.id,
-          name: restaurant.name,
-          isFavorite: false,
-          imagePath: 'assets/test_images/kfc.jpeg',
-        )).toList();
+        restaurants = resp;
       });
-      getFavoriteRestaurantsByUserId();
+      await getFavoriteRestaurantsByUserId();
     }
   }  
 
-  void searchEvents() async {
+  Future<void> searchEvents() async {
     var resp = await _requestUtil.searchEvents(widget.query!);
     if (resp != null) {
       setState(() {
@@ -74,36 +99,20 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
-  void getFavoriteRestaurantsByUserId() async {
-    var resp = await _requestUtil.getFavoritRestaurantsByUserId(userId);
-    for (var restaurant in resp) {
-      for (var fav in restaurants) {
-        if (fav.id == restaurant.id) {
-          setState(() {
-            fav.isFavorite = true;
-          });
-        }
-      }
-    }
-    setState(() {
-      isLoading = false;
-    });
-  }
   
-  void toggleFavorite(RestaurantPost restaurant){
+  
+  void toggleFavorite(Restaurant restaurant){
     if(Provider.of<DineEase>(context, listen: false).isFavorite(restaurant)){
       removeFromFavorits(restaurant);
     }else{
       addToFavorits(restaurant);
     }
   }
-  //add to favorites
-  void addToFavorits(RestaurantPost restaurant){
+  void addToFavorits(Restaurant restaurant){
     Provider.of<DineEase>(context, listen: false).addToFavorits(restaurant);
     
   }
-  //remove from favorites
-  void removeFromFavorits(RestaurantPost restaurant){
+  void removeFromFavorits(Restaurant restaurant){
     Provider.of<DineEase>(context, listen: false).removeFromFavorits(restaurant);
     
   }
@@ -112,7 +121,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: isLoading
-        ? Center(child: CircularProgressIndicator())
+        ? const Center(child: CircularProgressIndicator())
         : SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -121,14 +130,14 @@ class _SearchPageState extends State<SearchPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   'Searching for: "${widget.query}"',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
                   'Restaurants',
                   style: TextStyle(
@@ -138,13 +147,13 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
               restaurants.isEmpty
-                ? Padding(
-                    padding: const EdgeInsets.all(8.0),
+                ? const Padding(
+                    padding: EdgeInsets.all(8.0),
                     child: Text('Restaurant not found'),
                   )
                 : ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: restaurants.length,
                     itemBuilder: (context, index) {
                       return RestaurantView(
@@ -153,8 +162,8 @@ class _SearchPageState extends State<SearchPage> {
                       );
                     },
                   ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
                   'Events',
                   style: TextStyle(
@@ -164,13 +173,13 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
               events.isEmpty
-                ? Padding(
-                    padding: const EdgeInsets.all(8.0),
+                ? const Padding(
+                    padding: EdgeInsets.all(8.0),
                     child: Text('Event not found'),
                   )
                 : ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: events.length,
                     itemBuilder: (context, index) {
                       return EventView(event: events[index]);

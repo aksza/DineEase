@@ -6,7 +6,6 @@ import 'package:dine_ease/screens/user_rating_screen.dart';
 import 'package:dine_ease/screens/user_reservation_screen.dart';
 import 'package:dine_ease/screens/user_review_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserScreen extends StatefulWidget {
@@ -39,155 +38,140 @@ class _UserScreen extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Colors.grey[300],
       body: 
       SafeArea(
         child: 
           Column(
-            //
             children: [
-              //user icon
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   IconButton(
-                    icon: Icon(Icons.arrow_back),
+                    icon: const Icon(Icons.arrow_back),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                   ),
-                  Center(child: const Icon(Icons.person, size: 100)),
-                  //user name
+                  const Center(child: Icon(Icons.person, size: 100)),
                   Center(child: Text(email)),
                 ],
               ),
-              // Space between
               const SizedBox(height: 10),
               const Divider(),
 
-              // Information about user
               GestureDetector(
                 onTap: () {
-                  // Navigate to edit profile
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => EditProfileScreen()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const EditProfileScreen()));
                 },
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Icon(Icons.edit),
                     SizedBox(width: 10),
-                    const Text('Edit Profile'),
+                    Text('Edit Profile'),
                   ],
                 ),
               ),
               const Divider(),
 
-              // Favorites
               GestureDetector(
-                // Navigate to favorites
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => FavoritsPage())),
-                child: Row(
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const FavoritsPage())),
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Icon(Icons.favorite),
                     SizedBox(width: 10),
-                    const Text('Favorites'),
+                    Text('Favorites'),
                   ],
                 ),
               ),
               const Divider(),
 
-              // Reservations
               GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserReservationScreen(isreservation: true)));
                 },
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Icon(Icons.book),
                     SizedBox(width: 10),
-                    const Text('Reservations'),
+                    Text('Reservations'),
                   ],
                 ),
               ),
               const Divider(),
 
-              // Waiting list
               GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserReservationScreen(isreservation: false)));
                 },
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Icon(Icons.list),
                     SizedBox(width: 10),
-                    const Text('Waiting list'),
+                    Text('Waiting list'),
                   ],
                 ),
               ),
               const Divider(),
 
-              // Meetings
               GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserMeetingScreen()));
                 },
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Icon(Icons.group),
                     SizedBox(width: 10),
-                    const Text('Meetings'),
+                    Text('Meetings'),
                   ],
                 ),
               ),
               const Divider(),
 
-              // Reviews
               GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserReviewScreen()));
                 },
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Icon(Icons.rate_review),
                     SizedBox(width: 10),
-                    const Text('Reviews'),
+                    Text('Reviews'),
                   ],
                 ),
               ),
               const Divider(),
 
-              // Ratings
               GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserRatingScreen()));
                 },
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Icon(Icons.star),
                     SizedBox(width: 10),
-                    const Text('Ratings'),
+                    Text('Ratings'),
                   ],
                 ),
               ),
               const Divider(),
 
-              // Logout
               GestureDetector(
                 onTap: () {
                   AuthService().logout(context);
                 },
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Icon(Icons.logout),
                     SizedBox(width: 10),
-                    const Text('Logout'),
+                    Text('Logout'),
                   ],
                 ),
               ),

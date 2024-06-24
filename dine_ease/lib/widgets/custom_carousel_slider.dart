@@ -20,7 +20,7 @@ class _CustomCarouselSliderState extends State<CustomCarouselSlider> {
             CarouselSlider(
               items: widget.images.map((e) => Container(
                 color: Colors.white,
-                child: Image.asset(e, fit: BoxFit.contain),
+                child: e.startsWith("assets/") ? Image.asset(e, fit: BoxFit.contain) : Image.network(e, fit: BoxFit.contain)
                 )
               ).toList(),
               options: CarouselOptions(

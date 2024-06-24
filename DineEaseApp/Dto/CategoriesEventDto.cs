@@ -7,6 +7,5 @@ namespace DineEaseApp.Dto
     {
         public int ECategoryId { get; set; }
         public string ECategoryName { get; set; }
-        //public int EventId { get; set; }
     }
 }

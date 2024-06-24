@@ -39,7 +39,7 @@ class _RStatisticsScreenState extends State<RStatisticsScreen> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
           : _restaurant.forEvent ? 

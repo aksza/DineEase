@@ -97,14 +97,12 @@ class _SignUpScreenState extends State<SignUpScreen>{
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  //logo
                   Image.asset(
                     'assets/images/logo.png',
                     alignment: Alignment.center,
                     width: 100,
                     height: 100
                   ),
-                  //space between
                   const SizedBox(height: 50),
 
                   MouseRegion(
@@ -126,36 +124,22 @@ class _SignUpScreenState extends State<SignUpScreen>{
                       },
                     )
                   ),
-                  //space between
                   const SizedBox(height: 25),
                   if(!isRestaurant)
                   Column(
                     children: [
-                      //firstname input
                       MyTextField(controller: ufirstNameTextController, hintText: 'First Name', obscureText: false),
-                      //space between
                       const SizedBox(height: 10),
-                      //lastname input
                       MyTextField(controller: ulastNameTextController, hintText: 'Last Name', obscureText: false),
-                      //space between
                       const SizedBox(height: 10),
-                      //email input
                       MyTextField(controller: uemailTextController, hintText: 'Email', obscureText: false),
-                      //space between
                       const SizedBox(height: 10),
-                      //phone input
                       MyTextField(controller: uphoneTextController, hintText: 'Phone', obscureText: false),
-                      //space between
                       const SizedBox(height: 10),
-                      //password input
                       MyTextField(controller: upasswordTextController, hintText: 'Password', obscureText: true),
-                      //space between
                       const SizedBox(height: 10),
-                      //confirm password input
                       MyTextField(controller: uconfirmPasswordTextController, hintText: 'Confirm Password', obscureText: true),
-                      //space between
                       const SizedBox(height: 10),
-                      //sign up button
                       MyButton(
                         text: 'Sign Up',
                         onTap: (){
@@ -169,6 +153,30 @@ class _SignUpScreenState extends State<SignUpScreen>{
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text('Passwords do not match'),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
+                            else if(!uemailTextController.text.contains('@') || !uemailTextController.text.contains('.')){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Invalid email'),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
+                            else if(uphoneTextController.text.length < 10 || uphoneTextController.text.length > 12 || uphoneTextController.text.contains(RegExp(r'[a-zA-Z]'))){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Invalid phone number'),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
+                            else if(upasswordTextController.text.length < 6){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Password must be at least 6 characters long'),
                                   backgroundColor: Colors.red,
                                 )
                               );
@@ -191,49 +199,28 @@ class _SignUpScreenState extends State<SignUpScreen>{
                     ],
                   ),
                   if(isRestaurant)
-                  //az r-el kezdodo valtozok a restaurant sign up-hoz tartoznak
                   Column(
                     children: [
-                      //name input
                       MyTextField(controller: rnameTextController, hintText: 'Name', obscureText: false),
-                      //space between
                       const SizedBox(height: 10),
-                      //email input
                       MyTextField(controller: remailTextController, hintText: 'Email', obscureText: false),
-                      //space between
                       const SizedBox(height: 10),
-                      //phone input
-                      MyTextField(controller: rphoneTextController, hintText: 'Phone', obscureText: false),
-                      //space between
+                      MyTextField(controller: rphoneTextController, hintText: 'Phone', obscureText: false,),
                       const SizedBox(height: 10),
-                      //description input
                       MyTextField(controller: rdescription, hintText: 'Description', obscureText: false),
-                      //space between
                       const SizedBox(height: 10),
-                      //address input
                       MyTextField(controller: raddress, hintText: 'Address', obscureText: false),
                       
-                      
-                      //space between
                       const SizedBox(height: 10),
-                      //max table capacity input
                       MyTextField(controller: rmaxTableCap, hintText: 'Max Table Capacity', obscureText: false),
-                      //space between
                       const SizedBox(height: 10),
-                      //tax id number input
                       MyTextField(controller: rtaxIdNum, hintText: 'Tax ID Number', obscureText: false),
-                      //space between
                       const SizedBox(height: 10),
-                      //password input
                       MyTextField(controller: rpasswordTextController, hintText: 'Password', obscureText: true),
-                      //space between
                       const SizedBox(height: 10),
-                      //confirm password input
                       MyTextField(controller: rconfirmPasswordTextController, hintText: 'Confirm Password', obscureText: true),
-                      //space between
                       const SizedBox(height: 10),
-                      //price input
-                      // MyTextField(controller: rprice, hintText: 'Price', obscureText: false),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -244,7 +231,6 @@ class _SignUpScreenState extends State<SignUpScreen>{
                               fontWeight: FontWeight.bold),
                               textAlign: TextAlign.left
                             ),
-                            //space between
                             const SizedBox(width: 20),
                             DropdownButton(
                               value: rprice - 1,
@@ -272,11 +258,8 @@ class _SignUpScreenState extends State<SignUpScreen>{
                             )
                         ]
                       ),
-                      //create dropdown button with enum, where values are cheap average and expensive
                       
-                      //space between
                       const SizedBox(height: 10),
-                      //writing text owner information
                       const Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -289,27 +272,11 @@ class _SignUpScreenState extends State<SignUpScreen>{
                           )
                         ]
                       ),             
-                      //space between
-                      const SizedBox(height: 10),
-                      //text that says Upload a phot
-                      const Text(
-                        'Upload a photo',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold
-                        )
-                      ),
-                      //space between
                       const SizedBox(height: 10),                      
-                      //owner input
                       MyTextField(controller: rownerName, hintText: 'Owner', obscureText: false),
-                      //space between
                       const SizedBox(height: 10),
-                      //owner phone number input
                       MyTextField(controller: rownerPhoneNum, hintText: 'Phone number', obscureText: false),
-                       //space between
                       const SizedBox(height: 10),
-                      //checkbox 
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -325,9 +292,7 @@ class _SignUpScreenState extends State<SignUpScreen>{
                           const Text('Is this Restaurant for events?')
                         ]
                       ),
-                      //space between
                       const SizedBox(height: 10),
-                      //sign up button
                       MyButton(
                         text: 'Sign Up',
                         onTap: (){
@@ -350,6 +315,54 @@ class _SignUpScreenState extends State<SignUpScreen>{
                                 )
                               );
                             }
+                            else if(!remailTextController.text.contains('@') || !remailTextController.text.contains('.')){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Invalid email'),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
+                            else if(rphoneTextController.text.length < 10 || rphoneTextController.text.length > 12 || rphoneTextController.text.contains(RegExp(r'[a-zA-Z]'))){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Invalid phone number'),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
+                            else if(rmaxTableCap.text.contains(RegExp(r'[a-zA-Z]')) || int.parse(rmaxTableCap.text) < 0){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Invalid max table capacity'),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
+                            else if(rtaxIdNum.text.contains(RegExp(r'[a-zA-Z]'))){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Invalid tax id number'),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
+                            else if(rpasswordTextController.text.length < 6){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Password must be at least 6 characters long'),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
+                            else if(rownerPhoneNum.text.length < 10 || rownerPhoneNum.text.length > 12 || rownerPhoneNum.text.contains(RegExp(r'[a-zA-Z]'))){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Invalid owner phone number'),
+                                  backgroundColor: Colors.red,
+                                )
+                              );
+                            }
                             else{
                               createRestaurant();
                               Navigator.of(context).pushNamed(LoginScreen.routeName);
@@ -367,10 +380,7 @@ class _SignUpScreenState extends State<SignUpScreen>{
                       ),
                     ],
                   ),
-                  //space between
                   const SizedBox(height: 25),
-
-                //go to login page
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -386,7 +396,6 @@ class _SignUpScreenState extends State<SignUpScreen>{
                       cursor: SystemMouseCursors.click,
                       child: GestureDetector(
                         onTap: (){
-                          //go to log in page
                           Navigator.of(context).pushNamed(LoginScreen.routeName);
                         },
                     

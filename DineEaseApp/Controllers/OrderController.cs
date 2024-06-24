@@ -4,6 +4,7 @@ using DineEaseApp.Interfaces;
 using DineEaseApp.Models;
 using DineEaseApp.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DineEaseApp.Controllers
 {
@@ -25,7 +26,7 @@ namespace DineEaseApp.Controllers
             _menuRepository = menuRepository;
         }
 
-        [HttpGet("{reservationId}")]
+        [HttpGet("{reservationId}"), Authorize]
         public async Task<IActionResult> GetOrderByReservationId(int reservationId) 
         {
             var orders = _mapper.Map<List<OrderDto>>(await _orderRepository.GetOrdersByReservationId(reservationId));
@@ -73,7 +74,6 @@ namespace DineEaseApp.Controllers
                 }
 
                 reservation.Ordered = true;
-                //reservation.Orders.Add(orderMap);
 
                 if (!await _reservationRepository.UpdateReservation(reservation))
                 {
@@ -89,7 +89,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPut("update/{id}"), Authorize]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -126,7 +126,7 @@ namespace DineEaseApp.Controllers
             return NoContent();
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete("delete"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> DeleteOrder(int id)
         {

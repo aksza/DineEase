@@ -1,5 +1,4 @@
 import 'package:dine_ease/screens/welcome.dart';
-// import 'package:dine_ease/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 

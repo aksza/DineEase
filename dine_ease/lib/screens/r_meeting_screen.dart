@@ -29,7 +29,6 @@ class _RMeetingScreenState extends State<RMeetingScreen> {
     getAcceptedMeetings();
   }
 
-  //fetch accepted meetings from the database
   Future<List<Meeting>?> getAcceptedMeetings()async {
     DataBaseProvider dbProvider = DataBaseProvider();
     int restaurantId = await dbProvider.getUserId();
@@ -55,7 +54,6 @@ class _RMeetingScreenState extends State<RMeetingScreen> {
   List<MeetingNew> _getDataSource() {
     List<MeetingNew> appointments = <MeetingNew>[];
 
-    //appointmentse alakitjuk az acceptedMeetings-t
     for (Meeting meeting in acceptedMeeting) {
       
       appointments.add(MeetingNew(
@@ -119,7 +117,6 @@ class _RMeetingScreenState extends State<RMeetingScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    //restaurant:
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -129,17 +126,8 @@ class _RMeetingScreenState extends State<RMeetingScreen> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    //user name
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //   children: [
-                    //     const Text('Name: ',
-                    //         style: TextStyle(fontWeight: FontWeight.bold)),
-                    //     Text(appointment.meeting.name ?? ''),
-                    //   ],
-                    // ),
+
                     const SizedBox(height: 10),
-                    //party size
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -149,7 +137,6 @@ class _RMeetingScreenState extends State<RMeetingScreen> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    //date
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -170,7 +157,6 @@ class _RMeetingScreenState extends State<RMeetingScreen> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    //phone number
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -180,7 +166,6 @@ class _RMeetingScreenState extends State<RMeetingScreen> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    //if comment is not null, show it
                     if (appointment.meeting.comment != '' &&
                         appointment.meeting.comment != null)
                       Row(
@@ -192,7 +177,6 @@ class _RMeetingScreenState extends State<RMeetingScreen> {
                         ],
                       ),
                     const SizedBox(height: 10),
-                    //restaurant response if it is not null
                     if (appointment.meeting.restaurantResponse != '' &&
                         appointment.meeting.restaurantResponse != null)
                       Row(
@@ -212,7 +196,7 @@ class _RMeetingScreenState extends State<RMeetingScreen> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Close'),
+                  child: const Text('Close'),
                 ),
               ],
             );

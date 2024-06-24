@@ -9,8 +9,6 @@ class Eventt{
   DateTime startingDate;
   DateTime endingDate;
   List<ECategory>? eCategories;
-  // List<PhotoEvent>? photoEvents;
-  // List<CategoriesEvent>? categoriesEvents;
 
   Eventt({
     required this.id,
@@ -21,8 +19,6 @@ class Eventt{
     required this.startingDate,
     required this.endingDate,
     this.eCategories
-    // this.photoEvents,
-    // this.categoriesEvents
   });
 
   factory Eventt.fromJson(dynamic json){
@@ -34,8 +30,6 @@ class Eventt{
       description: json['description'] as String,
       startingDate: DateTime.parse(json['startingDate'] as String),
       endingDate: DateTime.parse(json['endingDate'] as String),
-      // photoEvents: json['photoEvents'],
-      // categoriesEvents: json['categoriesEvents']
     );
   }
 
@@ -48,8 +42,6 @@ class Eventt{
       'description': description,
       'startingDate': startingDate.toIso8601String(),
       'endingDate': endingDate.toIso8601String(),
-      // 'photoEvents': photoEvents,
-      // 'categoriesEvents': categoriesEvents
     };
   }
 
@@ -62,7 +54,4 @@ class Eventt{
       'endingDate': endingDate.toIso8601String(),
     };
   }
-
-
-
 }

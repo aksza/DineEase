@@ -14,7 +14,7 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
-  List<Menu> menu = []; // Inicializálás üres listaként
+  List<Menu> menu = []; 
   final RequestUtil _requestUtil = RequestUtil();
 
   Future<void> getMenuByRestaurantId(int id) async {

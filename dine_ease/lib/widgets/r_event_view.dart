@@ -8,8 +8,9 @@ import 'package:logger/logger.dart';
 class REventViewScreen extends StatefulWidget {
   final Eventt event;
   final VoidCallback onUpdate;
+  bool canEdit;
 
-  REventViewScreen({required this.event, required this.onUpdate});
+  REventViewScreen({super.key, required this.event, required this.onUpdate,required this.canEdit});
 
   @override
   State<REventViewScreen> createState() => _REventViewScreenState();
@@ -34,7 +35,6 @@ class _REventViewScreenState extends State<REventViewScreen> {
     setValues();
   }
 
-  //set the values of the text controllers
   void setValues(){
     _eventNameController.text = widget.event.eventName;
     _startingDateController.text = DateFormat('yyyy-MM-dd').format(widget.event.startingDate);
@@ -44,7 +44,6 @@ class _REventViewScreenState extends State<REventViewScreen> {
     _descriptionController.text = widget.event.description ?? '';
   }
 
-  //update event
   void updateEvent() async {
     Eventt updatedEvent = Eventt(
       id: widget.event.id,
@@ -72,7 +71,7 @@ class _REventViewScreenState extends State<REventViewScreen> {
         decoration: BoxDecoration(
           color: Colors.grey[500],
           borderRadius: BorderRadius.circular(10.0),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
               color: Colors.black26,
               offset: Offset(0, 2),
@@ -82,52 +81,48 @@ class _REventViewScreenState extends State<REventViewScreen> {
         ),
         child: Builder(
           builder: (context) {
-            if (kIsWeb) { // KisWeb csomag használata
+            if (kIsWeb) {
               return SingleChildScrollView(
                 child:
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Event Name
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       _eventNameController.text,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
                   ),
-                  // Date
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       'Date: ${_startingDateController.text} - ${_endingDateController.text}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16.0,
                         color: Colors.white,
                       ),
                     ),
                   ),
-                  // Time
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       'Time: ${_startingHourController.text} - ${_endingHourController.text}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16.0,
                         color: Colors.white,
                       ),
                     ),
                   ),
-                  // Description
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       'Description: ${_descriptionController.text}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16.0,
                         color: Colors.white,
                       ),
@@ -136,30 +131,28 @@ class _REventViewScreenState extends State<REventViewScreen> {
                 ],
               )
               );
-            } else { // Nem webes platform
+            } else {
               return SingleChildScrollView(
                 child:
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Event Name
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       _eventNameController.text,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
                   ),
-                  // Date and Time
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       '${_startingDateController.text} - ${_endingDateController.text}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16.0,
                         color: Colors.white,
                       ),
@@ -190,12 +183,12 @@ class _REventViewScreenState extends State<REventViewScreen> {
                   TextFormField(
                     controller: _eventNameController,
                     readOnly: !_isEditing,
-                    decoration: InputDecoration(labelText: 'Event Name'),
+                    decoration: const InputDecoration(labelText: 'Event Name'),
                   ),
                   TextFormField(
                     controller: _startingDateController,
                     readOnly: !_isEditing,
-                    decoration: InputDecoration(labelText: 'Starting Date'),
+                    decoration: const InputDecoration(labelText: 'Starting Date'),
                     onTap: () async {
                       DateTime? selectedDateTime = await showDatePicker(
                         context: context,
@@ -220,7 +213,7 @@ class _REventViewScreenState extends State<REventViewScreen> {
                   TextFormField(
                     controller: _endingDateController,
                     readOnly: !_isEditing,
-                    decoration: InputDecoration(labelText: 'Ending Date'),
+                    decoration: const InputDecoration(labelText: 'Ending Date'),
                     onTap: () async {
                       DateTime? selectedDateTime = await showDatePicker(
                         context: context,
@@ -248,7 +241,7 @@ class _REventViewScreenState extends State<REventViewScreen> {
                         child: TextFormField(
                           controller: _startingHourController,
                           readOnly: !_isEditing,
-                          decoration: InputDecoration(labelText: 'Starting Time (HH:mm)'),
+                          decoration: const InputDecoration(labelText: 'Starting Time (HH:mm)'),
                           onTap: () async {
                             TimeOfDay? selectedTime = await showTimePicker(
                               context: context,
@@ -262,12 +255,12 @@ class _REventViewScreenState extends State<REventViewScreen> {
                           },
                         ),
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       Expanded(
                         child: TextFormField(
                           controller: _endingHourController,
                           readOnly: !_isEditing,
-                          decoration: InputDecoration(labelText: 'Ending Time (HH:mm)'),
+                          decoration: const InputDecoration(labelText: 'Ending Time (HH:mm)'),
                           onTap: () async {
                             TimeOfDay? selectedTime = await showTimePicker(
                               context: context,
@@ -286,12 +279,13 @@ class _REventViewScreenState extends State<REventViewScreen> {
                   TextFormField(
                     controller: _descriptionController,
                     readOnly: !_isEditing,
-                    decoration: InputDecoration(labelText: 'Description'),
+                    decoration: const InputDecoration(labelText: 'Description'),
                   ),
                 ],
               ),
             ),
             actions: [
+              if(widget.canEdit)
               TextButton(
                 onPressed: () {
                   setState(() {
@@ -299,7 +293,7 @@ class _REventViewScreenState extends State<REventViewScreen> {
                       _isEditing = false;
                       text = 'Edit';
                       if (DateTime.parse(_startingDateController.text + ' ' + _startingHourController.text).isAfter(DateTime.parse(_endingDateController.text + ' ' + _endingHourController.text))) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Starting Date cannot be greater than Ending Date')));
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Starting Date cannot be greater than Ending Date')));
                         return;
                       }
                       updateEvent();
@@ -316,7 +310,7 @@ class _REventViewScreenState extends State<REventViewScreen> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('Cancel'),
+                child: const Text('Cancel'),
               ),
             ],
           );

@@ -20,15 +20,12 @@ class _EventPageState extends State<EventPage> {
           padding: const EdgeInsets.all(25.0),
           child: Column(
             children: [
-              //list of events
               Expanded(
                 child: ListView.builder(
                   itemCount: value.events.length,
                   itemBuilder: (context, index){
-                    //get event
                     EventPost event = value.events[index];
 
-                    //return the tile for this event
                     return EventView(event: event);
                   }
                 )
@@ -41,22 +38,3 @@ class _EventPageState extends State<EventPage> {
       
   }
 }
-
-// import 'package:flutter/material.dart';
-
-// class EventPage extends StatefulWidget {
-//   const EventPage({Key? key}) : super(key: key);
-
-//   @override
-//   _EventPageState createState() => _EventPageState();
-// }
-
-// class _EventPageState extends State<EventPage> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Center(
-//       child: Text('Event Page'),
-//     );
-    
-//   }
-// }

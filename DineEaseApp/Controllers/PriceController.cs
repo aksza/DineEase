@@ -3,6 +3,8 @@ using DineEaseApp.Dto;
 using DineEaseApp.Interfaces;
 using DineEaseApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace DineEaseApp.Controllers
 {
@@ -19,7 +21,7 @@ namespace DineEaseApp.Controllers
             this._mapper = mapper;
         }
 
-        [HttpGet]
+        [HttpGet,Authorize]
         [ProducesResponseType(200,Type = typeof(IEnumerable<Price>))]
         public IActionResult GetPrices()
         {
@@ -31,7 +33,7 @@ namespace DineEaseApp.Controllers
             return Ok(prices);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize]
         [ProducesResponseType(200, Type = typeof(Owner))]
         [ProducesResponseType(400)]
         public IActionResult GetPrice(int id)
@@ -48,7 +50,7 @@ namespace DineEaseApp.Controllers
             return Ok(price);
         }
 
-        [HttpGet("{priceId}/Restaurants")]
+        [HttpGet("{priceId}/Restaurants"), Authorize]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Restaurant>))]
         [ProducesResponseType(400)]
 

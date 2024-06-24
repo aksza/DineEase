@@ -5,7 +5,6 @@ import 'package:dine_ease/models/reservation_model.dart';
 import 'package:dine_ease/models/reservation_new_model.dart';
 import 'package:dine_ease/utils/request_util.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
@@ -30,7 +29,6 @@ class _RReservationScreenState extends State<RReservationScreen> {
     getAcceptedReservations();
   }
 
-  //fetch accepted reservations from the database
   Future<List<Reservation>?> getAcceptedReservations()async {
     DataBaseProvider dbProvider = DataBaseProvider();
     int restaurantId = await dbProvider.getUserId();
@@ -56,7 +54,6 @@ class _RReservationScreenState extends State<RReservationScreen> {
   List<ReservationNew> _getDataSource() {
     List<ReservationNew> appointments = <ReservationNew>[];
 
-    //appointmentse alakitjuk az acceptedReservations-t
     for (Reservation reservation in acceptedReservations) {
       
       appointments.add(ReservationNew(
@@ -125,7 +122,6 @@ class _RReservationScreenState extends State<RReservationScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    //restaurant:
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -135,7 +131,6 @@ class _RReservationScreenState extends State<RReservationScreen> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    //user name
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -145,7 +140,6 @@ class _RReservationScreenState extends State<RReservationScreen> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    //party size
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -155,7 +149,6 @@ class _RReservationScreenState extends State<RReservationScreen> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    //date
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -166,7 +159,6 @@ class _RReservationScreenState extends State<RReservationScreen> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    //phone number
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -176,7 +168,6 @@ class _RReservationScreenState extends State<RReservationScreen> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    //table number
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -186,7 +177,6 @@ class _RReservationScreenState extends State<RReservationScreen> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    //if comment is not null, show it
                     if (appointment.reservation.comment != '' &&
                         appointment.reservation.comment != null)
                       Row(
@@ -198,7 +188,6 @@ class _RReservationScreenState extends State<RReservationScreen> {
                         ],
                       ),
                     const SizedBox(height: 10),
-                    //restaurant response if it is not null
                     if (appointment.reservation.restaurantResponse != '' &&
                         appointment.reservation.restaurantResponse != null)
                       Row(
@@ -210,7 +199,6 @@ class _RReservationScreenState extends State<RReservationScreen> {
                         ],
                       ),
                     const SizedBox(height: 10),
-                    //if the reservation is ordered, show it
                     if (appointment.reservation.ordered != null &&
                         appointment.reservation.ordered!)
                       Row(

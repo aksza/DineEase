@@ -3,8 +3,6 @@ import 'package:dine_ease/auth/auth_service.dart';
 import 'package:dine_ease/auth/db_service.dart';
 import 'package:dine_ease/helper/order_notifier.dart';
 import 'package:dine_ease/models/dine_ease.dart';
-// import 'package:dine_ease/models/event_post_model.dart';
-// import 'package:dine_ease/models/eventt_model.dart';
 import 'package:dine_ease/screens/edit_profile_screen.dart';
 import 'package:dine_ease/screens/event_details_screen.dart';
 import 'package:dine_ease/screens/favorits_page.dart';
@@ -75,6 +73,7 @@ class MyApp extends StatelessWidget {
         child: 
           MaterialApp(
           title: 'DineEase',
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(230, 81, 0, 1)),
             useMaterial3: true,
@@ -84,30 +83,11 @@ class MyApp extends StatelessWidget {
             '/': (context) => const SplashScreen(),
             '/login': (context) => const LoginScreen(),
             '/sign-up-user': (context) => const SignUpScreen(),
-            // '/foryou' : (context) => HomePage(),
             '/user': (context) => const UserScreen(),
             '/welcome': (context) => const WelcomeScreen(),
             '/favorits': (context) => FavoritsPage(),
             '/home': (context) => HomePage(),
             '/event_details_screen': (context) => EventDetails(selectedEvent: 
-              // EventPost(
-              //   id: 0,
-              //   eventName: '',
-              //   restaurantName: '',
-              //   startingDate: DateTime.now(),
-              //   endingDate: DateTime.now(),
-              //   restaurantId: 0,
-              //   description: '',
-              // )
-              // Eventt(
-              //   id: 0,
-              //   eventName: '',
-              //   restaurantName: '',
-              //   startingDate: DateTime.now(),
-              //   endingDate: DateTime.now(),
-              //   restaurantId: 0,
-              //   description: '',
-              // )
               null
             ,),
             '/restaurant_details_screen': (context) => RestaurantDetails(selectedRestaurant: 

@@ -4,6 +4,8 @@ using DineEaseApp.Models;
 using DineEaseApp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace DineEaseApp.Controllers
 {
@@ -22,7 +24,48 @@ namespace DineEaseApp.Controllers
             _photosRestaurantRepository = photosRestaurantRepository;
         }
 
-        [HttpPost("addPhoto")]
+        [HttpGet("getimage")]
+        public async Task<IActionResult> ImageGet(string imageName)
+        {
+            try
+            {
+                string filePath = Path.Combine("E:\\egyetem\\allamvizsga\\DineEase\\dine_ease\\assets\\test_images", imageName);
+
+                if (System.IO.File.Exists(filePath))
+                {
+                    var image = await System.IO.File.ReadAllBytesAsync(filePath);
+                    string contentType = GetContentType(filePath);
+                    return File(image, contentType);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        private string GetContentType(string path)
+        {
+            var types = GetMimeTypes();
+            var ext = Path.GetExtension(path).ToLowerInvariant();
+            return types[ext];
+        }
+
+        private Dictionary<string, string> GetMimeTypes()
+        {
+            return new Dictionary<string, string>
+            {
+                {".jpg", "image/jpeg"},
+                {".jpeg", "image/jpeg"},
+                {".png", "image/png"},
+            };
+        }
+
+        [HttpPost("addPhoto"), Authorize]
         [ProducesResponseType(200,Type = typeof(PhotosRestaurant))]
         public async Task<IActionResult> CreatePhotosRestaurant([FromForm] PhotosRestaurantDto photoToAdd)
         {
@@ -32,8 +75,9 @@ namespace DineEaseApp.Controllers
                 {
                     return BadRequest("File size should not exceed 1 MB");
                 }
-                List<string> allowedFileExtentions = new List<string> { ".jpg", ".jpeg", ".png" };
-                string createdImageName = await _fileService.SaveFileAsync(photoToAdd.ImageFile!, allowedFileExtentions);
+
+                List<string> allowedFileExtensions = new List<string> { ".jpg", ".jpeg", ".png" };
+                string createdImageName = await _fileService.SaveFileAsync(photoToAdd.ImageFile, allowedFileExtensions);
 
                 var photosRestaurant = new PhotosRestaurant
                 {
@@ -42,31 +86,47 @@ namespace DineEaseApp.Controllers
                 };
 
                 var createdPhoto = await _photosRestaurantRepository.AddPhotosRestaurantAsync(photosRestaurant);
-                //return CreatedAtAction(nameof(CreatePhotosRestaurant), createdPhoto);
-                return Ok(createdPhoto);
 
+                var photoResponse = new
+                {
+                    id = createdPhoto.Id,
+                    restaurantId = createdPhoto.RestaurantId,
+                    image = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}" +  Url.Action("ImageGet", new { imageName = createdPhoto.Image })
+                };
+
+                return Ok(photoResponse);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
-        [HttpGet("getPhoto/{restaurantId}")]
+        [HttpGet("getPhoto/{restaurantId}"), Authorize]
         public async Task<IActionResult> GetPhotosByRestaurantId(int restaurantId)
         {
-            var photo = await _photosRestaurantRepository.GetPhotosByRestaurantId(restaurantId);
+            var photos = await _photosRestaurantRepository.GetPhotosByRestaurantId(restaurantId);
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            if(photos == null)
+            {
+                return BadRequest(ModelState);
+            }
+            var photoResponses = photos.Select(photo => new
+            {
+                id = photo.Id,
+                restaurantId = photo.RestaurantId,
+                image = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}" + Url.Action("ImageGet", new { imageName = photo.Image })
+            }).ToList();
 
-            return Ok(photo);
+            return Ok(photoResponses);
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPut("update/{id}"), Authorize]
         [ProducesResponseType(200, Type = typeof(PhotosRestaurant))]
         public async Task<IActionResult> UpdatePhotosRestaurant(int id, [FromForm] PhotosRestaurantUpdateDto photoToUpdate)
         {
@@ -114,7 +174,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("delete/{id}"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> DeletePhoto(int id)
         {
@@ -136,7 +196,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpGet("get/{id}")]
+        [HttpGet("get/{id}"), Authorize]
         [ProducesResponseType(200, Type = typeof(PhotosRestaurant))]
         public async Task<IActionResult> GetPhoto(int id)
         {
@@ -148,7 +208,7 @@ namespace DineEaseApp.Controllers
             return Ok(photo);
         }
 
-        [HttpGet]
+        [HttpGet, Authorize]
         [ProducesResponseType(200, Type = typeof(PhotosRestaurant))]
         public async Task<IActionResult> GetPhotos()
         {

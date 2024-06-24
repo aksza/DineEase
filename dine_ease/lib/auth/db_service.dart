@@ -42,7 +42,6 @@ class DataBaseProvider extends ChangeNotifier{
 
     _userId = int.parse(uid);
     prefs.setInt('userId', _userId.toInt());
-    //kilogoljuk a uid tipusat
     notifyListeners();
   }
 

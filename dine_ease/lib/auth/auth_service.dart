@@ -15,7 +15,6 @@ class AuthService with ChangeNotifier{
     
     try{
       Logger().i('Logging in user with email: $email and password: $password');
-      // final response = await requestUtil.postUserLogin(email, password);
       final response = await requestUtil.postLogin(email, password);
       Logger().i(response.body);
       if(response.statusCode == 200){

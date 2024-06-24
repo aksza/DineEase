@@ -3,6 +3,7 @@ using DineEaseApp.Dto;
 using DineEaseApp.Interfaces;
 using DineEaseApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DineEaseApp.Controllers
 {
@@ -21,7 +22,7 @@ namespace DineEaseApp.Controllers
             _menuRepository = menuRepository;
             _menuTypeRepository = menuTypeRepository;
         }
-        [HttpGet("menuTypes")]
+        [HttpGet("menuTypes"),Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetMenuTypes()
         {
@@ -36,7 +37,7 @@ namespace DineEaseApp.Controllers
         }
       
 
-        [HttpGet("{restaurantId}")]
+        [HttpGet("{restaurantId}"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetMenusByRestaurantId(int restaurantId)
         {
@@ -65,7 +66,7 @@ namespace DineEaseApp.Controllers
             return Ok(menus);
         }
 
-        [HttpPost("addMenu")]
+        [HttpPost("addMenu"), Authorize]
         public async Task<IActionResult> AddMenu(MenuCreateDto menuDto)
         {
             try
@@ -90,7 +91,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPut("update/{id}"), Authorize]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -127,7 +128,7 @@ namespace DineEaseApp.Controllers
             return NoContent();
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("delete/{id}"),Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> DeleteMenu(int id)
         {

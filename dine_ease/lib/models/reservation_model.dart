@@ -40,7 +40,6 @@ class Reservation{
       date: json['date'] as String,
       phoneNum: json['phoneNum'] as String,
       ordered: json['ordered'] ?? false,
-      //ha a comment null, akkor üres string legyen
       tableNumber: json['tableNumber'] ?? 0,
       comment: json['comment'] ?? '',
       accepted: json['accepted'],
@@ -49,7 +48,6 @@ class Reservation{
   }
 
   Map<String, dynamic> toMap(){
-    // String formattedDate = date.toIso8601String();
 
     return {
       'id': id,

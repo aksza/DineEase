@@ -8,7 +8,6 @@ namespace DineEaseApp.Dto
         public int Id { get; set; }
         public string EventName { get; set; }
         public int RestaurantId { get; set; }
-        //public RestaurantDto Restaurantk { get; set; }
         public string RestaurantName { get; set; }
         public string? Description { get; set; }
         public DateTime StartingDate { get; set; }

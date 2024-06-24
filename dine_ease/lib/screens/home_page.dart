@@ -1,17 +1,13 @@
-import 'package:dine_ease/models/restaurant_model.dart';
 import 'package:dine_ease/screens/event_page.dart';
 import 'package:dine_ease/screens/for_you_page.dart';
 import 'package:dine_ease/screens/restaurant_for_event_page.dart';
 import 'package:dine_ease/screens/restaurant_page.dart';
 import 'package:dine_ease/screens/search_page.dart';
 import 'package:dine_ease/widgets/custom_appbar.dart';
-import 'package:dine_ease/widgets/restaurant_view.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = '/home';
-  // final String token;
 
   const HomePage({super.key});
 

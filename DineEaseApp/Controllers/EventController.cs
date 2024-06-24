@@ -5,6 +5,7 @@ using DineEaseApp.Models;
 using DineEaseApp.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DineEaseApp.Controllers
 {
@@ -17,7 +18,6 @@ namespace DineEaseApp.Controllers
         private readonly ICategoriesEventRepository _categoriesEventRepository;
         private readonly IRepository<ECategory> _ecategoryRepository;
         private readonly IMapper _mapper;
-        //private readonly IConfiguration _configuration;
 
         public EventController(ICategoriesEventRepository categoriesEventRepository, IRepository<ECategory> ecategoryRepository, IEventRepository eventRepository,IRestaurantRepository restaurantRepository, IMapper mapper, IConfiguration configuration)
         {
@@ -26,10 +26,28 @@ namespace DineEaseApp.Controllers
             _eventRepository = eventRepository;
             _restaurantRepository = restaurantRepository;
             _mapper = mapper;
-            //_configuration = configuration;
         }
 
-        [HttpGet("eventNumber/{restaurantId}")]
+        [HttpGet("byfavorits/{userId}"),Authorize]
+        public async Task<IActionResult> GetEventsByFavorits(int userId)
+        {
+            var events = _mapper.Map<List<EventDto>>(await _eventRepository.GetEventsByFavoritAsync(userId));
+
+            foreach (var eventDto in events)
+            {
+                var res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(eventDto.RestaurantId));
+                eventDto.RestaurantName = res.Name;
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(events);
+        }
+
+        [HttpGet("eventNumber/{restaurantId}"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetEventsByRestaurantId(int restaurantId)
         {
@@ -44,46 +62,32 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpGet("search/{someText}")]
+        [HttpGet("search/{someText}"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> Search(string someText)
         {
             var results = _mapper.Map<List<EventDto>>(await _eventRepository.SearchEvents(someText));
 
-            var eventDtos = results
-                .Select(async e =>
-                {
-                    var eventDto = e;
-                    RestaurantDto res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(eventDto.RestaurantId));
-                    eventDto.RestaurantName = res.Name;
-                    return eventDto;
-                }
-                );
-            var eventDtoList = await Task.WhenAll(eventDtos);
+            foreach (var eventDto in results)
+            {
+                RestaurantDto res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(eventDto.RestaurantId));
+                eventDto.RestaurantName = res.Name;
+            }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            return Ok(eventDtoList);
+            return Ok(results);
         }
 
-        [HttpGet]
+        [HttpGet,Authorize]
         [ProducesResponseType(200,Type = typeof(IEnumerable<Event>))]
         public async Task<IActionResult> GetEvents()
         {
             var events = _mapper.Map<List<EventDto>>(await _eventRepository.GetEventsAsync());
 
-            //var eventDtos = events
-            //    .Select (async e =>
-            //    {
-            //        var eventDto = e;
-            //        RestaurantDto res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(eventDto.RestaurantId));
-            //        eventDto.RestaurantName = res.Name;
-            //        return eventDto;
-            //    }
-            //    );
-            //var eventDtoList = await Task.WhenAll(eventDtos);
             foreach(var eventDto in events)
             {
                 var res = _mapper.Map<RestaurantDto>(await _restaurantRepository.GetRestaurantById(eventDto.RestaurantId));
@@ -98,7 +102,7 @@ namespace DineEaseApp.Controllers
             return Ok(events);
         }
 
-        [HttpPost("addEvent")]
+        [HttpPost("addEvent"), Authorize]
         public async Task<IActionResult> AddEvent(EventCreateDto eventDto)
         {
             try
@@ -125,7 +129,7 @@ namespace DineEaseApp.Controllers
         }
         
 
-        [HttpGet("restaurant/future/{restaurantId}")]
+        [HttpGet("restaurant/future/{restaurantId}"), Authorize]
         public async Task<IActionResult> GetFutureEventsByRestaurantId(int restaurantId)
         {
             var events = _mapper.Map<List<EventDto>>(await _eventRepository.GetFutureEventsByRestaurantId(restaurantId));
@@ -144,7 +148,7 @@ namespace DineEaseApp.Controllers
             return Ok(events);
         }
 
-        [HttpGet("restaurant/old/{restaurantId}")]
+        [HttpGet("restaurant/old/{restaurantId}"), Authorize]
         public async Task<IActionResult> GetOldEventsByRestaurantId(int restaurantId)
         {
             var events = _mapper.Map<List<EventDto>>(await _eventRepository.GetOldEventsByRestaurantId(restaurantId));
@@ -164,7 +168,7 @@ namespace DineEaseApp.Controllers
         }
 
 
-        [HttpPut("update")]
+        [HttpPut("update"), Authorize]
         public async Task<IActionResult> UpdateEvent(EventDto eventDto)
         {
             if(eventDto == null)
@@ -194,7 +198,7 @@ namespace DineEaseApp.Controllers
             return NoContent();
         }
 
-        [HttpGet("eCategories")]
+        [HttpGet("eCategories"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetECategories()
         {
@@ -207,13 +211,18 @@ namespace DineEaseApp.Controllers
             return Ok(categories);
         }
 
-        [HttpGet("{eventId}/eCategories")]
+        [HttpGet("{eventId}/eCategories"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetCategoriesByEventId(int eventId)
         {
+            var e = await _eventRepository.GetEventById(eventId);
+            if(e == null)
+            {
+                return NotFound();
+            }
             var categories = _mapper.Map<List<CategoriesEventDto>>(await _categoriesEventRepository.GetCategoriesEventsByEventId(eventId));
-
-            if (categories == null || categories.Count == 0)
+            
+            if (categories == null)
             {
                 return NotFound();
             }
@@ -235,7 +244,7 @@ namespace DineEaseApp.Controllers
             }
             return Ok(categories);
         }
-        [HttpGet("{eventId}")]
+        [HttpGet("{eventId}"), Authorize]
         [ProducesResponseType(200, Type = typeof(Event))]
         public async Task<IActionResult> GetEventById(int eventId)
         {

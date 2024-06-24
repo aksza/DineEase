@@ -1,7 +1,5 @@
 import 'package:dine_ease/screens/user_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget{
   void Function(int,String?)? onTabChange;
@@ -44,7 +42,6 @@ class _CustomAppBar extends State<CustomAppBar>{
                       children: [
                         Expanded(
                           child: SearchBar(
-                            // elevation: MaterialStateProperty.all(25.0),
                             backgroundColor: MaterialStateProperty.all(
                               const Color.fromARGB(255, 240, 240, 240),
                             ),
@@ -62,26 +59,7 @@ class _CustomAppBar extends State<CustomAppBar>{
                             });
                           }
                         },
-                        icon: const Icon(Icons.search_rounded)),
-                        //space between
-                        //notification button with an icon in background
-                        // ElevatedButton(
-                        //   onPressed: (){},
-                        //   style: ButtonStyle(
-                        //     backgroundColor: MaterialStateProperty.all(Colors.white),
-                        //     shape: MaterialStateProperty.all(
-                        //       RoundedRectangleBorder(
-                        //         borderRadius: BorderRadius.circular(10),
-                        //       ),
-                        //     ),
-                        //     elevation: MaterialStateProperty.all(0),
-                        //   ),
-                        //   child: const Icon(
-                        //     Icons.notifications_rounded,
-                        //     color: Colors.black,
-                        //   ),
-                        // ),
-                        //profile with an icon in background gesturedetector
+                        icon: const Icon(Icons.search_rounded)),                        
                         GestureDetector(
                           onTap: (){
                             Navigator.push(
@@ -107,16 +85,13 @@ class _CustomAppBar extends State<CustomAppBar>{
                       ]
                     )
                    ),
-                    //space between
                     const SizedBox(height: 10),
-                    //scrollable tabs with button: for you, restaurants, events, restaurants for events
                     Center(
                       child: DefaultTabController(length: 4, child: 
                       TabBar(
                         
                         onTap: (selectedTabIndex) {widget.onTabChange!(selectedTabIndex,null);},
                         isScrollable: true,
-                        //set tabalignment to center
                         tabAlignment: TabAlignment.center,
                         tabs: 
                         [
@@ -170,8 +145,6 @@ class _CustomAppBar extends State<CustomAppBar>{
           ],
             
         ),
-      
-      
       );
   }
 }

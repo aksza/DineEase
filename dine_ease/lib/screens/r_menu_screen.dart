@@ -120,7 +120,6 @@ class _RMenuScreenState extends State<RMenuScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    //ha a controllerek nem uresek
                     if (nameController.text.isEmpty || ingredientsController.text.isEmpty || priceController.text.isEmpty) {
                       return;
                     }

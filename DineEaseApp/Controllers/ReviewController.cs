@@ -3,6 +3,8 @@ using DineEaseApp.Dto;
 using DineEaseApp.Interfaces;
 using DineEaseApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace DineEaseApp.Controllers
 {
@@ -26,7 +28,7 @@ namespace DineEaseApp.Controllers
         }
 
 
-        [HttpGet("user/{userId}")]
+        [HttpGet("user/{userId}"), Authorize]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Review>))]
         public async Task<IActionResult> GetReviewsByUserId(int userId)
         {
@@ -54,7 +56,7 @@ namespace DineEaseApp.Controllers
             return Ok(reviews);
         }
 
-        [HttpGet("restaurant/{restaurantId}")]
+        [HttpGet("restaurant/{restaurantId}"), Authorize]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Review>))]
         public async Task<IActionResult> GetReviewsByRestaurantId(int restaurantId)
         {
@@ -82,7 +84,7 @@ namespace DineEaseApp.Controllers
             return Ok(reviews);
         }
 
-        [HttpPost("addReview")]
+        [HttpPost("addReview"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> AddReview(ReviewCreateDto reviewCreateDto)
         {
@@ -109,7 +111,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpPut("update/{reviewId}")]
+        [HttpPut("update/{reviewId}"), Authorize]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
@@ -153,7 +155,7 @@ namespace DineEaseApp.Controllers
             return NoContent();
         }
 
-        [HttpDelete("deleteReview/{id}")]
+        [HttpDelete("deleteReview/{id}"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> DeleteReview(int id)
         {

@@ -6,6 +6,5 @@ namespace DineEaseApp.Dto
     {
         public int CuisineId { get; set; }
         public string CuisineName { get; set; }
-        //public int RestaurantId { get; set; }
     }
 }

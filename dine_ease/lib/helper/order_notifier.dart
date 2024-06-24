@@ -21,6 +21,4 @@ class OrderProvider with ChangeNotifier {
     _orders.clear();
     notifyListeners();
   }
-
-
 }

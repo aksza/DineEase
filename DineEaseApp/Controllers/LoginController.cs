@@ -112,11 +112,9 @@ namespace DineEaseApp.Controllers
         {
             List<Claim> claims = new List<Claim>
             {
-                //username is lehetne
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Role, "User")
-                //new Claim(ClaimTypes.Uri, user.ProfilePicture)
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
@@ -138,11 +136,9 @@ namespace DineEaseApp.Controllers
         {
             List<Claim> claims = new List<Claim>
             {
-                //username is lehetne
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Role, "Admin")
-                //new Claim(ClaimTypes.Uri, user.ProfilePicture)
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(

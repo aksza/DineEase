@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class EditProfileScreen extends StatefulWidget {
   static const routeName = '/edit-profile';
 
-  const EditProfileScreen({Key? key}) : super(key: key);
+  const EditProfileScreen({super.key});
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -23,7 +23,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final TextEditingController phoneNumController = TextEditingController();
   bool isAdmin = false;
 
-  List<bool> editable = [false, false, false, false]; // Nyomon követi a szerkeszthetőséget
+  List<bool> editable = [false, false, false, false];
   bool isLoading = true; 
 
   @override
@@ -47,12 +47,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         lastnameController.text = userData.lastName;
         phoneNumController.text = userData.phoneNum;
         isAdmin = userData.isAdmin;
-        isLoading = false; // Adatok betöltése befejeződött
+        isLoading = false;
       });
     } catch (e) {
       print('Error fetching user data: $e');
       setState(() {
-        isLoading = false; // Hibakezelés, betöltés befejeződött
+        isLoading = false;
       });
     }
   }

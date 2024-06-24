@@ -32,7 +32,6 @@ class _RHomeScreenState extends State<RHomeScreen> {
     super.initState();
   }
 
-  //fetch restaurant
   void fetchRestaurant() async {
     DataBaseProvider dataBaseProvider = DataBaseProvider();
     RequestUtil requestUtil = RequestUtil();
@@ -47,21 +46,21 @@ class _RHomeScreenState extends State<RHomeScreen> {
   }
 
   final List<Widget> _pages = [
-    RReservationScreen(),
-    RWaitingListScreen(),
-    REventsScreen(),
-    RMenuScreen(),
-    RProfileScreen(),
-    RStatisticsScreen(),
+    const RReservationScreen(),
+    const RWaitingListScreen(),
+    const REventsScreen(),
+    const RMenuScreen(),
+    const RProfileScreen(),
+    const RStatisticsScreen(),
   ];
 
   final List<Widget> _pagesE = [
-    RMeetingScreen(),
-    RWaitingListScreen(),
-    REventsScreen(),
-    RMenuScreen(),
-    RProfileScreen(),
-    RStatisticsScreen(),
+    const RMeetingScreen(),
+    const RWaitingListScreen(),
+    const REventsScreen(),
+    const RMenuScreen(),
+    const RProfileScreen(),
+    const RStatisticsScreen(),
   ];
 
   final List<String> _titles = [
@@ -94,7 +93,7 @@ class _RHomeScreenState extends State<RHomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: isLoading
-            ? Text('Loading...')
+            ? const Text('Loading...')
             : restaurant.forEvent
                 ? Text(_titlesE[_selectedIndex])
                 : Text(_titles[_selectedIndex]),
@@ -106,19 +105,19 @@ class _RHomeScreenState extends State<RHomeScreen> {
                 padding: EdgeInsets.zero,
                 children: <Widget>[
                   DrawerHeader(
-                    child: Text(
+                    decoration: BoxDecoration(
+                      color: Colors.orange[700],
+                    ),
+                    child: const Text(
                       'Menu',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 24,
                       ),
                     ),
-                    decoration: BoxDecoration(
-                      color: Colors.orange[700],
-                    ),
                   ),
                   ListTile(
-                    leading: Icon(Icons.calendar_today),
+                    leading: const Icon(Icons.calendar_today),
                     title: restaurant.forEvent
                         ? const Text('Meeting')
                         : const Text('Reservation'),
@@ -127,46 +126,45 @@ class _RHomeScreenState extends State<RHomeScreen> {
                     },
                   ),
                   ListTile(
-                    leading: Icon(Icons.hourglass_empty),
-                    title: Text('Waitinglist'),
+                    leading: const Icon(Icons.hourglass_empty),
+                    title: const Text('Waitinglist'),
                     onTap: () {
                       _onItemTapped(1);
                     },
                   ),
                   ListTile(
-                    leading: Icon(Icons.event),
-                    title: Text('Your Events'),
+                    leading: const Icon(Icons.event),
+                    title: const Text('Your Events'),
                     onTap: () {
                       _onItemTapped(2);
                     },
                   ),
                   ListTile(
-                    leading: Icon(Icons.menu_book_outlined),
-                    title: Text('Your Menu'),
+                    leading: const Icon(Icons.menu_book_outlined),
+                    title: const Text('Your Menu'),
                     onTap: () {
                       _onItemTapped(3);
                     },
                   ),
                   ListTile(
-                    leading: Icon(Icons.restaurant),
-                    title: Text('Restaurant'),
+                    leading: const Icon(Icons.restaurant),
+                    title: const Text('Restaurant'),
                     onTap: () {
                       _onItemTapped(4);
                     },
                   ),
                   ListTile(
-                    leading: Icon(Icons.bar_chart),
-                    title: Text('Statistics'),
+                    leading: const Icon(Icons.bar_chart),
+                    title: const Text('Statistics'),
                     onTap: () {
                       _onItemTapped(5);
                     },
                   ),
-                  Divider(),
+                  const Divider(),
                   ListTile(
-                    leading: Icon(Icons.logout),
-                    title: Text('Logout'),
+                    leading: const Icon(Icons.logout),
+                    title: const Text('Logout'),
                     onTap: () {
-                      // Handle the logout action
                       AuthService().logout(context);
                     },
                   ),

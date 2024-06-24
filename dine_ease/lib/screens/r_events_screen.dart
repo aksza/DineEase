@@ -3,9 +3,7 @@ import 'package:dine_ease/models/eventt_model.dart';
 import 'package:dine_ease/utils/request_util.dart';
 import 'package:dine_ease/widgets/r_event_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
-import 'package:logger/logger.dart';
 
 class REventsScreen extends StatefulWidget {
   static const routeName = '/r_events';
@@ -29,7 +27,6 @@ class _REventsScreenState extends State<REventsScreen> {
     fetchOldEvents();
   }
 
-  // Fetching events
   void fetchEvents() async {
     int restaurantId = await DataBaseProvider().getUserId();
     final response = await requestUtil.getEventsByRestaurantId(restaurantId);
@@ -39,7 +36,6 @@ class _REventsScreenState extends State<REventsScreen> {
     });
   }
 
-  //fetch old events
   void fetchOldEvents() async {
     int restaurantId = await DataBaseProvider().getUserId();
     final response = await requestUtil.getOldEvents(restaurantId);
@@ -49,13 +45,11 @@ class _REventsScreenState extends State<REventsScreen> {
     });
   }
 
-  // Add event
   void addEvent(Eventt event) async {
     await requestUtil.postAddEvent(event);
-    fetchEvents(); // Refresh events after adding a new event
+    fetchEvents();
   }
 
-  // Show alert dialog for adding a new event
   void showAddEventDialog() {
     Eventt event = Eventt(
       id: 0,
@@ -250,7 +244,6 @@ class _REventsScreenState extends State<REventsScreen> {
     );
   }
 
-  // Update event with requestutil
   void updateEvent() {
     fetchEvents(); 
   }
@@ -317,6 +310,7 @@ class _REventsScreenState extends State<REventsScreen> {
                           return REventViewScreen(
                             event: event,
                             onUpdate: updateEvent,
+                            canEdit: true,
                           );
                         }
                       },
@@ -343,6 +337,7 @@ class _REventsScreenState extends State<REventsScreen> {
                         return REventViewScreen(
                           event: event,
                           onUpdate: updateEvent,
+                          canEdit: false,
                         );
                       },
                     ),

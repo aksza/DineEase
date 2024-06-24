@@ -9,7 +9,6 @@ class ReservationView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Formázza a dátumot
     DateTime parsedDate = DateTime.parse(reservation.date);
     String formattedDate = DateFormat('yyyy-MM-dd HH:mm').format(parsedDate);
 
@@ -26,16 +25,16 @@ class ReservationView extends StatelessWidget {
           children: [
             Text(
               reservation.restaurantName,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Party Size: ',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -44,11 +43,11 @@ class ReservationView extends StatelessWidget {
                 Text('${reservation.partySize}'),
               ],
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Date: ',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -57,11 +56,11 @@ class ReservationView extends StatelessWidget {
                 Text(formattedDate),
               ],
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Phone Number: ',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -70,34 +69,34 @@ class ReservationView extends StatelessWidget {
                 Text(reservation.phoneNum),
               ],
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             if (reservation.comment != null && reservation.comment!.isNotEmpty) ...[
-              Text(
+              const Text(
                 'Comment:',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 4.0),
+              const SizedBox(height: 4.0),
               Text(reservation.comment!),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
             ],
             if (reservation.restaurantResponse != null && reservation.restaurantResponse!.isNotEmpty) ...[
-              Text(
+              const Text(
                 'Restaurant Response:',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 4.0),
+              const SizedBox(height: 4.0),
               Text(reservation.restaurantResponse!),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
             ],
             if (reservation.accepted != null)
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Accepted: ',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,

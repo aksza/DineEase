@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -10,7 +9,6 @@ import 'package:dine_ease/models/categories_restaurant_model.dart';
 import 'package:dine_ease/models/cuisine_model.dart';
 import 'package:dine_ease/models/cuisines_restaurant_model.dart';
 import 'package:dine_ease/models/e_category.dart';
-import 'package:dine_ease/models/event_post_model.dart';
 import 'package:dine_ease/models/event_type_model.dart';
 import 'package:dine_ease/models/eventt_model.dart';
 import 'package:dine_ease/models/meeting_create.dart';
@@ -33,7 +31,6 @@ import 'package:dine_ease/models/upload_restaurant_image.dart';
 import 'package:dine_ease/models/user_model.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
 class RequestUtil {
@@ -340,7 +337,7 @@ class RequestUtil {
         },
         body: jsonEncode(
           reservationCreate.toMap()
-        )        
+        )
       );
       Logger().i(resp.body);
       return jsonDecode(resp.body);
@@ -412,7 +409,7 @@ class RequestUtil {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token'
         },
-        body: jsonEncode(order.toMap())        
+        body: jsonEncode(order.toOMap())        
       );
       Logger().i(resp.body);
     }catch(e){
@@ -719,6 +716,7 @@ class RequestUtil {
   //getEcategories
   Future<List<ECategory>> getEcategories() async{
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['ECATEGORY_GET']!);
@@ -726,7 +724,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }       
       );
       Logger().i(resp.body);
@@ -741,6 +740,7 @@ class RequestUtil {
   //getECategoriesByEvent
   Future<List<ECategory>> getECategoriesByEvent(int eventId) async{
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl  + dotenv.env['EVENT_GET_BY_ID']! + eventId.toString() + dotenv.env['ECATEGORY_GET_BY_EVENT']!);
@@ -748,7 +748,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }       
       );
       Logger().i(resp.body);
@@ -763,6 +764,7 @@ class RequestUtil {
   //getRCategories
   Future<List<RCategory>> getRcategories() async{
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['RCATEGORY_GET']!);
@@ -770,7 +772,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }       
       );
       Logger().i(resp.body);
@@ -785,6 +788,7 @@ class RequestUtil {
   //getRCategoriesByRestaurantId
   Future<List<RCategory>?> getRCategoriesByRestaurantId(int restaurantId) async{
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['RESTAURANT_GET_BY_ID']! + restaurantId.toString() +dotenv.env['RCATEGORY_GET_BY_RESTAURANT']! );
@@ -792,7 +796,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }       
       );
       Logger().i(resp.body);
@@ -810,6 +815,7 @@ class RequestUtil {
   //getCuisines
   Future<List<Cuisine>> getCuisines() async{
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['CUISINE_GET']!);
@@ -817,7 +823,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }       
       );
       Logger().i(resp.body);
@@ -832,6 +839,7 @@ class RequestUtil {
   //getCuisinesByRestaurantId
   Future<List<Cuisine>?> getCuisinesByRestaurantId(int restaurantId) async{
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['RESTAURANT_GET_BY_ID']! + restaurantId.toString() +dotenv.env['CUISINE_GET_BY_RESTAURANT']! );
@@ -839,7 +847,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }       
       );
       Logger().i(resp.body);
@@ -857,6 +866,7 @@ class RequestUtil {
   //getOpeningsByRestaurantId
   Future<List<Opening>?> getOpeningsByRestaurantId(int restaurantId) async{
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['RESTAURANT_GET_BY_ID']! + restaurantId.toString() +dotenv.env['OPENING_GET_BY_RESTAURANT']! );
@@ -864,7 +874,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }       
       );
       Logger().i(resp.body);
@@ -929,6 +940,7 @@ class RequestUtil {
   //getPrices
   Future<List<Price>> getPrices() async{
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['PRICE_GET']!);
@@ -936,7 +948,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }       
       );
       Logger().i(resp.body);
@@ -951,6 +964,7 @@ class RequestUtil {
   //getPriceByRestaurantId
   Future<Price?> getPriceByRestaurantId(int restaurantId) async{
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['RESTAURANT_GET_BY_ID']! + restaurantId.toString() +dotenv.env['PRICE_GET_BY_RESTAURANT']! );
@@ -958,7 +972,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }       
       );
       Logger().i(resp.body);
@@ -975,6 +990,7 @@ class RequestUtil {
   //getSeatings
   Future<List<Seating>> getSeatings() async{
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['SEATING_GET']!);
@@ -982,7 +998,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }       
       );
       Logger().i(resp.body);
@@ -997,6 +1014,7 @@ class RequestUtil {
   //getSeatingsByRestaurantId
   Future<List<Seating>?> getSeatingsByRestaurantId(int restaurantId) async{
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['RESTAURANT_GET_BY_ID']! + restaurantId.toString() +dotenv.env['SEATING_GET_BY_RESTAURANT']! );
@@ -1004,7 +1022,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }       
       );
       Logger().i(resp.body);
@@ -1022,6 +1041,7 @@ class RequestUtil {
   //getMeetingEventTypes
   Future<List<EventType>> getMeetingEventTypes() async{
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['MEETING_EVENTTYPE_GET']!);
@@ -1029,7 +1049,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }       
       );
       Logger().i(resp.body);
@@ -1044,6 +1065,7 @@ class RequestUtil {
   //getMenuTypes
   Future<List<MenuType>> getMenuTypes() async{
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['MENU_TYPE_GET']!);
@@ -1051,7 +1073,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }       
       );
       Logger().i(resp.body);
@@ -1089,6 +1112,7 @@ class RequestUtil {
   //getReviewsByRestaurantId
   Future<List<Review>?> getReviewsByRestaurantId(int restaurantId) async{
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['REVIEW_GET_BY_RES_ID']! + restaurantId.toString());
@@ -1096,7 +1120,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }       
       );
       Logger().i(resp.body);
@@ -1114,6 +1139,7 @@ class RequestUtil {
   //search in restaurants
   Future<List<Restaurant>?> searchRestaurants(String search) async {
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['RESTAURANT_SEARCH']! + search);
@@ -1121,7 +1147,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }       
       );
       Logger().i(resp.body);
@@ -1136,6 +1163,7 @@ class RequestUtil {
   //search in events
   Future<List<Eventt>?> searchEvents(String search) async {
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['EVENT_SEARCH']! + search);
@@ -1143,7 +1171,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }       
       );
       Logger().i(resp.body);
@@ -1181,6 +1210,7 @@ class RequestUtil {
   //get waitinglist by restaurant id
   Future<List<Reservation>> getWaitingListByRestaurantId(int restaurantId) async {
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['WAITING_GET_BY_RES_ID']! + restaurantId.toString());
@@ -1188,7 +1218,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }
       );
       Logger().i(resp.body);
@@ -1203,6 +1234,7 @@ class RequestUtil {
   //get accepted reservations by restaurant id
   Future<List<Reservation>> getAcceptedReservationsByRestaurantId(int restaurantId) async {
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['ACCEPTED_GET_BY_RES_ID']! + restaurantId.toString());
@@ -1210,7 +1242,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }
       );
       Logger().i(resp.body);
@@ -1225,6 +1258,7 @@ class RequestUtil {
   //getorders by reservation id
   Future<List<Order>> getOrdersByReservationId(int reservationId) async {
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['ORDER_GET_BY_RES_ID']! + reservationId.toString());
@@ -1232,7 +1266,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }
       );
       Logger().i(resp.body);
@@ -1247,6 +1282,7 @@ class RequestUtil {
   //get events by restaurant id
   Future<List<Eventt>> getEventsByRestaurantId(int restaurantId) async {
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['EVENT_GET_F_BY_RES_ID']! + restaurantId.toString());
@@ -1254,7 +1290,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }
       );
       Logger().i(resp.body);
@@ -1270,6 +1307,7 @@ class RequestUtil {
   //get old events
   Future<List<Eventt>> getOldEvents(int restaurantId) async {
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl +  dotenv.env['EVENT_GET_O_BY_RES_ID']! + restaurantId.toString());
@@ -1277,7 +1315,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }
       );
       Logger().i(resp.body);
@@ -1568,8 +1607,9 @@ class RequestUtil {
     }    
   }
   //get photos by restaurant id
-  Future<List<UploadImages>> getPhotosByRestaurantId(int restaurantId) async {
+  Future<List<UploadImages>?> getPhotosByRestaurantId(int restaurantId) async {
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['PHOTO_GET_BY_RES_ID']! + restaurantId.toString());
@@ -1577,10 +1617,11 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }
       );
-      Logger().i(resp.body);
+      Logger().i("resp:" + resp.body);
       List<dynamic> photos = jsonDecode(resp.body);
       return photos.map((photo) => UploadImages.fromJson(photo)).toList();
     }catch(e){
@@ -1642,6 +1683,7 @@ class RequestUtil {
   //get accepted meetings by restaurant id
   Future<List<Meeting>> getAcceptedMeetingsByRestaurantId(int restaurantId) async {
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['ACCEPTED_MEETING_GET_BY_RES_ID']! + restaurantId.toString());
@@ -1649,7 +1691,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }
       );
       Logger().i(resp.body);
@@ -1664,6 +1707,7 @@ class RequestUtil {
   //get waitinglist by restaurant id
   Future<List<Meeting>> getWaitingMeetingsByRestaurantId(int restaurantId) async {
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['WAITING_MEETING_GET_BY_RES_ID']! + restaurantId.toString());
@@ -1671,7 +1715,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }
       );
       Logger().i(resp.body);
@@ -1686,6 +1731,7 @@ class RequestUtil {
   //daily reservations by restaurant id - list of int
   Future<List<int>> getDailyReservationsByRestaurantId(int restaurantId) async {
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['DAILY_RESERVATIONS_GET_BY_RES_ID']! + restaurantId.toString());
@@ -1693,7 +1739,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }
       );
       Logger().i(resp.body);
@@ -1708,6 +1755,7 @@ class RequestUtil {
   //hourly reservations by restaurant id - list of int
   Future<List<int>> getHourlyReservationsByRestaurantId(int restaurantId) async {
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['HOURLY_RESERVATIONS_GET_BY_RES_ID']! + restaurantId.toString());
@@ -1715,7 +1763,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }
       );
       Logger().i(resp.body);
@@ -1730,6 +1779,7 @@ class RequestUtil {
   //monthly resrvaions by restaurant id - list of int
   Future<List<int>> getMonthlyReservationsByRestaurantId(int restaurantId) async {
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['MONTHLY_RESERVATIONS_GET_BY_RES_ID']! + restaurantId.toString());
@@ -1737,7 +1787,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }
       );
       Logger().i(resp.body);
@@ -1752,6 +1803,7 @@ class RequestUtil {
   //orders per reservations by restaurant id - list of int
   Future<List<int>> getOrdersPerReservationsByRestaurantId(int restaurantId) async {
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl + dotenv.env['ORDERS_PER_RESERVATIONS_GET_BY_RES_ID']! + restaurantId.toString());
@@ -1759,7 +1811,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }
       );
       Logger().i(resp.body);
@@ -1774,6 +1827,7 @@ class RequestUtil {
   //eventnumber by restaurant id - list of int
   Future<List<int>> getEventNumberByRestaurantId(int restaurantId) async {
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl +  dotenv.env['EVENT_NUMBER_GET_BY_RES_ID']! + restaurantId.toString());
@@ -1781,7 +1835,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }
       );
       Logger().i(resp.body);
@@ -1796,6 +1851,7 @@ class RequestUtil {
   //daily meetings by restaurant id - list of int
   Future<List<int>> getDailyMeetingsByRestaurantId(int restaurantId) async {
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl +  dotenv.env['DAILY_MEETINGS_GET_BY_RES_ID']! + restaurantId.toString());
@@ -1803,7 +1859,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }
       );
       Logger().i(resp.body);
@@ -1818,6 +1875,7 @@ class RequestUtil {
   //hourly meetings by restaurant id - list of int
   Future<List<int>> getHourlyMeetingsByRestaurantId(int restaurantId) async {
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl +  dotenv.env['HOURLY_MEETINGS_GET_BY_RES_ID']! + restaurantId.toString());
@@ -1825,7 +1883,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }
       );
       Logger().i(resp.body);
@@ -1841,6 +1900,7 @@ class RequestUtil {
 
   Future<List<int>> getMonthlyMeetingsByRestaurantId(int restaurantId) async {
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl +  dotenv.env['MONTHLY_MEETINGS_GET_BY_RES_ID']! + restaurantId.toString());
@@ -1848,7 +1908,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }
       );
       Logger().i(resp.body);
@@ -1863,6 +1924,7 @@ class RequestUtil {
   //meeting waitinglist by restaurant id
   Future<List<Meeting>> getMeetingWaitingListByRestaurantId(int restaurantId) async {
     try{
+      String token = await DataBaseProvider().getToken();
       http.Response resp;
       await dotenv.load(fileName: "assets/env/.env");
       final url = Uri.parse(baseUrl +  dotenv.env['MEETING_WAITING_GET_BY_RES_ID']! + restaurantId.toString());
@@ -1870,7 +1932,8 @@ class RequestUtil {
       resp = await http.get(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         }
       );
       Logger().i(resp.body);
@@ -1905,4 +1968,99 @@ class RequestUtil {
     }    
   }
 
+  //get restaurants with most reservations
+  Future<List<Restaurant>> getRestaurantsWithMostReservations() async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['RESTAURANT_MOST_RESERVATIONS_GET']!);
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> restaurants = jsonDecode(resp.body);
+      return restaurants.map((restaurant) => Restaurant.fromJson(restaurant)).toList();
+    }catch(e){
+      Logger().e('Error getting restaurants with most reservations: $e');
+      rethrow;
+    }
+  }
+
+  //restaurants by last five reservations
+  Future<List<Restaurant>> getRestaurantsByLastFiveReservations(int userId) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['RESTAURANT_LAST_FIVE_RESERVATIONS_GET']! + userId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> restaurants = jsonDecode(resp.body);
+      return restaurants.map((restaurant) => Restaurant.fromJson(restaurant)).toList();
+    }catch(e){
+      Logger().e('Error getting restaurants by last five reservations: $e');
+      rethrow;
+    }
+  }
+
+  //get most rated restaurants
+  Future<List<Restaurant>> getMostRatedRestaurants() async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['MOST_RATED_RESTAURANTS_GET']!);
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> restaurants = jsonDecode(resp.body);
+      return restaurants.map((restaurant) => Restaurant.fromJson(restaurant)).toList();
+    }catch(e){
+      Logger().e('Error getting most rated restaurants: $e');
+      rethrow;
+    }
+  }
+
+  //get events by favorit restaurant
+  Future<List<Eventt>> getEventsByFavoritRestaurant(int userId) async {
+    try{
+      String token = await DataBaseProvider().getToken();
+      http.Response resp;
+      await dotenv.load(fileName: "assets/env/.env");
+      final url = Uri.parse(baseUrl +  dotenv.env['EVENT_GET_BY_FAVORIT_RESTAURANT']! + userId.toString());
+      Logger().i(url);
+      resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        }
+      );
+      Logger().i(resp.body);
+      List<dynamic> events = jsonDecode(resp.body);
+      return events.map((event) => Eventt.fromJson(event)).toList();
+    }catch(e){
+      Logger().e('Error getting events by favorit restaurant: $e');
+      rethrow;
+    }
+  }
 }

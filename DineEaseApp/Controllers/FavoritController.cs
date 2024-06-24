@@ -3,6 +3,7 @@ using DineEaseApp.Dto;
 using DineEaseApp.Interfaces;
 using DineEaseApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DineEaseApp.Controllers
 {
@@ -23,7 +24,7 @@ namespace DineEaseApp.Controllers
             _favoritRepository = favoritRepository;
         }
 
-        [HttpGet("{userId})")]
+        [HttpGet("{userId})"),Authorize]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Favorit>))]
         public async Task<IActionResult> GetFavoritsByUserId(int userId)
         {
@@ -36,7 +37,7 @@ namespace DineEaseApp.Controllers
             return Ok(favorits);
         }
 
-        [HttpPost("addToFavorits")]
+        [HttpPost("addToFavorits"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> AddFavoritRestaurant(FavoritDto favoritDto)
         {
@@ -75,7 +76,7 @@ namespace DineEaseApp.Controllers
             }
         }
 
-        [HttpDelete("removeFavorit")]
+        [HttpDelete("removeFavorit"), Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> RemoveFavorit(FavoritDto favoritDto)
         {

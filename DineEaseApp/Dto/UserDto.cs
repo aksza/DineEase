@@ -10,10 +10,5 @@ namespace DineEaseApp.Dto
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public bool Admin { get; set; }
-        //public ICollection<FavoritDto>? Favorits { get; set; }
-        //public ICollection<MeetingDto>? Meetings { get; set; }
-        //public ICollection<RatingDto>? Ratings { get; set; }
-        //public ICollection<ReservationDto>? Reservations { get; set; }
-        //public ICollection<ReviewDto>? Reviews { get; set; }
     }
 }

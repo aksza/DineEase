@@ -38,7 +38,7 @@ namespace DineEaseApp.Repository
 
         public async Task<ICollection<int>> AverageReservationsLastMonthByRestaurantId(int restaurantId)
         {
-            var lastMonth = DateTime.Today.AddDays(-30); // utobbi 30 nap
+            var lastMonth = DateTime.Today.AddDays(-30); 
 
             var reservations = await _context.Reservations
                 .Where(r => r.RestaurantId == restaurantId && r.Date >= lastMonth)

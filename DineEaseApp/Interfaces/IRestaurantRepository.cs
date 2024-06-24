@@ -16,6 +16,9 @@ namespace DineEaseApp.Interfaces
         Task<bool> UpdateRestaurantRating(Restaurant restaurant);
         Task<double?> GetRestaurantRating(int id);
         Task<List<Restaurant>?> SearchRestaurants(string someText);
+        Task<ICollection<Restaurant>> GetRestaurantsWithMostReservation(); 
+        Task<ICollection<Restaurant>> LastFiveReservationByUserId(int userId); 
+        Task<ICollection<Restaurant>> FiveMostRated();
         bool RestaurantExists(int id);
     }
 }
